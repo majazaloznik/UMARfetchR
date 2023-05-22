@@ -11,7 +11,7 @@ name: test-coverage
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
-   env:
+    env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       RENV_PATHS_ROOT: ~/.local/share/renv
 
