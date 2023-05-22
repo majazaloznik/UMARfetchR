@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/majazaloznik/UMARfetchR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/majazaloznik/UMARfetchR/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/majazaloznik/UMARfetchR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/majazaloznik/UMARfetchR?branch=main)
 <!-- badges: end -->
 
 The goal of UMARfetchR is to check for new data tables somewhere (a folder or email)
