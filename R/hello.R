@@ -1,8 +1,1 @@
-#' Hello test function
-#'
-#' @return nothing
-#' @export
-#'
-hello <- function() {
-  2 + 3
-}
+create_structure_template_excel()
