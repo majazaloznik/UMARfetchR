@@ -13,7 +13,7 @@ create_structure_template_excel <- function(author = "name",
 
   outfile <- paste0("struct_table_", author, ".xlsx")
   nejmz <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
-             "dimension_levels_code", "unit", "series name")
+             "dimension_levels_code", "unit", "series_name")
 
   template_df <- setNames(data.frame(matrix(ncol = length(nejmz), nrow = 0)), nejmz)
 
