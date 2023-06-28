@@ -11,9 +11,9 @@ dittodb::with_mock_db({
   test_that("prepare functions work", {
     x <- prepare_source_table(con)
     expect_equal(dim(x), c(1,4))
-    x <- prepare_category_table("Maja Založnik", con)
+    x <- prepare_category_table("Maja Zalo\u017enik", con)
     expect_equal(dim(x), c(1,3))
-    x <- prepare_category_relationship_table("Maja Založnik", con)
+    x <- prepare_category_relationship_table("Maja Zalo\u017enik", con)
     expect_equal(dim(x), c(1,3))
   })
 })
