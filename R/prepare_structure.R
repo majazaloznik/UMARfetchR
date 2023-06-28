@@ -75,3 +75,29 @@ prepare_category_relationship_table <- function(cat_name, con) {
              parent_id = 0,
              source_id = source_id)
 }
+
+
+#' Prepare table to insert into `table` table
+#'
+#' Helper function that manually prepares the table table.
+#' Returns table ready to insert into the `table` table with the db_writing family
+#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}
+#'
+#' @param con connection to the database
+#' @param meta dataframe with code, name, url and note columns
+#'
+#' @return a dataframe with the `code`, `name`, `source_id`, `url`, and `notes` columns
+#' for this table.
+#' @export
+# prepare_table_table <- function(meta,
+#                                 con) {
+#   source_id <- UMARaccessR::get_source_code_from_source_name("ZRSZ", con)[1,1]
+#   tb <- data.frame(code = "MZ002",
+#              name = "test table",
+#              source_id = 4,
+#              url = "",
+#              notes = NA)
+# }
+# SURSfetchR::sql_function_call(con,
+#                               "insert_new_table",
+#                               as.list(tb), "test_platform")

@@ -4,12 +4,10 @@
 \alias{check_structure_df}
 \title{Check structure data to be parsed}
 \usage{
-check_structure_df(df, interval)
+check_structure_df(df)
 }
 \arguments{
 \item{df}{dataframe from one of the structure worksheets}
-
-\item{interval}{name of the sheet - which is the one character interval code e.g. "M" or "Q"}
 }
 \value{
 TRUE if passes all checks

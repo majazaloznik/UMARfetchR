@@ -11,8 +11,10 @@ test_that("check_structure finds unparsable stuff", {
   expect_true(check_structure_df(test5))
   test5 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet5")
   expect_true(check_structure_df(test5))
-  expect_error(check_structure_wb(test_path("testdata", "struct_tests.xlsx")))
-  expect_true(check_structure_wb(test_path("testdata", "struct_tests2.xlsx")))
+  test6 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet6")
+  expect_error(check_structure_df(test6))
+  test7 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet7")
+  expect_error(check_structure_df(test7))
   expect_message(message_structure(test_path("testdata", "struct_tests2.xlsx")))
   out <- message_structure(test_path("testdata", "struct_tests2.xlsx"))
   expect_equal(out[1,2], 2)
@@ -20,3 +22,34 @@ test_that("check_structure finds unparsable stuff", {
   out <- message_structure(test_path("testdata", "struct_tests3.xlsx"))
   expect_equal(out[3,3], 4)
 })
+
+
+
+dittodb::with_mock_db({
+  con <- DBI::dbConnect(RPostgres::Postgres(),
+                        dbname = "platform",
+                        host = "localhost",
+                        port = 5432,
+                        user = "mzaloznik",
+                        password = "kermitit",
+                        client_encoding = "utf8")
+  dbExecute(con, "set search_path to test_platform")
+
+  test_that("table codes are computed correctly", {
+    df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"), sheet = "M")
+    out <-compute_table_codes(df, con)
+    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ002", "MZ003", "MZ003", "MZ004", "MZ004"))
+    df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"), sheet = "A")
+    out <-compute_table_codes(df, con)
+    expect_equal(out$table_code, c("MZ003", "MZ003", "MZ003", "MZ003", "MZ003"))
+    df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet8")
+    out <-compute_table_codes(df, con)
+    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ001", "MZ003"))
+    df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet9")
+    out <-compute_table_codes(df, con)
+    expect_equal(out$table_code, c(rep("MZ001",3), rep("MZ002",3), rep("MZ003",2)))
+  })
+})
+
+
+

@@ -4,12 +4,14 @@
 \alias{insert_new_category_relationship}
 \title{Insert new category relationship}
 \usage{
-insert_new_category_relationship(cat_name, con)
+insert_new_category_relationship(cat_name, con, schema = "platform")
 }
 \arguments{
 \item{cat_name}{character name of category - usually full name of author}
 
 \item{con}{connection to the database.}
+
+\item{schema}{db schema, defaults to platfrom}
 }
 \value{
 nothing

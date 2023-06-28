@@ -1,3 +1,8 @@
+# UMARfetchR 0.3.0
+
+* Rewrote structure checks to consilidate all worksheet into one, only `check_structure_df` is left.
+* Added `compute_table_codes` function to fill that column.
+
 # UMARfetchR 0.2.0
 
 * Added function for preparing Excel template for the structure metadata

@@ -15,25 +15,17 @@ create_structure_template_excel <- function(author = "name",
 
   outfile <- paste0("struct_table_", author, ".xlsx")
   nejmz <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
-             "dimension_levels_code", "unit", "series_name")
+             "dimension_levels_code", "unit", "interval", "series_name")
 
   template_df <- setNames(data.frame(matrix(ncol = length(nejmz), nrow = 0)), nejmz)
 
 
   wb <- openxlsx::createWorkbook()
-  openxlsx::addWorksheet(wb, "M")
-  openxlsx::addWorksheet(wb, "Q")
-  openxlsx::addWorksheet(wb, "A")
+  openxlsx::addWorksheet(wb, "timeseries")
 
-  openxlsx::writeData(wb, "M", template_df, startRow = 1, startCol = 1)
-  openxlsx::writeData(wb, "Q", template_df, startRow = 1, startCol = 1)
-  openxlsx::writeData(wb,"A", template_df, startRow = 1, startCol = 1)
-  openxlsx::freezePane(wb,"M", firstActiveRow = 2)
-  openxlsx::freezePane(wb,"Q", firstActiveRow = 2)
-  openxlsx::freezePane(wb,"A", firstActiveRow = 2)
-  openxlsx::setColWidths(wb, sheet = "M", cols = 1:length(nejmz), widths = "auto")
-  openxlsx::setColWidths(wb, sheet = "Q", cols = 1:length(nejmz), widths = "auto")
-  openxlsx::setColWidths(wb, sheet = "A", cols = 1:length(nejmz), widths = "auto")
+  openxlsx::writeData(wb, "timeseries", template_df, startRow = 1, startCol = 1)
+  openxlsx::freezePane(wb,"timeseries", firstActiveRow = 2)
+  openxlsx::setColWidths(wb, sheet = "timeseries", cols = 1:length(nejmz), widths = "auto")
 
   openxlsx::saveWorkbook(wb, file = outfile, overwrite = overwrite)
 }

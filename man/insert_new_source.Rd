@@ -4,10 +4,12 @@
 \alias{insert_new_source}
 \title{Insert new source.}
 \usage{
-insert_new_source(con)
+insert_new_source(con, schema = "platform")
 }
 \arguments{
 \item{con}{connection to the database.}
+
+\item{schema}{db schema, defaults to platfrom}
 }
 \value{
 nothing

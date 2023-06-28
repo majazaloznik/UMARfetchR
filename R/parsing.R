@@ -5,18 +5,17 @@
 #' errors if not.
 #'
 #' @param df dataframe from one of the structure worksheets
-#' @param interval name of the sheet - which is the one character interval code e.g. "M" or "Q"
 #'
 #' @return TRUE if passes all checks
 #' @export
 #' @importFrom stats complete.cases
-check_structure_df <- function(df, interval) {
+check_structure_df <- function(df) {
 
   # Check the column names
   col_names <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
                  "dimension_levels_code", "unit")
   if (!all(col_names %in% names(df))) {
-    stop("Zavihek ", interval, ". Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
+    stop("Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
          paste(col_names, collapse = ", "))
   }
 
@@ -24,6 +23,23 @@ check_structure_df <- function(df, interval) {
   if (length(unique(df$author)) != 1) {
     stop("V tabeli so dovoljene samo serije enega avtorja. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
          paste(unique(df$author), collapse = ", "))
+  }
+
+  # Check intervals are all legal
+  intervals <- c("M", "Q", "A")
+  if (!all(unique(df$interval) %in% intervals)) {
+    stop("Nekaj je narobe z vrednostimi v polju interval, dovoljene so samo naslednje vrednosti: ",
+         paste(intervals, collapse = ", "))
+  }
+
+  # check one interval per table
+  df |>
+    dplyr::group_by(table_name) |>
+    dplyr::summarize(all_same_interval = dplyr::n_distinct(interval) == 1, .groups = "drop") |>
+    dplyr::filter(all_same_interval == FALSE) -> check
+  if (nrow(check) > 0) {
+    stop("Vse serije v eni tabli morajo imeti enak interval. To ni res tukaj: ",
+         paste(check$table_name, collapse = ", "))
   }
 
   #check incomplete rows
@@ -37,30 +53,6 @@ check_structure_df <- function(df, interval) {
  TRUE
 }
 
-#' Check structure workbook to be parsed
-#'
-#' Takes the excel file with the data to be parsed and checks the inputs are all
-#' OK.
-#'
-#' @param filename path to excel file
-#'
-#' @return TRUE if all checks pass
-#' @export
-#'
-check_structure_wb <- function(filename) {
-  sheets <- c("M", "Q", "A")
-  wb <- openxlsx::loadWorkbook(filename)
-  sheet_names <- openxlsx::getSheetNames(filename)
-  if (!all(sheet_names %in% sheets)) {
-    stop("Nekaj je narobe z imeni zavihkov. Pri\u010dakovani so naslednji zavihki: ",
-         paste(sheets, collapse = ", "))
-  }
-  for (sheet in sheet_names){
-    df <- openxlsx::readWorkbook(wb, sheet = sheet)
-    check_structure_df(df, sheet)
-  }
-  TRUE
-}
 
 #' Prepare message describing structure process
 #'
@@ -82,8 +74,8 @@ message_structure <- function(filename) {
       dplyr::mutate(non_na_count = rowSums(!is.na(.)))
 
     # Count the number of rows with 7 and 9 non-NA values
-    new_rows <- sum(df$non_na_count == 8)
-    old_rows <- sum(df$non_na_count == 10)
+    new_rows <- sum(df$non_na_count == 9)
+    old_rows <- sum(df$non_na_count == 11)
 
     if (new_rows > 0) {
       message(paste("Na zavihku", sheet, "je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
@@ -95,4 +87,45 @@ message_structure <- function(filename) {
     out[out$sheet == sheet, "old"] <- old_rows
   }
   out
+}
+
+#' Compute the table codes for new series
+#'
+#' Computes the new table codes for the tables of the series to be imported.
+#' This uses the author field to create the code and checks which ones are
+#' already in the database and increments from there.
+#'
+#' If the table already exists, need to cover this eventuality
+#'
+#' @param df dataframe from structure template
+#' @param con connection to the database.
+#'
+#' @return dataframe with a complete table_code column
+#' @export
+#'
+compute_table_codes <- function(df, con){
+  auth <- toupper(unique(df$author))
+  existing_codes <- length(unique(df$table_code)) - 1
+  df <- df |>
+    dplyr::arrange(table_code, table_name) |>
+    dplyr::group_by(table_name) |>
+    tidyr::fill(table_code, .direction = "downup")
+
+
+  x <- DBI::dbGetQuery(con, sprintf("SELECT code
+       FROM \"table\"
+       WHERE code LIKE '%s%%'
+       ORDER BY substring(code FROM '[0-9]+')::int DESC
+       LIMIT 1;", auth))
+  start <- ifelse(nrow(x) == 0, "000", sub("^[A-Za-z]*", "", x[1,1]))
+  df <- df |>
+    dplyr::arrange(table_code, table_name) |>
+    dplyr::group_by(table_code,table_name) |>
+    dplyr::mutate(gr =   ifelse(is.na(table_code), dplyr::cur_group_id() - existing_codes, 0),
+                  table_code = ifelse(is.na(table_code),
+                                      paste0(auth, sprintf("%03d",
+                                                           as.integer(start) + gr)),
+                                      table_code)) |>
+    dplyr::select(-gr)
+  df
 }
