@@ -11,10 +11,18 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     covr,
+    dittodb,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
 Imports: 
+    DBI (>= 1.1.3),
     dplyr (>= 1.1.2),
     magrittr (>= 2.0.3),
-    openxlsx (>= 4.2.5.2)
+    openxlsx (>= 4.2.5.2),
+    RPostgres (>= 1.4.5),
+    SURSfetchR (>= 0.0.4),
+    UMARaccessR (>= 0.1.0)
+Remotes:
+    majazaloznik/SURSfetchR,
+    majazaloznik/UMARaccessR
