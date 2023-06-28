@@ -3,3 +3,7 @@
 export(check_structure_df)
 export(check_structure_wb)
 export(create_structure_template_excel)
+export(message_structure)
+importFrom(magrittr,"%>%")
+importFrom(stats,complete.cases)
+importFrom(stats,setNames)

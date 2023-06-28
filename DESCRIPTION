@@ -15,4 +15,6 @@ Suggests:
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
 Imports: 
+    dplyr (>= 1.1.2),
+    magrittr (>= 2.0.3),
     openxlsx (>= 4.2.5.2)

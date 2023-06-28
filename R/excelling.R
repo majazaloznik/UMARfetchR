@@ -8,6 +8,8 @@
 #' @return nothing - side effect is saving to an excel file.
 #' @export
 #'
+#' @importFrom stats setNames
+
 create_structure_template_excel <- function(author = "name",
                                    overwrite = TRUE){
 

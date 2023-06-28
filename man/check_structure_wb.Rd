@@ -7,7 +7,7 @@
 check_structure_wb(filename)
 }
 \arguments{
-\item{filename}{}
+\item{filename}{path to excel file}
 }
 \value{
 TRUE if all checks pass

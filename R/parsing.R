@@ -9,7 +9,7 @@
 #'
 #' @return TRUE if passes all checks
 #' @export
-#'
+#' @importFrom stats complete.cases
 check_structure_df <- function(df, interval) {
 
   # Check the column names
@@ -37,14 +37,12 @@ check_structure_df <- function(df, interval) {
  TRUE
 }
 
-
-
 #' Check structure workbook to be parsed
 #'
 #' Takes the excel file with the data to be parsed and checks the inputs are all
 #' OK.
 #'
-#' @param filename
+#' @param filename path to excel file
 #'
 #' @return TRUE if all checks pass
 #' @export
@@ -62,4 +60,39 @@ check_structure_wb <- function(filename) {
     check_structure_df(df, sheet)
   }
   TRUE
+}
+
+#' Prepare message describing structure process
+#'
+#' Prepares a log message describing how many new series will be imported
+#' from each worksheet and how many are already there and will be ignored.
+#'
+#' @param filename path to excel file
+#'
+#' @return outputs log message
+#' @export
+#'
+message_structure <- function(filename) {
+  wb <- openxlsx::loadWorkbook(filename)
+  sheet_names <- openxlsx::getSheetNames(filename)
+  out <- data.frame(sheet = sheet_names, new = NA, old = NA)
+  for (sheet in sheet_names){
+    df <- openxlsx::readWorkbook(wb, sheet = sheet)
+    df <- df %>%
+      dplyr::mutate(non_na_count = rowSums(!is.na(.)))
+
+    # Count the number of rows with 7 and 9 non-NA values
+    new_rows <- sum(df$non_na_count == 8)
+    old_rows <- sum(df$non_na_count == 10)
+
+    if (new_rows > 0) {
+      message(paste("Na zavihku", sheet, "je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
+    }
+    if (old_rows > 0) {
+      message(paste("Na zavihku", sheet, "je \u0161tevilo starih serij, ki bodo ignorirane:", old_rows))
+    }
+    out[out$sheet == sheet, "new"] <- new_rows
+    out[out$sheet == sheet, "old"] <- old_rows
+  }
+  out
 }
