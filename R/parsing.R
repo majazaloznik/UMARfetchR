@@ -34,6 +34,7 @@ check_structure_df <- function(df) {
 
   # check one interval per table
   df |>
+    dplyr::arrange(table_name) |>
     dplyr::group_by(table_name) |>
     dplyr::summarize(all_same_interval = dplyr::n_distinct(interval) == 1, .groups = "drop") |>
     dplyr::filter(all_same_interval == FALSE) -> check
@@ -41,6 +42,21 @@ check_structure_df <- function(df) {
     stop("Vse serije v eni tabli morajo imeti enak interval. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
+
+  # check unique dimension level codes per table
+  df |>
+    dplyr::arrange(table_name) |>
+    dplyr::group_by(table_name) |>
+    dplyr::mutate(count = dplyr::n()) |>
+    dplyr::summarise(check_unique = length(unique(dimension_levels_code)),
+                     group_n = unique(count)) |>
+    dplyr::mutate(duplicate_exists = ifelse(check_unique < group_n, TRUE, FALSE)) |>
+    dplyr::filter(duplicate_exists) -> check
+  if (nrow(check) > 0) {
+    stop("Vse serije v eni tabli morajo unikaten dimension_levels_code. To ni res tukaj: ",
+         paste(check$table_name, collapse = ", "))
+  }
+
 
   #check incomplete rows
   rows_with_na <- which(!complete.cases(df[,1:7]))
@@ -128,4 +144,31 @@ compute_table_codes <- function(df, con){
                                       table_code)) |>
     dplyr::select(-gr)
   df
+}
+
+
+#' Compute the series codes for the new series
+#'
+#' To be run after \link[UMARfetchR]{compute_table_codes} is already run so
+#' all the series have a legit table code. Computes the series code, which will
+#' be unique, because of the checks and how the table codes are computed.
+#'
+#' @param df a dataframe with the table code, dimension levels code, interval and
+#'
+#' @return df with a complete series_code column
+#' @export
+#'
+compute_series_codes <- function(df) {
+  if (!"series_code" %in% names(df)) {
+    df$series_code <- NA
+  }
+  df |>
+    dplyr::mutate(series_code = ifelse(is.na(series_code),
+                                       paste("UMAR", table_code,
+                                             toupper(dimension_levels_code),
+                                             interval,
+                                             sep = "--"), series_code))
+
+
+
 }
