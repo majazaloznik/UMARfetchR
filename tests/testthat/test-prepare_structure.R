@@ -18,7 +18,10 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
     out <- prepare_table_table(df, con)
     expect_equal(dim(out), c(2,5))
-
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
+    out <- prepare_table_dimensions_table(df, con)
+    expect_equal(dim(out), c(6,3))
+    expect_equal(out[[6,1]], "dim3")
   })
 })
 

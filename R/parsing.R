@@ -43,6 +43,17 @@ check_structure_df <- function(df) {
          paste(check$table_name, collapse = ", "))
   }
 
+  # check dimensions are the same for each table
+  df |>
+    dplyr::arrange(table_name) |>
+    dplyr::group_by(table_name) |>
+    dplyr::summarize(all_same_dimz = dplyr::n_distinct(dimensions) == 1, .groups = "drop") |>
+    dplyr::filter(all_same_dimz == FALSE) -> check
+  if (nrow(check) > 0) {
+    stop("Vse serije v eni tabli morajo imeti enake dimenzije interval. To ni res tukaj: ",
+         paste(check$table_name, collapse = ", "))
+  }
+
   # check dimension level codes are legal
   df |>
     dplyr::mutate(dimension_levels_code = toupper(dimension_levels_code),
@@ -53,7 +64,6 @@ check_structure_df <- function(df) {
          paste(check$dimension_levels_code, collapse = ", "))
   }
 
-  "^([A-Z0-9]{1,4})(--([A-Z0-9]{1,4}))*$"
   # check unique dimension level codes per table
   df |>
     dplyr::arrange(table_name) |>
@@ -67,7 +77,22 @@ check_structure_df <- function(df) {
     stop("Vse serije v eni tabli morajo unikaten dimension_levels_code. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
-
+  # check same number of dimensions and levels in each table
+  count_occurrences <- function(x) {
+    sapply(gregexpr("--", x), function(y) sum(y > 0))
+  }
+  df |>
+    dplyr::arrange(table_name) |>
+    dplyr::group_by(table_name) |>
+    dplyr::mutate(count1 = count_occurrences(dimensions),
+                  count2 = count_occurrences(dimension_levels_text),
+                  count3 = count_occurrences(dimension_levels_code),
+                  same_counts = (count1 == count2 & count2 == count3)) |>
+    dplyr::filter(!same_counts) -> check
+  if (nrow(check) > 0) {
+    stop("Vse serije v eni tabli morajo imeti enako \u0161tevilo dimenzij in level-ov. To ni res tukaj: ",
+         paste(check$table_name, collapse = ", "))
+  }
 
   #check incomplete rows
   rows_with_na <- which(!complete.cases(df[,1:7]))

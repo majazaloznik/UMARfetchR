@@ -121,6 +121,49 @@ library(dittodb)
 # out <-prepare_table_table(df, con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
+# insert_new_table(df, con, "test_platform")
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
+# prepare_table_dimensions(df, con)
+# stop_db_capturing()
+
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
+# out <- prepare_table_dimensions_table(df, con)
+# stop_db_capturing()
+
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
                       dbname = "platform",
@@ -131,6 +174,7 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
-insert_new_table(df, con, "test_platform")
+df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
+x <- insert_new_table_dimensions(df, con, "test_platform")
 stop_db_capturing()
+

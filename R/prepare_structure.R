@@ -100,8 +100,30 @@ prepare_table_table <- function(df, con) {
     dplyr::rename(code = table_code, name = table_name) |>
     dplyr::mutate(source_id = source_id, url = NA,  notes = NA)
 }
-#
-#
-# SURSfetchR::sql_function_call(con,
-#                               "insert_new_table",
-#                               as.list(tb), "test_platform")
+
+#' Prepare table to insert into `table_dimensions` table
+#'
+#' Helper function that manually prepares the table_dimensions table.
+#' Returns table ready to insert into the `table_dimensions`table with the
+#' db_writing family of functions.
+#'
+#' @param con connection to the database
+#' @param df dataframe with table_code and dimensions
+#' @return a dataframe with the `table_id`, `dimension_name`, `time` columns for
+#' each dimension of this table.
+#' @export
+prepare_table_dimensions_table <- function(df, con){
+  df |>
+    dplyr::arrange(table_code) |>
+    dplyr::group_by(table_code, dimensions) |>
+    dplyr::summarise(.groups = "drop") |>
+    dplyr::rowwise() |>
+    dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
+                  is_time = rep(0)) |>
+    tidyr::separate_rows(dimensions, sep ="--") |>
+    dplyr::mutate(dimensions = trimws(dimensions)) |>
+    dplyr::rename(dimension = dimensions) |>
+    dplyr::select(-table_code) |>
+    dplyr::arrange(table_id)
+}
+
