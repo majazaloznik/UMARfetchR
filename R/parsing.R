@@ -93,7 +93,30 @@ check_structure_df <- function(df) {
     stop("Vse serije v eni tabli morajo imeti enako \u0161tevilo dimenzij in level-ov. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
+  # check that dimension level codes and text are matching
+  dim_txt <- df |>
+    tidyr::separate_longer_delim(dimension_levels_text, delim ="--") |>
+    dplyr::mutate(dimension_levels_text = trimws(dimension_levels_text)) |>
+    dplyr::pull(dimension_levels_text)
 
+  df |>
+    tidyr::separate_longer_delim(dimension_levels_code, delim ="--") |>
+    dplyr::mutate(dimension_levels_code = trimws(dimension_levels_code),) |>
+    dplyr::mutate(dimension_levels_text = dim_txt) |>
+    dplyr::select(table_name, dimensions, dimension_levels_code, dimension_levels_text) |>
+    dplyr::arrange(table_name) |>
+    dplyr::group_by(table_name) |>
+    dplyr::summarize(num_unique_pairs = dplyr::n_distinct(interaction
+                                                          (dimension_levels_code,
+                                                            dimension_levels_text)),
+                     num_unique_codes = dplyr::n_distinct(dimension_levels_code)) |>
+    dplyr::mutate(check = num_unique_pairs == num_unique_codes) |>
+    dplyr::filter(!check) -> check
+
+  if (nrow(check) > 0) {
+    stop("Besedila in kode dimension level-ov niso ena:ena v naslednjih tabelah: ",
+         paste(check$table_name, collapse = ", "))
+  }
   #check incomplete rows
   rows_with_na <- which(!complete.cases(df[,1:7]))
 
