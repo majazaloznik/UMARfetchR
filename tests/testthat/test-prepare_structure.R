@@ -24,5 +24,8 @@ dittodb::with_mock_db({
     expect_equal(out[[6,1]], "dim3")
     out <- prepare_dimension_levels_table(df, con)
     expect_equal(dim(out), c(10,3))
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
+    out <- prepare_series_table(df, con)
+    expect_equal(dim(out), c(4,5))
   })
 })

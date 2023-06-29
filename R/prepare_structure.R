@@ -169,3 +169,26 @@ prepare_dimension_levels_table <- function(df, con) {
     dplyr::select(tab_dim_id, level_value, level_text)
 }
 
+
+
+#' Prepare table to insert into `series` table
+#'
+#' Prepare a series table to import into the series table in the database.
+#'
+#' @param df dataframe with table_code, series_name, series_code, unit, interval
+#' @param con connection to the database
+#'
+#' @return a dataframe with the following columns: `name_long`, `code`,
+#' `unit_id`, `table_id` and `interval_id`for each series in the table
+#' well as the same number of rows as there are series
+#' @export
+prepare_series_table <- function(df, con){
+  df |>
+    dplyr::rowwise() |>
+    dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
+                  unit_id = UMARaccessR::get_unit_id_from_unit_name(unit, con)[1,1]) |>
+    dplyr::select(table_id, series_name, unit_id, series_code, interval) |>
+    dplyr::rename(interval_id = interval,
+                  name_long = series_name,
+                  code = series_code)
+}

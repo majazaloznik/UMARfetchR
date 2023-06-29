@@ -5,7 +5,8 @@ utils::globalVariables(c(".", "name", "table_name", "interval", "all_same_interv
                          "all_same_dimz", "dimension_levels_text", "table_id",
                          "all_same_dimz", "dimension_levels_text", "dimensions", "level_text",
                          "level_value",  "tab_dim_id", "table_id",
-                         "num_unique_pairs", "num_unique_codes"))
+                         "num_unique_pairs", "num_unique_codes",
+                         "series_name", "unit", "unit_id"))
 #' magrittr pipe
 #'
 #' @importFrom magrittr %>%
