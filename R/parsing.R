@@ -43,6 +43,17 @@ check_structure_df <- function(df) {
          paste(check$table_name, collapse = ", "))
   }
 
+  # check dimension level codes are legal
+  df |>
+    dplyr::mutate(dimension_levels_code = toupper(dimension_levels_code),
+           check = grepl("^([A-Z0-9]{1,4})(--([A-Z0-9]{1,4}))*$", dimension_levels_code)) |>
+    dplyr::filter(check ==FALSE) -> check
+  if (nrow(check) > 0) {
+    stop("Naslednje vrednosti dimension_levels_code polja so nedovoljene, preberi navodila: ",
+         paste(check$dimension_levels_code, collapse = ", "))
+  }
+
+  "^([A-Z0-9]{1,4})(--([A-Z0-9]{1,4}))*$"
   # check unique dimension level codes per table
   df |>
     dplyr::arrange(table_name) |>

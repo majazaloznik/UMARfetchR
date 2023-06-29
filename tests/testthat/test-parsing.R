@@ -19,6 +19,8 @@ test_that("check_structure finds unparsable stuff", {
   expect_error(check_structure_df(test12))
   test13 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet13")
   expect_true(check_structure_df(test13))
+  test14 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
+  expect_error(check_structure_df(test14))
   expect_message(message_structure(test_path("testdata", "struct_tests2.xlsx")))
   out <- message_structure(test_path("testdata", "struct_tests2.xlsx"))
   expect_equal(out[1,2], 2)
