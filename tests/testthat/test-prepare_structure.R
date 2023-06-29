@@ -1,12 +1,12 @@
 dittodb::with_mock_db({
   con <- DBI::dbConnect(RPostgres::Postgres(),
                         dbname = "platform",
-                        host = "192.168.38.21",
+                        host = "localhost",
                         port = 5432,
-                        user = "majaz",
-                        password = Sys.getenv("PG_MZ_PSW"),
+                        user = "mzaloznik",
+                        password = Sys.getenv("PG_local_MAJA_PSW"),
                         client_encoding = "utf8")
-  dbExecute(con, "set search_path to platform")
+  dbExecute(con, "set search_path to test_platform")
 
   test_that("prepare functions work", {
     x <- prepare_source_table(con)
@@ -22,8 +22,7 @@ dittodb::with_mock_db({
     out <- prepare_table_dimensions_table(df, con)
     expect_equal(dim(out), c(6,3))
     expect_equal(out[[6,1]], "dim3")
+    out <- prepare_dimension_levels_table(df, con)
+    expect_equal(dim(out), c(10,3))
   })
 })
-
-
-

@@ -120,10 +120,52 @@ prepare_table_dimensions_table <- function(df, con){
     dplyr::rowwise() |>
     dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
                   is_time = rep(0)) |>
-    tidyr::separate_rows(dimensions, sep ="--") |>
+    tidyr::separate_longer_delim(dimensions, delim ="--") |>
     dplyr::mutate(dimensions = trimws(dimensions)) |>
     dplyr::rename(dimension = dimensions) |>
     dplyr::select(-table_code) |>
     dplyr::arrange(table_id)
+}
+
+
+
+#' Prepare table to insert into `dimension_levels` table
+#'
+#' Helper function that manually prepares the dimension_levels for each
+#' table and get their codes and text.
+#' Returns table ready to insert into the `dimension_levels`table with the
+#' db_writing family of functions.
+#'
+#' @param df dataframe with table_code, dimensions and dimension_levels_code
+#' @param con connection to the database
+#' @return a dataframe with the `dimension_id`, `values` and `valueTexts`
+#' columns for this table.
+#' @export
+#' @importFrom stats na.omit
+prepare_dimension_levels_table <- function(df, con) {
+  dimz <- df |>
+    tidyr::separate_longer_delim(dimensions, delim ="--") |>
+    dplyr::mutate(dimensions = trimws(dimensions)) |>
+    dplyr::pull(dimensions)
+  dim_txt <- df |>
+    tidyr::separate_longer_delim(dimension_levels_text, delim ="--") |>
+    dplyr::mutate(dimension_levels_text = trimws(dimension_levels_text)) |>
+    dplyr::pull(dimension_levels_text)
+
+  df |>
+    tidyr::separate_longer_delim(dimension_levels_code, delim ="--") |>
+    dplyr::mutate(dimension_levels_code = trimws(dimension_levels_code),) |>
+    dplyr::mutate(dimensions = dimz,
+                  dimension_levels_text = dim_txt) |>
+    dplyr::select(table_code, dimensions, dimension_levels_code, dimension_levels_text) |>
+  dplyr::arrange(table_code) |>
+    dplyr::group_by(table_code, dimensions, dimension_levels_code, dimension_levels_text) |>
+    dplyr::summarise(.groups = "drop") |>
+    dplyr::rowwise() |>
+    dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
+                  tab_dim_id  = UMARaccessR::get_dim_id_from_table_id(table_id, dimensions, con)) |>
+    dplyr::rename(level_value = dimension_levels_code,
+                  level_text = dimension_levels_text) |>
+    dplyr::select(tab_dim_id, level_value, level_text)
 }
 

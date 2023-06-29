@@ -90,3 +90,23 @@ insert_new_table_dimensions <- function(df, con, schema = "platform") {
                                 as.list(prepare_table_dimensions_table(df, con)),
                                 schema)
 }
+
+#' Insert new dimension_levels table
+#'
+#' Used to insert the new dimension levels into the database. The input
+#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
+#' the table_codes and table_names are aligned. And all the checks of the parser
+#' of course.
+#'
+#' @param df dataframe table_code and dimensions, dimension_level_text and
+#' dimension_level_code columns.
+#' @param con connection to the database.
+#' @param schema db schema, defaults to platfrom
+#' @return nothing
+#' @export
+insert_new_dimension_levels <- function(df, con, schema = "platform") {
+  SURSfetchR::sql_function_call(con,
+                                "insert_new_dimension_levels",
+                                as.list(prepare_dimension_levels_table(df, con)),
+                                schema)
+}

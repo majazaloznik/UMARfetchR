@@ -4,7 +4,7 @@ dittodb::with_mock_db({
                         host = "localhost",
                         port = 5432,
                         user = "mzaloznik",
-                        password = "kermitit",
+                        password = Sys.getenv(",PG_local_MAJA_PSW"),
                         client_encoding = "utf8")
   dbExecute(con, "set search_path to test_platform")
 
@@ -21,6 +21,9 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
     x <- insert_new_table_dimensions(df, con, "test_platform")
     expect_equal(dim(x), c(6,1))
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
+    x <- insert_new_dimension_levels(df, con, "test_platform")
+    expect_equal(dim(x), c(10,1))
   })
 })
 
