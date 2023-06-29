@@ -53,3 +53,21 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
                                 as.list(prepare_category_relationship_table(cat_name, con)),
                                 schema)
 }
+
+#' Insert new table
+#'
+#' Used to insert the new tables into the database. The input
+#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
+#' the table_codes and table_names are aligned.
+#'
+#' @param df dataframe table_code and table_name columns.
+#' @param con connection to the database.
+#' @param schema db schema, defaults to platfrom
+#' @return nothing
+#' @export
+insert_new_table <- function(df, con, schema = "platform") {
+  SURSfetchR::sql_function_call(con,
+                                "insert_new_table",
+                                as.list(prepare_table_table(df, con)),
+                                schema)
+}

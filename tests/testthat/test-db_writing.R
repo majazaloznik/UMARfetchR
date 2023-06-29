@@ -15,6 +15,9 @@ dittodb::with_mock_db({
     expect_equal(dim(x), c(1,1))
     x <- insert_new_category_relationship("Maja Zalo\u017enik", con, "test_platform")
     expect_equal(dim(x), c(1,1))
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
+    x <- insert_new_table(df, con, "test_platform")
+    expect_equal(dim(x), c(2,1))
   })
 })
 

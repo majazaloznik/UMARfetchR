@@ -81,23 +81,27 @@ prepare_category_relationship_table <- function(cat_name, con) {
 #'
 #' Helper function that manually prepares the table table.
 #' Returns table ready to insert into the `table` table with the db_writing family
-#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}
+#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}. The input
+#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
+#' the table_codes and table_names are aligned.
 #'
+#' @param df dataframe with table_code and table_name columns
 #' @param con connection to the database
-#' @param meta dataframe with code, name, url and note columns
 #'
 #' @return a dataframe with the `code`, `name`, `source_id`, `url`, and `notes` columns
-#' for this table.
+#' for the tables.
 #' @export
-# prepare_table_table <- function(meta,
-#                                 con) {
-#   source_id <- UMARaccessR::get_source_code_from_source_name("ZRSZ", con)[1,1]
-#   tb <- data.frame(code = "MZ002",
-#              name = "test table",
-#              source_id = 4,
-#              url = "",
-#              notes = NA)
-# }
+prepare_table_table <- function(df, con) {
+  source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)[1,1]
+  df |>
+    dplyr::arrange(table_code) |>
+    dplyr::group_by(table_code, table_name) |>
+    dplyr::summarise(.groups = "drop") |>
+    dplyr::rename(code = table_code, name = table_name) |>
+    dplyr::mutate(source_id = source_id, url = NA,  notes = NA)
+}
+#
+#
 # SURSfetchR::sql_function_call(con,
 #                               "insert_new_table",
 #                               as.list(tb), "test_platform")
