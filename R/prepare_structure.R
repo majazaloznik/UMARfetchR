@@ -192,3 +192,35 @@ prepare_series_table <- function(df, con){
                   name_long = series_name,
                   code = series_code)
 }
+
+
+#' Prepare table to insert into `series_levels` table
+#'
+#' Helper function that manually prepares the series_levels for each
+#' series and get their ids and values (codes).
+#' Returns table ready to insert into the `series_levels`table with the
+#' db_writing family of functions.
+#'
+#' @param df dataframe with table_code, dimensions and dimension_levels_code and series_code
+#' @param con connection to the database
+#' @return a dataframe with the `series_id`, `tab_dim_id` and `level_value`
+#' columns for this table.
+#' @export
+#' @importFrom stats na.omit
+prepare_series_levels_table <- function(df, con) {
+  dimz <- df |>
+    tidyr::separate_longer_delim(dimensions, delim ="--") |>
+    dplyr::mutate(dimensions = trimws(dimensions))  |>
+    dplyr::pull(dimensions)
+
+  df |>
+    tidyr::separate_longer_delim(dimension_levels_code, delim ="--") |>
+    dplyr::mutate(dimension_levels_code = trimws(dimension_levels_code),) |>
+    dplyr::mutate(dimensions = dimz) |>
+    dplyr::select(table_code, dimensions, dimension_levels_code, series_code) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
+                  tab_dim_id = UMARaccessR::get_tab_dim_id_from_table_id_and_dimension(table_id, dimensions, con),
+                  series_id = UMARaccessR::get_series_id_from_series_code(series_code, con)) |>
+    dplyr::select(series_id, tab_dim_id, level_value = dimension_levels_code)
+}

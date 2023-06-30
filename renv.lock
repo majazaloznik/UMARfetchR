@@ -116,7 +116,7 @@
       "RemoteRepo": "UMARaccessR",
       "RemoteUsername": "majazaloznik",
       "RemoteRef": "HEAD",
-      "RemoteSha": "54a2883c86d254b0f172987132242eddf07fb452",
+      "RemoteSha": "1bd4ec3b8fae585ebf11e10c61d267d2dae5a4e7",
       "Requirements": [
         "DBI",
         "RPostgres",
@@ -127,7 +127,7 @@
         "rlang",
         "stringr"
       ],
-      "Hash": "a45144788594d484fa4278b8739a339b"
+      "Hash": "98eca3645bb6cef91afeb9cb99633614"
     },
     "askpass": {
       "Package": "askpass",

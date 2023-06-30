@@ -2,7 +2,7 @@
 % Please edit documentation in R/db_writing.R
 \name{insert_new_series}
 \alias{insert_new_series}
-\title{Insert new dimension_levels table}
+\title{Insert new series table}
 \usage{
 insert_new_series(df, con, schema = "platform")
 }
@@ -18,8 +18,7 @@ dimension_level_code columns.}
 nothing
 }
 \description{
-Used to insert the new dimension levels into the database. The input
-dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
-the table_codes and table_names are aligned. And all the checks of the parser
+Used to insert the new series levels into the database. The input
+dataframe must have passed through \link[UMARfetchR]{compute_series_codes} . And all the checks of the parser
 of course.
 }

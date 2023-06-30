@@ -27,5 +27,8 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
     out <- prepare_series_table(df, con)
     expect_equal(dim(out), c(4,5))
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
+    out <- prepare_series_levels_table(df, con)
+    expect_equal(out[[1,2]], 130)
   })
 })

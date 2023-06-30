@@ -56,7 +56,7 @@ check_structure_df <- function(df) {
     dplyr::summarize(all_same_dimz = dplyr::n_distinct(dimensions) == 1, .groups = "drop") |>
     dplyr::filter(all_same_dimz == FALSE) -> check
   if (nrow(check) > 0) {
-    stop("Vse serije v eni tabli morajo imeti enake dimenzije interval. To ni res tukaj: ",
+    stop("Vse serije v eni tabli morajo imeti enake dimenzije. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
 
