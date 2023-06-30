@@ -266,6 +266,21 @@ library(dittodb)
 # x <- prepare_series_levels_table(df, con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
+# x <- insert_new_series_levels(df, con, "test_platform")
+# stop_db_capturing()
+
+
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
                       dbname = "platform",
@@ -276,7 +291,8 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
-x <- insert_new_series_levels(df, con, "test_platform")
+test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
+test25 <- compute_table_codes(test25, con)
 stop_db_capturing()
+
 

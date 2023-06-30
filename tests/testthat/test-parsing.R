@@ -40,6 +40,7 @@ test_that("check_structure finds unparsable stuff", {
   expect_error(check_structure_df(test22))
   test23 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet23")
   expect_error(check_structure_df(test23))
+
   expect_message(message_structure(test_path("testdata", "struct_tests2.xlsx")))
   out <- message_structure(test_path("testdata", "struct_tests2.xlsx"))
   expect_equal(out[1,2], 2)
@@ -56,23 +57,23 @@ dittodb::with_mock_db({
                         host = "localhost",
                         port = 5432,
                         user = "mzaloznik",
-                        password = "kermitit",
+                        password = Sys.getenv("PG_local_MAJA_PSW"),
                         client_encoding = "utf8")
   dbExecute(con, "set search_path to test_platform")
 
   test_that("table codes are computed correctly", {
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"), sheet = "M")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ002", "MZ003", "MZ003", "MZ004", "MZ004"))
+    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ002",  "MZ004", "MZ004", "MZ005", "MZ005"))
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"), sheet = "A")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c("MZ003", "MZ003", "MZ003", "MZ003", "MZ003"))
+    expect_equal(out$table_code, c("MZ004", "MZ004", "MZ004", "MZ004", "MZ004"))
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet8")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ001", "MZ003"))
+    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ001", "MZ004"))
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet9")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c(rep("MZ001",3), rep("MZ002",3), rep("MZ003",2)))
+    expect_equal(out$table_code, c(rep("MZ001",3), rep("MZ002",3), rep("MZ004",2)))
   })
   test_that("series codes are computed correctly", {
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet10")
@@ -81,7 +82,15 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet11")
     out <-compute_series_codes(df)
     expect_equal(out$series_code[8], "UMAR--MZ003--D3--A")
+    test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
+    test25 <- compute_table_codes(test25, con)
+    out <-compute_series_codes(test25)
+    out$series_code[4] == "UMAR-EUROSTAT--MZ005--12--M"
   })
+
+
+
+
 })
 
 

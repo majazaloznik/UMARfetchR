@@ -241,12 +241,17 @@ compute_series_codes <- function(df) {
   }
   df |>
     dplyr::mutate(series_code = ifelse(is.na(series_code),
-                                       paste("UMAR", table_code,
-                                             toupper(dimension_levels_code),
-                                             interval,
-                                             sep = "--"), series_code))
-
-
+                                       ifelse(toupper(source) == "UMAR",
+                                              paste("UMAR", table_code,
+                                                    toupper(dimension_levels_code),
+                                                    interval,
+                                                    sep = "--"),
+                                              paste(paste("UMAR", toupper(source), sep = "-"),
+                                                    table_code,
+                                                    toupper(dimension_levels_code),
+                                                    interval,
+                                                    sep = "--")),
+                                       series_code))
 
 }
 
