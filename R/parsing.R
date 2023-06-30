@@ -13,7 +13,7 @@ check_structure_df <- function(df) {
 
   # Check the column names
   col_names <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
-                 "dimension_levels_code", "unit")
+                 "dimension_levels_code", "unit", "interval")
   if (!all(col_names %in% names(df))) {
     stop("Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
          paste(col_names, collapse = ", "))
@@ -117,8 +117,26 @@ check_structure_df <- function(df) {
     stop("Besedila in kode dimension level-ov niso ena:ena v naslednjih tabelah: ",
          paste(check$table_name, collapse = ", "))
   }
+
+  # check series names are different in table
+  df |>
+    dplyr::arrange(table_name) |>
+    dplyr::group_by(table_name) |>
+    dplyr::mutate(count = dplyr::n()) |>
+    dplyr::summarise(all_na = all(is.na(series_name)),
+                     check_unique = length(unique(series_name)),
+                     group_n = unique(count)) |>
+    dplyr::mutate(check = ifelse(all_na, TRUE, check_unique == group_n)) |>
+    dplyr::filter(!check) -> check
+
+  if (nrow(check) > 0) {
+    stop("V tabeli ne sme biti enako poimenovanih serij (series_name). Glej tabele: ",
+         paste(check$table_name, collapse = ", "))
+  }
+
+
   #check incomplete rows
-  rows_with_na <- which(!complete.cases(df[,1:7]))
+  rows_with_na <- which(!complete.cases(df[,1:8]))
 
   if (length(rows_with_na) > 0) {
     stop("V tabeli ima\u0161 nepopolne vrstice. Poglej naslednje vrstice: ",
@@ -230,4 +248,25 @@ compute_series_codes <- function(df) {
 
 
 
+}
+
+#' Compute the series codes for the new series
+#'
+#' This isn't really a compute funciton, because it just copies the values, but
+#' kinda fits with the other funcitons to name it this way. Anyway, in case there
+#' are no series name values, this funciton copies the ones from the
+#' dimension_levels_text field.
+#'
+#' @param df a dataframe with dimension_levels_text
+#'
+#' @return df with a complete series_code column
+#' @export
+#'
+compute_series_names <- function(df) {
+  if (!"series_name" %in% names(df)) {
+    df$series_name <- NA
+  }
+  df |>
+    dplyr::mutate(series_name = ifelse(is.na(series_name),
+                                       dimension_levels_text, series_name))
 }
