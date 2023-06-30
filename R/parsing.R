@@ -18,7 +18,13 @@ check_structure_df <- function(df) {
     stop("Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
          paste(col_names, collapse = ", "))
   }
+  #check incomplete rows
+  rows_with_na <- which(!complete.cases(df[,1:8]))
 
+  if (length(rows_with_na) > 0) {
+    stop("V tabeli ima\u0161 nepopolne vrstice. Poglej naslednje vrstice: ",
+         paste(rows_with_na, collapse = ", "))
+  }
   # check single author
   if (length(unique(df$author)) != 1) {
     stop("V tabeli so dovoljene samo serije enega avtorja. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
@@ -135,13 +141,7 @@ check_structure_df <- function(df) {
   }
 
 
-  #check incomplete rows
-  rows_with_na <- which(!complete.cases(df[,1:8]))
 
-  if (length(rows_with_na) > 0) {
-    stop("V tabeli ima\u0161 nepopolne vrstice. Poglej naslednje vrstice: ",
-         paste(rows_with_na, collapse = ", "))
-  }
 
  TRUE
 }
@@ -263,9 +263,6 @@ compute_series_codes <- function(df) {
 #' @export
 #'
 compute_series_names <- function(df) {
-  if (!"series_name" %in% names(df)) {
-    df$series_name <- NA
-  }
   df |>
     dplyr::mutate(series_name = ifelse(is.na(series_name),
                                        dimension_levels_text, series_name))
