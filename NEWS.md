@@ -1,3 +1,10 @@
+# UMARfetchR 0.4.0
+
+* Added prep and import functions for all the structural tables left: table, table_dimensions, dimension_levels, series and series_levels
+* Added `compute_series_codes` function to fill that column.
+* Added a bunch more checks.
+* Allowed for external source being syphoned through the UMAR package. 
+
 # UMARfetchR 0.3.0
 
 * Rewrote structure checks to consilidate all worksheet into one, only `check_structure_df` is left.
