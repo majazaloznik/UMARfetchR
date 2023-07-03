@@ -7,7 +7,7 @@
 message_structure(df)
 }
 \arguments{
-\item{filename}{path to excel file}
+\item{df}{dataframe from structure template}
 }
 \value{
 outputs log message

@@ -10,6 +10,8 @@ parse_structure(df, con)
 \item{df}{dataframe with the structure data, which means at a minumum the columns
 source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
 unit, and interval.}
+
+\item{con}{connection to the database.}
 }
 \value{
 data frame with original columns and added table and series code fields.
