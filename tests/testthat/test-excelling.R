@@ -1,6 +1,6 @@
 test_that("create_excel_file produces an Excel file with the correct structure", {
 
-  filename <- paste0("struct_table_", "name", ".xlsx")
+  filename <- paste0("umar_serije_metadata_", "name", ".xlsx")
   create_structure_template_excel()
 
   ws <- openxlsx::read.xlsx(filename, sheet = "timeseries")

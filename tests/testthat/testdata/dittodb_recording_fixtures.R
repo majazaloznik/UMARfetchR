@@ -318,6 +318,6 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 DBI::dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
-x <- prepare_category_table_table(test25, con)
+df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
+x <- insert_new_category_table(df, con, "test_platform")
 stop_db_capturing()

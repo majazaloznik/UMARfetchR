@@ -16,6 +16,7 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
     x <- prepare_category_table_table(df, con)
     expect_equal(dim(x), c(2,3))
+    expect_equal(x[[2,3]], 46)
     x <- prepare_category_relationship_table("Maja Zalo\u017enik", con)
     expect_equal(dim(x), c(1,3))
     out <- prepare_table_table(df, con)

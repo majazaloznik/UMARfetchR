@@ -48,6 +48,40 @@ prepare_category_table <- function(cat_name, con) {
              source_id = source_id)
 }
 
+#' Prepare table to insert into `category_table` table
+#'
+#' Helper function that manually prepares the category_table table.
+#' Returns table ready to insert into the `category_table` table with the db_writing family
+#' of functions from UMARfetchR using \link[SURSfetchR]{sql_function_call}
+#' A single table can have multiple parents - meaning
+#' it is member of several categories (usually no more than two tho). .
+#'
+#' @param df dataframe with author and table code
+#' @param con connection to the database
+#'
+#' @return a dataframe with the `category_id` `table_id` and `source_id` columns for
+#' each table-category relationship.
+#' @export
+#' @importFrom stats na.omit
+prepare_category_table_table <- function(df, con) {
+  source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)[1,1]
+  author <- unique(df$author)
+  id <- dplyr::tbl(con, "category") |>
+    dplyr::filter(name == author) |>
+    dplyr::pull(id)
+
+  df |>
+    dplyr::rename(code = table_code) |>
+    dplyr::mutate(source_id = source_id,
+                  category_id = 2) |>
+    dplyr::group_by(code) |>
+    dplyr::select(code, category_id, source_id) |>
+    dplyr::distinct() |>
+    dplyr::rowwise() |>
+    dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(code, con)) |>
+    dplyr::ungroup() |>
+    dplyr::select(-code)
+}
 
 #' Prepare table to insert into `category_relationship` table
 #'

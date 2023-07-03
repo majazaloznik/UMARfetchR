@@ -61,6 +61,25 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
   x
 }
 
+#' Insert new category table
+#'
+#' Used to insert the new UMAR category_table into the database.
+#'
+#' @param df dataframe with author,and  table code columns
+#' @param con connection to the database.
+#' @param schema db schema, defaults to platfrom
+#' @return nothing
+#' @export
+insert_new_category_table <- function(df, con, schema = "platform") {
+  x <- SURSfetchR::sql_function_call(con,
+                                     "insert_new_category_table",
+                                     as.list(prepare_category_table_table(df, con)),
+                                     schema)
+  print(paste(sum(x), "new rows inserted into the category_table table"))
+  sum(x)
+}
+
+
 #' Insert new table
 #'
 #' Used to insert the new tables into the database. The input
