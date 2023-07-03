@@ -1,0 +1,41 @@
+---
+title: "Navodila za avtorje"
+output: 
+  bookdown::html_document2:
+      base_format: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Navodila za avtorje}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Ta dokument opisuje navodila za pripravo podatkov in metapodatkov za časovne serije, ki jih hočeš uvoziti v našo bazo. 
+
+
+## Pregled
+
+Namen te funkcionalnosti, je, da lahko v bazo vnašaš :
+
+* časovne serije, ki jih pripraviš sam, npr. desezonirane podatke.
+* časovne serije iz drugih virov za katere še nimamo urejenega avtomatskega zajema - to je **začasna** rešitev za podatke, ki jih nujno rabiš. 
+
+### Postopek
+
+Vsak avtor bo dobil mapo na mreži, kamor bo odložil dva (Excel) fajla:
+
+* **strukturni fajl** bo opisoval metapodatke za tvoje časovne serije: za vsako serijo ena vrstica, natančna navodila so v poglavju \@ref(meta).
+* **podatkovni fajl** bo vseboval podatke za tvoje časovje serije: za vsako serijo en stolpec, natančna navodila so v poglavju \@ref(meta). 
+
+Postopek bo zaenkrat izgledal tako: 
+1. Oba fajla boš odložil v omenjeno mapo.
+2. Vsake pol ure se bo izvedla skripta, ki bo preverila ali so kakšni novi oz. posodobljeni fajli v teh mapah in jih uvozila. [^ Lahko tudi pokličeš Majo Z. in bo sprožila skripto takoj.]. 
+3. Na mail boš dobil log z outputom te skripte - število vnesenih vrstic oz. javljene napake, če kaj ni bilo vredu pri pripravljenih podatkih. 
+4. Ob vsaki posodobitvi podatkov se bo tudi poročilo Indikatorji posodobilo, tako da boš lahko svoje podatke - če so v kakšnem od tistih grafov - videl tako. 
+
+
+## Metapodatki {#meta}
+
+
+## Podatki
+
+

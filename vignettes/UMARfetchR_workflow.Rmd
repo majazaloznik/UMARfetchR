@@ -1,0 +1,53 @@
+---
+title: "UMARfetchR workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{UMARfetchR workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This document gives a high level overview of the `UMARfetchR` package and its functionalities and how it fits into the UMAR data workflow.
+
+This is one of a family of data fetching packages, which include `SURSfetchR`, `MFfetchR` and others, providing specialised functions to download, extract and clean up data from these sources and prepare it into a suitable format for ingestion into the UMAR data platform. The latter part of the workflow is handled by the `UMARaccessR` package.
+
+`UMARfetchR` is special in that it is intended to be applied to data prepared by our colleagues at UMAR, while the other fetching packages are all used to automatically ETL data from specific sources.
+
+# Data 
+
+Each data series must have:
+
+* metadata or structural data, which the author prepares in a specified format and which gets imported into the database once. The format is one row per series and more details are given in section \@ref(meta). Each author has one structural file and additional series are all added to the same file.
+* the timeseries data, which is formatted columnwise and more details are given in section \@ref(meta). This file is updated with new rows when more data becomes available and ingested into the database. 
+
+
+# Workflow
+
+Individual authors will be assigned a folder on the network drive into which they will deposit two files: a metadata file and a data file. Updating the data or adding new series all happens by updating one or both of these files. 
+
+A **fetching** script will be run regularly via Task Scheduler (for now anyway), to pick up any changes to the files and update the database. 
+
+## Once per database
+
+The `insert_new_source()` function is run only once as it inserts the source and the highest level category hierarchy. 
+
+## Once per author
+
+Each author is assigned a folder, which is added to the Task Scheduler action. They are given a template file created by `create_structure_template_excel()` to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
+
+Each author also represents a `category` in the database. `insert_new_category` and `insert_new_category_relationship` are therefore run with the author name as the category, although eventually other categories can be added, but there is no expectation right now that this functinality will be needed. 
+
+Think this through: how about adding another table with the author, initials (in case intials get duplicated, which we cannot have), folder and email. 
+
+
+## Once per series 
+
+For each new series, the metadata Excel file will have 8 or 9 columns filled by the author. The `parse_structure()` function checks the data is reasonable and computes columns (9), 10 and 11. 
+
+The output of parse_structure is a dataframe with 11 columns, which is the input for all the `prep_and_import_structure()`, which writes all the series metadata to the database and then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
+
+## Once per data update
+
+Each time an author wants to update their data, they update the data Excel file by adding the new rows for the new time periods. `parse_data()` checks the consistency of the data and `prep_and_import_data()` then imports it into the database. 
+
+# Specifications {#specs}
