@@ -4,7 +4,9 @@
 #' in the proper format to be parsed by the parser functions and gives informative
 #' errors if not.
 #'
-#' @param df dataframe from one of the structure worksheets
+#' @param df dataframe with the structure data, which means at a minumum the columns
+#' source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
+#' unit, and interval.
 #'
 #' @return TRUE if passes all checks
 #' @export
@@ -152,34 +154,26 @@ check_structure_df <- function(df) {
 #' Prepares a log message describing how many new series will be imported
 #' from each worksheet and how many are already there and will be ignored.
 #'
-#' @param filename path to excel file
+#' @param df dataframe from structure template
 #'
 #' @return outputs log message
 #' @export
 #'
-message_structure <- function(filename) {
-  wb <- openxlsx::loadWorkbook(filename)
-  sheet_names <- openxlsx::getSheetNames(filename)
-  out <- data.frame(sheet = sheet_names, new = NA, old = NA)
-  for (sheet in sheet_names){
-    df <- openxlsx::readWorkbook(wb, sheet = sheet)
+message_structure <- function(df) {
     df <- df %>%
       dplyr::mutate(non_na_count = rowSums(!is.na(.)))
 
     # Count the number of rows with 7 and 9 non-NA values
-    new_rows <- sum(df$non_na_count == 9)
+    new_rows <- sum(df$non_na_count %in% c(8,9))
     old_rows <- sum(df$non_na_count == 11)
 
     if (new_rows > 0) {
-      message(paste("Na zavihku", sheet, "je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
+      message(paste("V tabeli je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
     }
     if (old_rows > 0) {
-      message(paste("Na zavihku", sheet, "je \u0161tevilo starih serij, ki bodo ignorirane:", old_rows))
+      message(paste("V tabeli je \u0161tevilo starih serij, ki bodo ignorirane:", old_rows))
     }
-    out[out$sheet == sheet, "new"] <- new_rows
-    out[out$sheet == sheet, "old"] <- old_rows
-  }
-  out
+    c(new_rows, old_rows)
 }
 
 #' Compute the table codes for new series
@@ -211,7 +205,7 @@ compute_table_codes <- function(df, con){
        ORDER BY substring(code FROM '[0-9]+')::int DESC
        LIMIT 1;", auth))
   start <- ifelse(nrow(x) == 0, "000", sub("^[A-Za-z]*", "", x[1,1]))
-  df <- df |>
+  df |>
     dplyr::arrange(table_code, table_name) |>
     dplyr::group_by(table_code,table_name) |>
     dplyr::mutate(gr =   ifelse(is.na(table_code), dplyr::cur_group_id() - existing_codes, 0),
@@ -219,8 +213,9 @@ compute_table_codes <- function(df, con){
                                       paste0(auth, sprintf("%03d",
                                                            as.integer(start) + gr)),
                                       table_code)) |>
-    dplyr::select(-gr)
-  df
+    dplyr::select(-gr) |>
+    dplyr::ungroup()
+
 }
 
 
@@ -271,4 +266,29 @@ compute_series_names <- function(df) {
   df |>
     dplyr::mutate(series_name = ifelse(is.na(series_name),
                                        dimension_levels_text, series_name))
+}
+
+
+#' Umbrella function for parsing metadata structural file
+#'
+#' Umbrella function that does the following: runs all the checks to see if the
+#' input data is correctly prepared and returns meaningful errors if not. Then
+#' announces the number of new series and old series that will be parsed. Then
+#' computes the values for the table codes and the series codes and if necessary
+#' also the series names.
+#'
+#' @param df dataframe with the structure data, which means at a minumum the columns
+#' source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
+#' unit, and interval.
+#' @param con connection to the database.
+#'
+#' @return data frame with original columns and added table and series code fields.
+#' @export
+parse_structure <- function(df, con){
+  check_structure_df(df)
+  message_structure(df)
+  df <- compute_table_codes(df, con)
+  df <- compute_series_codes(df)
+  df <- compute_series_names(df)
+  df
 }

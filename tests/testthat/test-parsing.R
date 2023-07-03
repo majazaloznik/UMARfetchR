@@ -40,13 +40,13 @@ test_that("check_structure finds unparsable stuff", {
   expect_error(check_structure_df(test22))
   test23 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet23")
   expect_error(check_structure_df(test23))
+  df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests2.xlsx"))
+  x <- message_structure(df)
+  expect_equal(x, c(2,2))
+  df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"))
+  x <- message_structure(df)
+  expect_equal(x, c(4,3))
 
-  expect_message(message_structure(test_path("testdata", "struct_tests2.xlsx")))
-  out <- message_structure(test_path("testdata", "struct_tests2.xlsx"))
-  expect_equal(out[1,2], 2)
-  expect_equal(out[1,3], 2)
-  out <- message_structure(test_path("testdata", "struct_tests3.xlsx"))
-  expect_equal(out[3,3], 4)
 })
 
 
@@ -83,6 +83,8 @@ dittodb::with_mock_db({
     out <-compute_series_codes(df)
     expect_equal(out$series_code[8], "UMAR--MZ003--D3--A")
     test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
+    x <- parse_structure(test25, con)
+    expect_equal(x$series_code[4], "UMAR-EUROSTAT--MZ005--12--M")
     test25 <- compute_table_codes(test25, con)
     out <-compute_series_codes(test25)
     out$series_code[4] == "UMAR-EUROSTAT--MZ005--12--M"

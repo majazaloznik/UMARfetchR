@@ -7,7 +7,9 @@
 check_structure_df(df)
 }
 \arguments{
-\item{df}{dataframe from one of the structure worksheets}
+\item{df}{dataframe with the structure data, which means at a minumum the columns
+source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
+unit, and interval.}
 }
 \value{
 TRUE if passes all checks

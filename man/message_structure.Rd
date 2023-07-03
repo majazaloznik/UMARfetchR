@@ -4,7 +4,7 @@
 \alias{message_structure}
 \title{Prepare message describing structure process}
 \usage{
-message_structure(filename)
+message_structure(df)
 }
 \arguments{
 \item{filename}{path to excel file}
