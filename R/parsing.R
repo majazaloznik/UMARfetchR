@@ -191,7 +191,7 @@ message_structure <- function(df) {
 #' @export
 #'
 compute_table_codes <- function(df, con){
-  auth <- toupper(unique(df$author))
+  auth <- toupper(get_initials(unique(df$author)))
   existing_codes <- length(unique(df$table_code)) - 1
   df <- df |>
     dplyr::arrange(table_code, table_name) |>

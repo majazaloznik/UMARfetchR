@@ -73,7 +73,7 @@ prepare_category_table_table <- function(df, con) {
   df |>
     dplyr::rename(code = table_code) |>
     dplyr::mutate(source_id = source_id,
-                  category_id = 2) |>
+                  category_id = author) |>
     dplyr::group_by(code) |>
     dplyr::select(code, category_id, source_id) |>
     dplyr::distinct() |>
