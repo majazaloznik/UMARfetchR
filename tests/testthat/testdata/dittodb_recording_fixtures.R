@@ -6,8 +6,8 @@ library(dittodb)
 #                       dbname = "platform",
 #                       host = "192.168.38.21",
 #                       port = 5432,
-#                       user = "majaz",
-#                       password = Sys.getenv("PG_MZ_PSW"),
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_PG_PSW"),
 #                       client_encoding = "utf8")
 # dbExecute(con, "set search_path to platform")
 # on.exit(dbDisconnect)
@@ -286,8 +286,8 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       dbname = "platform",
                       host = "localhost",
                       port = 5432,
-                      user = "mzaloznik",
-                      password = Sys.getenv("PG_local_MAJA_PSW"),
+                      user = "postgres",
+                      password = Sys.getenv("PG_local_PG_PSW"),
                       client_encoding = "utf8")
 dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)

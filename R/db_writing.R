@@ -9,17 +9,20 @@
 #' @return nothing
 #' @export
 insert_new_source <- function(con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x1 <- SURSfetchR::sql_function_call(con,
                                 "insert_new_source",
                                 as.list(prepare_source_table(con)),
                                 schema)
   source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)
-  SURSfetchR::sql_function_call(con,
+  x2 <- SURSfetchR::sql_function_call(con,
                                 "insert_new_category",
                                 list(id = 0,
                                      name = "UMAR",
                                      source_id = source_id[1,1]),
                                 schema)
+  print(paste(x1, "new rows inserted into the source table"))
+  print(paste(x2, "new rows inserted into the category table"))
+  x2
 }
 
 #' Insert new category
@@ -32,10 +35,12 @@ insert_new_source <- function(con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_category <- function(cat_name, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_category",
                                 as.list(prepare_category_table(cat_name, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the category table"))
+x
 }
 
 #' Insert new category relationship
@@ -48,10 +53,12 @@ insert_new_category <- function(cat_name, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_category_relationship <- function(cat_name, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_category_relationship",
                                 as.list(prepare_category_relationship_table(cat_name, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the category_relationship table"))
+  x
 }
 
 #' Insert new table
@@ -66,10 +73,12 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
 #' @return nothing
 #' @export
 insert_new_table <- function(df, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_table",
                                 as.list(prepare_table_table(df, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the table table"))
+  x
 }
 
 #' Insert new table_dimensions table
@@ -85,10 +94,12 @@ insert_new_table <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_table_dimensions <- function(df, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_table_dimensions",
                                 as.list(prepare_table_dimensions_table(df, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the table_dimenisons table"))
+  x
 }
 
 #' Insert new dimension_levels table
@@ -105,10 +116,12 @@ insert_new_table_dimensions <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_dimension_levels <- function(df, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_dimension_levels",
                                 as.list(prepare_dimension_levels_table(df, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the dimension table"))
+  x
 }
 
 #' Insert new series table
@@ -124,10 +137,12 @@ insert_new_dimension_levels <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_series <- function(df, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_series",
                                 as.list(prepare_series_table(df, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the series table"))
+  x
 }
 
 
@@ -144,8 +159,10 @@ insert_new_series <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_series_levels <- function(df, con, schema = "platform") {
-  SURSfetchR::sql_function_call(con,
+  x <- SURSfetchR::sql_function_call(con,
                                 "insert_new_series_levels",
                                 as.list(prepare_series_levels_table(df, con)),
                                 schema)
+  print(paste(x, "new rows inserted into the series_level table"))
+  x
 }

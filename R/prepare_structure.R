@@ -163,7 +163,7 @@ prepare_dimension_levels_table <- function(df, con) {
     dplyr::summarise(.groups = "drop") |>
     dplyr::rowwise() |>
     dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
-                  tab_dim_id  = UMARaccessR::get_dim_id_from_table_id(table_id, dimensions, con)) |>
+                  tab_dim_id  = UMARaccessR::get_tab_dim_id_from_table_id_and_dimension(table_id, dimensions, con)) |>
     dplyr::rename(level_value = dimension_levels_code,
                   level_text = dimension_levels_text) |>
     dplyr::select(tab_dim_id, level_value, level_text)

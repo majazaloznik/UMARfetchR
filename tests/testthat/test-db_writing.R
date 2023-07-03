@@ -4,9 +4,9 @@ dittodb::with_mock_db({
                         host = "localhost",
                         port = 5432,
                         user = "mzaloznik",
-                        password = Sys.getenv(",PG_local_MAJA_PSW"),
+                        password = Sys.getenv("PG_local_MAJA_PSW"),
                         client_encoding = "utf8")
-  dbExecute(con, "set search_path to test_platform")
+  DBI::dbExecute(con, "set search_path to test_platform")
 
   test_that("prepare functions work", {
     x <- insert_new_source(con)
