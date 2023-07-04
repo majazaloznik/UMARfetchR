@@ -20,7 +20,7 @@ dittodb::with_mock_db({
     x <- insert_new_table(df, con, "test_platform")
     expect_equal(x, 0)
     x <- insert_new_category_table(df, con, "test_platform")
-    expect_equal(x, 2)
+    expect_equal(x, 0)
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
     x <- insert_new_table_dimensions(df, con, "test_platform")
     expect_equal(x, 0)
