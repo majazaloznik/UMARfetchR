@@ -64,16 +64,21 @@ dittodb::with_mock_db({
   test_that("table codes are computed correctly", {
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"), sheet = "M")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ002",  "MZ004", "MZ004", "MZ005", "MZ005"))
+    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ002",  "MZ006", "MZ006", "MZ007", "MZ007"))
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"), sheet = "A")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c("MZ004", "MZ004", "MZ004", "MZ004", "MZ004"))
+    expect_equal(out$table_code, c("MZ006", "MZ006", "MZ006", "MZ006", "MZ006"))
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet8")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ001", "MZ004"))
+    expect_equal(out$table_code, c("MZ001", "MZ001", "MZ001", "MZ006"))
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet9")
     out <-compute_table_codes(df, con)
-    expect_equal(out$table_code, c(rep("MZ001",3), rep("MZ002",3), rep("MZ004",2)))
+    expect_equal(out$table_code, c(rep("MZ001",3), rep("MZ002",3), rep("MZ003",2)))
+    df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet26")
+    out <- compute_table_codes(df, con)
+    expect_equal(out$table_code, c(rep("MZ004",2), rep("MZ005",2)))
+
+
   })
   test_that("series codes are computed correctly", {
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet10")

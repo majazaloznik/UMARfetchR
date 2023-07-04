@@ -1,0 +1,49 @@
+#' Umbrella function for parsing metadata structural file
+#'
+#' Umbrella function that does the following: runs all the checks to see if the
+#' input data is correctly prepared and returns meaningful errors if not. Then
+#' announces the number of new series and old series that will be parsed. Then
+#' computes the values for the table codes and the series codes and if necessary
+#' also the series names.
+#'
+#' @param df dataframe with the structure data, which means at a minumum the columns
+#' source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
+#' unit, and interval.
+#' @param con connection to the database.
+#'
+#' @return data frame with original columns and added table and series code fields.
+#' @export
+parse_structure <- function(df, con){
+  check_structure_df(df)
+  message_structure(df)
+  df <- compute_table_codes(df, con)
+  df <- compute_series_codes(df)
+  df <- compute_series_names(df)
+  df
+}
+
+
+#' Umbrella function to prepare and import structure metadata
+#'
+#' Umbrella funciton that takes the structure metadata dataframe an author
+#' prepares using the template created with \link[UMARfetchR]{create_structure_template_excel}
+#' and the connection and schema and prepares and imports the following tables into
+#' the database: `table`, `category_table`, `table_dimensions`, `dimension_levels`,
+#' `series` and `series_levels`. Logs number of rows inserted into each table.
+#'
+#' @param df dataframe with the structure data, which means at a minumum the columns
+#' source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
+#' unit, and interval.
+#' @param con connection to the database.
+#' @param schema schema name, defaults to "platform"
+#'
+#' @return vector of inserted rows
+#' @export
+prep_and_import_structure <- function(df, con, schema = "platform") {
+  x <- insert_new_table(df, con, schema)
+  x <- c(x, insert_new_category_table(df, con, schema))
+  x <- c(x, insert_new_table_dimensions(df, con, schema))
+  x <- c(x, insert_new_dimension_levels(df, con, schema))
+  x <- c(x, insert_new_series(df, con, schema))
+  c(x, insert_new_series_levels(df, con, schema))
+}

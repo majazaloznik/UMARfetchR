@@ -39,8 +39,8 @@ insert_new_category <- function(cat_name, con, schema = "platform") {
                                 "insert_new_category",
                                 as.list(prepare_category_table(cat_name, con)),
                                 schema)
-  print(paste(x, "new rows inserted into the category table"))
-x
+  print(paste(sum(x), "new rows inserted into the category table"))
+  sum(x)
 }
 
 #' Insert new category relationship
@@ -57,9 +57,30 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
                                 "insert_new_category_relationship",
                                 as.list(prepare_category_relationship_table(cat_name, con)),
                                 schema)
-  print(paste(x, "new rows inserted into the category_relationship table"))
-  x
+  print(paste(sum(x), "new rows inserted into the category_relationship table"))
+  sum(x)
 }
+
+#' Insert new table
+#'
+#' Used to insert the new tables into the database. The input
+#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
+#' the table_codes and table_names are aligned.
+#'
+#' @param df dataframe table_code and table_name columns.
+#' @param con connection to the database.
+#' @param schema db schema, defaults to platfrom
+#' @return nothing
+#' @export
+insert_new_table <- function(df, con, schema = "platform") {
+  x <- SURSfetchR::sql_function_call(con,
+                                     "insert_new_table",
+                                     as.list(prepare_table_table(df, con)),
+                                     schema)
+  print(paste(sum(x), "new rows inserted into the table table"))
+  sum(x)
+}
+
 
 #' Insert new category table
 #'
@@ -80,25 +101,6 @@ insert_new_category_table <- function(df, con, schema = "platform") {
 }
 
 
-#' Insert new table
-#'
-#' Used to insert the new tables into the database. The input
-#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
-#' the table_codes and table_names are aligned.
-#'
-#' @param df dataframe table_code and table_name columns.
-#' @param con connection to the database.
-#' @param schema db schema, defaults to platfrom
-#' @return nothing
-#' @export
-insert_new_table <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
-                                "insert_new_table",
-                                as.list(prepare_table_table(df, con)),
-                                schema)
-  print(paste(x, "new rows inserted into the table table"))
-  x
-}
 
 #' Insert new table_dimensions table
 #'
@@ -117,8 +119,8 @@ insert_new_table_dimensions <- function(df, con, schema = "platform") {
                                 "insert_new_table_dimensions",
                                 as.list(prepare_table_dimensions_table(df, con)),
                                 schema)
-  print(paste(x, "new rows inserted into the table_dimenisons table"))
-  x
+  print(paste(sum(x), "new rows inserted into the table_dimenisons table"))
+  sum(x)
 }
 
 #' Insert new dimension_levels table
@@ -139,8 +141,8 @@ insert_new_dimension_levels <- function(df, con, schema = "platform") {
                                 "insert_new_dimension_levels",
                                 as.list(prepare_dimension_levels_table(df, con)),
                                 schema)
-  print(paste(x, "new rows inserted into the dimension table"))
-  x
+  print(paste(sum(x), "new rows inserted into the dimension table"))
+  sum(x)
 }
 
 #' Insert new series table
@@ -160,8 +162,8 @@ insert_new_series <- function(df, con, schema = "platform") {
                                 "insert_new_series",
                                 as.list(prepare_series_table(df, con)),
                                 schema)
-  print(paste(x, "new rows inserted into the series table"))
-  x
+  print(paste(sum(x), "new rows inserted into the series table"))
+  sum(x)
 }
 
 
@@ -182,6 +184,6 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
                                 "insert_new_series_levels",
                                 as.list(prepare_series_levels_table(df, con)),
                                 schema)
-  print(paste(x, "new rows inserted into the series_level table"))
-  x
+  print(paste(sum(x), "new rows inserted into the series_level table"))
+  sum(x)
 }

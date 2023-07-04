@@ -61,7 +61,7 @@ library(dittodb)
 #                       host = "localhost",
 #                       port = 5432,
 #                       user = "mzaloznik",
-#                       password = Sys.getenv("PG_local_MAJA_PSW")
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
 #                       client_encoding = "utf8")
 # dbExecute(con, "set search_path to test_platform")
 # on.exit(dbDisconnect)
@@ -164,7 +164,7 @@ library(dittodb)
 # df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet17")
 # out <- prepare_table_dimensions_table(df, con)
 # stop_db_capturing()
-
+#
 # start_db_capturing()
 # con <- DBI::dbConnect(RPostgres::Postgres(),
 #                       dbname = "platform",
@@ -308,6 +308,63 @@ library(dittodb)
 # x <- parse_structure(test25, con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
+# x <- insert_new_category_table(df, con, "test_platform")
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
+# x <- parse_structure(test25, con)
+# prep_and_import_structure(x, con, "test_platform")
+# stop_db_capturing()
+
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# get_table_id_with_same_name("MZ", "dfg", con)
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet9")
+# out <-compute_table_codes(df, con)
+# stop_db_capturing()
+
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
                       dbname = "platform",
@@ -318,6 +375,9 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 DBI::dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
-x <- insert_new_category_table(df, con, "test_platform")
+df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet26")
+x <- compute_table_codes(df, con)
 stop_db_capturing()
+
+
+

@@ -17,7 +17,8 @@ dataframe with a complete table_code column
 \description{
 Computes the new table codes for the tables of the series to be imported.
 This uses the author field to create the code and checks which ones are
-already in the database and increments from there.
+already in the database and increments from there. Also first checks if a
+table with the same name doesn't already exist for this table name.
 }
 \details{
 If the table already exists, need to cover this eventuality

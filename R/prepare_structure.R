@@ -48,6 +48,32 @@ prepare_category_table <- function(cat_name, con) {
              source_id = source_id)
 }
 
+#' Prepare table to insert into `table` table
+#'
+#' Helper function that manually prepares the table table.
+#' Returns table ready to insert into the `table` table with the db_writing family
+#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}. The input
+#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
+#' the table_codes and table_names are aligned.
+#'
+#' @param df dataframe with table_code and table_name columns
+#' @param con connection to the database
+#'
+#' @return a dataframe with the `code`, `name`, `source_id`, `url`, and `notes` columns
+#' for the tables.
+#' @export
+prepare_table_table <- function(df, con) {
+  source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)[1,1]
+  df |>
+    dplyr::arrange(table_code) |>
+    dplyr::group_by(table_code, table_name) |>
+    dplyr::summarise(.groups = "drop") |>
+    dplyr::rename(code = table_code, name = table_name) |>
+    dplyr::mutate(source_id = source_id, url = NA,  notes = NA)
+}
+
+
+
 #' Prepare table to insert into `category_table` table
 #'
 #' Helper function that manually prepares the category_table table.
@@ -73,7 +99,7 @@ prepare_category_table_table <- function(df, con) {
   df |>
     dplyr::rename(code = table_code) |>
     dplyr::mutate(source_id = source_id,
-                  category_id = author) |>
+                  category_id = id) |>
     dplyr::group_by(code) |>
     dplyr::select(code, category_id, source_id) |>
     dplyr::distinct() |>
@@ -111,29 +137,6 @@ prepare_category_relationship_table <- function(cat_name, con) {
 }
 
 
-#' Prepare table to insert into `table` table
-#'
-#' Helper function that manually prepares the table table.
-#' Returns table ready to insert into the `table` table with the db_writing family
-#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}. The input
-#' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
-#' the table_codes and table_names are aligned.
-#'
-#' @param df dataframe with table_code and table_name columns
-#' @param con connection to the database
-#'
-#' @return a dataframe with the `code`, `name`, `source_id`, `url`, and `notes` columns
-#' for the tables.
-#' @export
-prepare_table_table <- function(df, con) {
-  source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)[1,1]
-  df |>
-    dplyr::arrange(table_code) |>
-    dplyr::group_by(table_code, table_name) |>
-    dplyr::summarise(.groups = "drop") |>
-    dplyr::rename(code = table_code, name = table_name) |>
-    dplyr::mutate(source_id = source_id, url = NA,  notes = NA)
-}
 
 #' Prepare table to insert into `table_dimensions` table
 #'

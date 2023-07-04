@@ -180,7 +180,8 @@ message_structure <- function(df) {
 #'
 #' Computes the new table codes for the tables of the series to be imported.
 #' This uses the author field to create the code and checks which ones are
-#' already in the database and increments from there.
+#' already in the database and increments from there. Also first checks if a
+#' table with the same name doesn't already exist for this table name.
 #'
 #' If the table already exists, need to cover this eventuality
 #'
@@ -196,9 +197,11 @@ compute_table_codes <- function(df, con){
   df <- df |>
     dplyr::arrange(table_code, table_name) |>
     dplyr::group_by(table_name) |>
-    tidyr::fill(table_code, .direction = "downup")
-
-
+    tidyr::fill(table_code, .direction = "downup") |>
+    dplyr::rowwise() |>
+    dplyr::mutate(table_code = ifelse(is.na(table_code),
+                                      get_table_id_with_same_name(auth, table_name, con),
+                                      table_code))
   x <- DBI::dbGetQuery(con, sprintf("SELECT code
        FROM \"table\"
        WHERE code LIKE '%s%%'
@@ -269,26 +272,3 @@ compute_series_names <- function(df) {
 }
 
 
-#' Umbrella function for parsing metadata structural file
-#'
-#' Umbrella function that does the following: runs all the checks to see if the
-#' input data is correctly prepared and returns meaningful errors if not. Then
-#' announces the number of new series and old series that will be parsed. Then
-#' computes the values for the table codes and the series codes and if necessary
-#' also the series names.
-#'
-#' @param df dataframe with the structure data, which means at a minumum the columns
-#' source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
-#' unit, and interval.
-#' @param con connection to the database.
-#'
-#' @return data frame with original columns and added table and series code fields.
-#' @export
-parse_structure <- function(df, con){
-  check_structure_df(df)
-  message_structure(df)
-  df <- compute_table_codes(df, con)
-  df <- compute_series_codes(df)
-  df <- compute_series_names(df)
-  df
-}

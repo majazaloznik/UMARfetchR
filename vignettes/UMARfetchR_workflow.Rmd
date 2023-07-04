@@ -35,7 +35,7 @@ The `insert_new_source()` function is run only once as it inserts the source and
 
 Each author is assigned a folder, which is added to the Task Scheduler action. They are given a template file created by `create_structure_template_excel()` to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
 
-Each author also represents a `category` in the database. `insert_new_category` and `insert_new_category_relationship` are therefore run with the author name as the category, although eventually other categories can be added, but there is no expectation right now that this functinality will be needed. 
+Each author also represents a `category` in the database. `insert_new_category` and `insert_new_category_relationship` are therefore run with the author name as the category, although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. 
 
 Think this through: how about adding another table with the author, initials (in case intials get duplicated, which we cannot have), folder and email. 
 
