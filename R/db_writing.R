@@ -20,8 +20,8 @@ insert_new_source <- function(con, schema = "platform") {
                                      name = "UMAR",
                                      source_id = source_id[1,1]),
                                 schema)
-  print(paste(x1, "new rows inserted into the source table"))
-  print(paste(x2, "new rows inserted into the category table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo source: ", sum(x1))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo category: ", sum(x2))
   x2
 }
 
@@ -39,7 +39,7 @@ insert_new_category <- function(cat_name, con, schema = "platform") {
                                 "insert_new_category",
                                 as.list(prepare_category_table(cat_name, con)),
                                 schema)
-  print(paste(sum(x), "new rows inserted into the category table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo category: ", sum(x))
   sum(x)
 }
 
@@ -57,8 +57,8 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
                                 "insert_new_category_relationship",
                                 as.list(prepare_category_relationship_table(cat_name, con)),
                                 schema)
-  print(paste(sum(x), "new rows inserted into the category_relationship table"))
-  sum(x)
+  message("\u0160tevilo novih vrstic zapisanih v tabelo category_relationship: ", sum(x))
+    sum(x)
 }
 
 #' Insert new table
@@ -77,7 +77,7 @@ insert_new_table <- function(df, con, schema = "platform") {
                                      "insert_new_table",
                                      as.list(prepare_table_table(df, con)),
                                      schema)
-  print(paste(sum(x), "new rows inserted into the table table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo table: ", sum(x))
   sum(x)
 }
 
@@ -96,7 +96,7 @@ insert_new_category_table <- function(df, con, schema = "platform") {
                                      "insert_new_category_table",
                                      as.list(prepare_category_table_table(df, con)),
                                      schema)
-  print(paste(sum(x), "new rows inserted into the category_table table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo category_table: ", sum(x))
   sum(x)
 }
 
@@ -119,7 +119,7 @@ insert_new_table_dimensions <- function(df, con, schema = "platform") {
                                 "insert_new_table_dimensions",
                                 as.list(prepare_table_dimensions_table(df, con)),
                                 schema)
-  print(paste(sum(x), "new rows inserted into the table_dimenisons table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo table_dimenisons: ", sum(x))
   sum(x)
 }
 
@@ -141,7 +141,8 @@ insert_new_dimension_levels <- function(df, con, schema = "platform") {
                                 "insert_new_dimension_levels",
                                 as.list(prepare_dimension_levels_table(df, con)),
                                 schema)
-  print(paste(sum(x), "new rows inserted into the dimension table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo dimension_levels: ", sum(x))
+
   sum(x)
 }
 
@@ -162,7 +163,7 @@ insert_new_series <- function(df, con, schema = "platform") {
                                 "insert_new_series",
                                 as.list(prepare_series_table(df, con)),
                                 schema)
-  print(paste(sum(x), "new rows inserted into the series table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo series: ", sum(x))
   sum(x)
 }
 
@@ -184,6 +185,6 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
                                 "insert_new_series_levels",
                                 as.list(prepare_series_levels_table(df, con)),
                                 schema)
-  print(paste(sum(x), "new rows inserted into the series_level table"))
+  message("\u0160tevilo novih vrstic zapisanih v tabelo series_level: ", sum(x))
   sum(x)
 }

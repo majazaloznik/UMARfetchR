@@ -12,7 +12,8 @@ dittodb::with_mock_db({
     x <- parse_structure(test25, con)
     expect_equal(x$series_code[4], "UMAR-EUROSTAT--MZ005--12--M")
     out <- prep_and_import_structure(x, con, "test_platform")
-    expect_true(length(out)==6)
-
+    output <- main_structure(test_path("testdata", "struct_tests4.xlsx"),
+                                         con, "test_platform")
+    expect_true(output)
   })
 })

@@ -46,6 +46,8 @@ For each new series, the metadata Excel file will have 8 or 9 columns filled by 
 
 The output of parse_structure is a dataframe with 11 columns, which is the input for all the `prep_and_import_structure()`, which writes all the series metadata to the database and then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
 
+All of this is run from the conveniece function `main_structure().`
+
 ## Once per data update
 
 Each time an author wants to update their data, they update the data Excel file by adding the new rows for the new time periods. `parse_data()` checks the consistency of the data and `prep_and_import_data()` then imports it into the database. 

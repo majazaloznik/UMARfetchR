@@ -45,5 +45,35 @@ prep_and_import_structure <- function(df, con, schema = "platform") {
   x <- c(x, insert_new_table_dimensions(df, con, schema))
   x <- c(x, insert_new_dimension_levels(df, con, schema))
   x <- c(x, insert_new_series(df, con, schema))
-  c(x, insert_new_series_levels(df, con, schema))
+  x <- c(x, insert_new_series_levels(df, con, schema))
+  message("Zapisovanje metapodatkov v bazo je kon\u0161ano.")
+  x
+}
+
+
+#' Main function for processing structure data
+#'
+#' This is the top level funciton to process the structre metadata from a
+#' file an author prepares using the template created with
+#' \link[UMARfetchR]{create_structure_template_excel}. This function:
+#' * reads the structure metadata and checks the data
+#' * computes the columns that are missing
+#' * inserts the data into the database
+#' * updates the original excel file.
+#'
+#' @param filename path to excel file with timeseries structure metadata
+#' @param con connection to database
+#' @param schema schema name
+#'
+#' @return true if the whole thing goes through without a hitch, otherwise 
+#' an error will be thrown. 
+#' @export
+
+main_structure <- function(filename, con, schema) {
+
+  df <- openxlsx::read.xlsx(filename, sheet = "timeseries")
+  df <- parse_structure(df, con)
+  prep_and_import_structure(df, con, schema)
+  update_structure_excel(filename, df)
+  TRUE
 }

@@ -47,4 +47,5 @@ update_structure_excel <- function(filename, df) {
   wb <- openxlsx::loadWorkbook(filename)
   openxlsx::writeData(wb, "timeseries", df)
   openxlsx::saveWorkbook(wb, filename, overwrite = TRUE)
+  message("Tabela ", basename(filename), " je posodobljena.")
 }
