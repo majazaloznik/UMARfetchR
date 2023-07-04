@@ -29,3 +29,22 @@ create_structure_template_excel <- function(author = "name",
 
   openxlsx::saveWorkbook(wb, file = outfile, overwrite = overwrite)
 }
+
+
+
+#' Update structure table in Excel file
+#'
+#' After running \link[UMARfetchR]{parse_structure} the updated dataframe
+#' with table codes and series codes etc. is written
+#' back into the original Excel file with this funciton
+#'
+#' @param filename name and path of excel file
+#' @param df updated dataframe.
+#'
+#' @return nothing,
+#' @export
+update_structure_excel <- function(filename, df) {
+  wb <- openxlsx::loadWorkbook(filename)
+  openxlsx::writeData(wb, "timeseries", df)
+  openxlsx::saveWorkbook(wb, filename, overwrite = TRUE)
+}
