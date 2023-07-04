@@ -33,5 +33,7 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
     out <- prepare_series_levels_table(df, con)
     expect_equal(out[[1,2]], 130)
+    out <- prepare_new_author_table("kh", "kjh", "ljlk", NA)
+    expect_equal(out[1,3], "ljlk")
   })
 })

@@ -7,7 +7,15 @@
 main_structure(filename, con, schema)
 }
 \arguments{
-\item{schema}{}
+\item{filename}{path to excel file with timeseries structure metadata}
+
+\item{con}{connection to database}
+
+\item{schema}{schema name}
+}
+\value{
+true if the whole thing goes through without a hitch, otherwise
+an error will be thrown.
 }
 \description{
 This is the top level funciton to process the structre metadata from a

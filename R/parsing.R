@@ -9,9 +9,11 @@
 #' unit, and interval.
 #'
 #' @return TRUE if passes all checks
+#' @param con connection to the database.
+#'
 #' @export
 #' @importFrom stats complete.cases
-check_structure_df <- function(df) {
+check_structure_df <- function(df, con) {
 
   # Check the column names
   col_names <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
@@ -32,7 +34,11 @@ check_structure_df <- function(df) {
     stop("V tabeli so dovoljene samo serije enega avtorja. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
          paste(unique(df$author), collapse = ", "))
   }
-
+  # check author is in the database
+  if (is.na(UMARaccessR::get_initials_from_author_name(unique(df$author), con))) {
+    stop("Avtor \u0161e ni v bazi. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
+         paste(unique(df$author), collapse = ", "))
+  }
   # Check intervals are all legal
   intervals <- c("M", "Q", "A")
   if (!all(unique(df$interval) %in% intervals)) {
@@ -192,7 +198,7 @@ message_structure <- function(df) {
 #' @export
 #'
 compute_table_codes <- function(df, con){
-  auth <- toupper(get_initials(unique(df$author)))
+  auth <- UMARaccessR::get_initials_from_author_name(unique(df$author), con)
   existing_codes <- length(unique(df$table_code)) - 1
   df <- df |>
     dplyr::arrange(table_code, table_name) |>

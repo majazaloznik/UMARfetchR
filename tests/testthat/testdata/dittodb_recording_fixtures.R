@@ -380,6 +380,32 @@ library(dittodb)
 # stop_db_capturing()
 
 
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# main_structure(test_path("testdata", "struct_tests4.xlsx"), con, "test_platform")
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# insert_new_author("Maja Založnik", "MZ", "maja.zaloznik@gov.si", NA, con, "test_platform")
+# stop_db_capturing()
+
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
                       dbname = "platform",
@@ -390,9 +416,6 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 DBI::dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-main_structure(test_path("testdata", "struct_tests4.xlsx"), con, "test_platform")
+auth <- UMARaccessR::get_initials_from_author_name("Maja Zalo\u017enik", con)
 stop_db_capturing()
-
-
-
 

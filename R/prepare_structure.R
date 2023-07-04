@@ -22,6 +22,23 @@ prepare_source_table <- function(con){
     FALSE}
 }
 
+#' Prepare data to be inserted into umar author table
+#'
+#'
+#' @param name name
+#' @param initials keep it short, also unique!
+#' @param email email
+#' @param folder can be left empty
+#'
+#' @return a df with the four columns above.
+#' @export
+prepare_new_author_table <- function(name, initials, email, folder = NA){
+  data.frame(name = name,
+             initials = initials,
+             email = email,
+             folder = folder)
+}
+
 
 #' Prepare table to insert into `category` table
 #'

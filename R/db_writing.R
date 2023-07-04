@@ -25,6 +25,28 @@ insert_new_source <- function(con, schema = "platform") {
   x2
 }
 
+#' Insert new author
+#'
+#' Used to insert a new author into the database.
+#'
+#' @param name name
+#' @param initials keep it short, also unique!
+#' @param email email
+#' @param folder can be left empty
+#' @param con connection to the database
+#' @param schema schema name
+#' @return number of rows inserted
+#' @export
+insert_new_author <- function(name, initials, email, folder = NA, con, schema = "platform") {
+  x <- SURSfetchR::sql_function_call(con,
+                                     "insert_new_author",
+                                     as.list(prepare_new_author_table(name, initials, email, folder)),
+                                     schema)
+  message("\u0160tevilo novih vrstic zapisanih v tabelo umar_author: ", x[1,1])
+  x[1,1]
+}
+
+
 #' Insert new category
 #'
 #' Used to insert the new UMAR categories into the database.

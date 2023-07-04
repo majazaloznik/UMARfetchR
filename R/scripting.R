@@ -14,7 +14,7 @@
 #' @return data frame with original columns and added table and series code fields.
 #' @export
 parse_structure <- function(df, con){
-  check_structure_df(df)
+  check_structure_df(df, con)
   message_structure(df)
   df <- compute_table_codes(df, con)
   df <- compute_series_codes(df)
@@ -65,8 +65,8 @@ prep_and_import_structure <- function(df, con, schema = "platform") {
 #' @param con connection to database
 #' @param schema schema name
 #'
-#' @return true if the whole thing goes through without a hitch, otherwise 
-#' an error will be thrown. 
+#' @return true if the whole thing goes through without a hitch, otherwise
+#' an error will be thrown.
 #' @export
 
 main_structure <- function(filename, con, schema) {
