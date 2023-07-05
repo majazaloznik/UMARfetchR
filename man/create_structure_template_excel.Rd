@@ -7,6 +7,8 @@
 create_structure_template_excel(path = "", author = "name", overwrite = TRUE)
 }
 \arguments{
+\item{path}{path to file, default empty}
+
 \item{author}{initials of author that becomes part of the filename}
 
 \item{overwrite}{- whether or not to overwrite previous file}

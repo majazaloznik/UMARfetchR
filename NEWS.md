@@ -1,3 +1,11 @@
+# UMARfetchR 0.5.0
+
+* add logging to insert functions
+* add function to write data back to excel
+* add umbrella function `main_structure` for parsing and & inserting data and writing to Excel
+* add insert author setup with umbrella funciton `add_new_author`
+* add vignette with workflow overview
+
 # UMARfetchR 0.4.0
 
 * Added prep and import functions for all the structural tables left: table, table_dimensions, dimension_levels, series and series_levels
