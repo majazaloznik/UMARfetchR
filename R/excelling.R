@@ -2,7 +2,7 @@
 #'
 #' Prepares an empty excel file with the correct columns for a structure file.
 #'
-#' @param author name of author that becomes part of the filename
+#' @param author initials of author that becomes part of the filename
 #' @param overwrite - whether or not to overwrite previous file
 #'
 #' @return nothing - side effect is saving to an excel file.
@@ -10,10 +10,10 @@
 #'
 #' @importFrom stats setNames
 
-create_structure_template_excel <- function(author = "name",
+create_structure_template_excel <- function(path = "", author = "name",
                                    overwrite = TRUE){
 
-  outfile <- paste0("umar_serije_metadata_", author, ".xlsx")
+  outfile <- paste0(path, "umar_serije_metadata_", author, ".xlsx")
   nejmz <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
              "dimension_levels_code", "unit", "interval", "series_name")
 

@@ -1,6 +1,8 @@
 ---
 title: "UMARfetchR workflow"
-output: rmarkdown::html_vignette
+output: 
+  bookdown::html_document2:
+    base_format: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{UMARfetchR workflow}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,7 +20,7 @@ This is one of a family of data fetching packages, which include `SURSfetchR`, `
 Each data series must have:
 
 * metadata or structural data, which the author prepares in a specified format and which gets imported into the database once. The format is one row per series and more details are given in section \@ref(meta). Each author has one structural file and additional series are all added to the same file.
-* the timeseries data, which is formatted columnwise and more details are given in section \@ref(meta). This file is updated with new rows when more data becomes available and ingested into the database. 
+* the timeseries data, which is formatted columnwise and more details are given in section \@ref(data). This file is updated with new rows when more data becomes available and ingested into the database. 
 
 
 # Workflow
@@ -33,11 +35,12 @@ The `insert_new_source()` function is run only once as it inserts the source and
 
 ## Once per author
 
-Each author is assigned a folder, which is added to the Task Scheduler action. They are given a template file created by `create_structure_template_excel()` to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
+For each new author the `new_author()` funciton does the following:
+* adds the author to the database - which also checks for uniqueness of initials, otherwise change them
+* creates a folder for them in the data pick up location
+* runs `create_structure_template_excel()` and creates the template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
+* each author also represents a `category` in the database. So `insert_new_category` and `insert_new_category_relationship` are run with the author name as the category,[^ Although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. ]
 
-Each author also represents a `category` in the database. `insert_new_category` and `insert_new_category_relationship` are therefore run with the author name as the category, although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. 
-
-Think this through: how about adding another table with the author, initials (in case intials get duplicated, which we cannot have), folder and email. 
 
 
 ## Once per series 
@@ -53,3 +56,30 @@ All of this is run from the conveniece function `main_structure().`
 Each time an author wants to update their data, they update the data Excel file by adding the new rows for the new time periods. `parse_data()` checks the consistency of the data and `prep_and_import_data()` then imports it into the database. 
 
 # Specifications {#specs}
+
+
+## Structre metadata specs {#meta}
+
+The `create_structure_template_excel()` creates a template with nine columns, eight of which *must* be filled by the author. An additional two columns are calculated at import. 
+
+* **source**: should probably read "umar" (or UMAR, the code is agnostic). [^ If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source can be something else, but no spaces are allowed an a max of 8 characters]
+
+* **author**: full name of author, must be the same as the one used in the umar_authors table in the database. 
+
+
+* **table_name**: descriptive name grouping a bunch of series that have the same dimensions
+* **dimensions**: name of dimensions - at least one. If there are more, they have to be separated by "--"
+* **dimension_levels_text**: the level text and codes need to match in number, and also between series. So if you have two dimensions, you need ot have a level_text for each and a level_code for each, again separated by "--"
+* **dimension_levels_code**: here is an example: The dimensions might be "geography--gender", and then the dimension levels text could be for one series "Ljubljana--moški" or "Maribor--ženske", and then the codes could be "lj--m", "mb--f". The choice of codes is up to the author, but they should be short!
+* **unit**: must be one of the units in the database. See appendix for list. 
+* **interval**: "M", "Q" or "A" for now
+* **series_name**: descriptive name for series - if this is left empty, the dimension_levels_text will be used instead, which is not ideal, but better than nothing. 
+
+Then there are two additional columns that get computed during the import process:
+
+* **table_code**: is a combination of the author's initials (fron the umar_authors table in the database) and a three digit incremental number. e.g. "MZ003" etc. These are computed automatically based on what is already in the database
+* **series_code**: is computed as a combination of the source, the table name, the dimension level codes and the interval. e.g. "UMAR--MZ012--LJ--M--Q". [^ If the data source is given as something else, then this is indicated in the series_code. E.g. if the source is "eurostat", the code will end up being e.g. "UMAR-EUROSTAT--MZ013--EU--P1--1--A".
+
+## Data specs {#data}
+
+

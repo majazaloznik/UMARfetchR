@@ -4,10 +4,10 @@
 \alias{create_structure_template_excel}
 \title{Prepare excel template for structure file}
 \usage{
-create_structure_template_excel(author = "name", overwrite = TRUE)
+create_structure_template_excel(path = "", author = "name", overwrite = TRUE)
 }
 \arguments{
-\item{author}{name of author that becomes part of the filename}
+\item{author}{initials of author that becomes part of the filename}
 
 \item{overwrite}{- whether or not to overwrite previous file}
 }

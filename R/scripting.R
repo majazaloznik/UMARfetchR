@@ -77,3 +77,40 @@ main_structure <- function(filename, con, schema) {
   update_structure_excel(filename, df)
   TRUE
 }
+
+
+
+#' Main function for adding a new athor
+#'
+#' This funciton inserts the author into the database - checking if the initials are
+#' unique, otherwise you'll need to change them. Then creates the data folder for
+#' that author and places the template excel file in there. And finally adds the
+#' category and cat relationship rows for that author.
+#'
+#' @param name full name
+#' @param initials initials, make them unique if already exist
+#' @param email email
+#' @param folder
+#' @param con
+#' @param schema
+#' @param data_location
+#'
+#' @return
+#' @export
+
+add_new_author <- function(name, initials, email, folder = NA, con, schema = "platform",
+                             data_location = "O:/Avtomatizacija/umar-data"){
+  insert_new_author(name, initials, email, folder = NA, con, schema)
+  dir.create(file.path(data_location, initials), showWarnings = FALSE)
+  path <- file.path(data_location, initials)
+  tryCatch({create_structure_template_excel(path, initials, FALSE)},
+           error=function(cond) {
+             message(cond)}
+  )
+  folder <- getwd()
+  add_author_folder(initials, folder, con, schema)
+  insert_new_category(name, con, schema)
+  insert_new_category_relationship(name, con, schema)
+  message(name, " je dodan(a) med avtorje.")
+  TRUE
+}

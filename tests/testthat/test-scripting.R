@@ -15,5 +15,7 @@ dittodb::with_mock_db({
     output <- main_structure(test_path("testdata", "struct_tests4.xlsx"),
                                          con, "test_platform")
     expect_true(output)
+    temp_dir <- tempdir()
+
   })
 })

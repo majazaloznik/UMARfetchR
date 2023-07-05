@@ -46,6 +46,24 @@ insert_new_author <- function(name, initials, email, folder = NA, con, schema = 
   x[1,1]
 }
 
+#' Add author folder
+#'
+#' Add the folder to an author already in the database.
+#'
+#' @param initials keep it short, also unique!
+#' @param folder can be left empty
+#' @param con connection to the database
+#' @param schema schema name
+#'
+#' @return number of rows inserted
+#' @export
+add_author_folder <- function(initials, folder, con, schema = "platform") {
+  x <- DBI::dbExecute(con, sprintf("update umar_authors
+       set folder = '%s'
+       WHERE initials = '%s';", folder, initials))
+
+  message("Posodobljeno polje folder tabeli umar_author.")
+}
 
 #' Insert new category
 #'
