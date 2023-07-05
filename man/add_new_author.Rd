@@ -8,7 +8,6 @@ add_new_author(
   name,
   initials,
   email,
-  folder = NA,
   con,
   schema = "platform",
   data_location = "O:/Avtomatizacija/umar-data"
@@ -21,7 +20,11 @@ add_new_author(
 
 \item{email}{email}
 
-\item{data_location}{}
+\item{con}{connection to the database}
+
+\item{schema}{schema name}
+
+\item{data_location}{location where data folders live}
 }
 \description{
 This funciton inserts the author into the database - checking if the initials are

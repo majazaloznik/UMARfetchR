@@ -90,15 +90,14 @@ main_structure <- function(filename, con, schema) {
 #' @param name full name
 #' @param initials initials, make them unique if already exist
 #' @param email email
-#' @param folder
-#' @param con
-#' @param schema
-#' @param data_location
+#' @param con connection to the database
+#' @param schema schema name
+#' @param data_location location where data folders live
 #'
 #' @return
 #' @export
 
-add_new_author <- function(name, initials, email, folder = NA, con, schema = "platform",
+add_new_author <- function(name, initials, email, con, schema = "platform",
                              data_location = "O:/Avtomatizacija/umar-data"){
   insert_new_author(name, initials, email, folder = NA, con, schema)
   dir.create(file.path(data_location, initials), showWarnings = FALSE)

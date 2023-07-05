@@ -35,7 +35,7 @@ The `insert_new_source()` function is run only once as it inserts the source and
 
 ## Once per author
 
-For each new author the `new_author()` funciton does the following:
+For each new author the `add_new_author()` function does the following:
 * adds the author to the database - which also checks for uniqueness of initials, otherwise change them
 * creates a folder for them in the data pick up location
 * runs `create_structure_template_excel()` and creates the template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
@@ -45,7 +45,10 @@ For each new author the `new_author()` funciton does the following:
 
 ## Once per series 
 
-For each new series, the metadata Excel file will have 8 or 9 columns filled by the author. The `parse_structure()` function checks the data is reasonable and computes columns (9), 10 and 11. 
+For each new series, the author prepares a row in the metadata Excel file with have 8 or 9 columns. The filename is the input for the  `prep_and_import_structure()`, which does the following:
+
+
+The `parse_structure()` function checks the data is reasonable and computes columns (9), 10 and 11. 
 
 The output of parse_structure is a dataframe with 11 columns, which is the input for all the `prep_and_import_structure()`, which writes all the series metadata to the database and then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
 
