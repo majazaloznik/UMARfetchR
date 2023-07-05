@@ -39,20 +39,17 @@ For each new author the `add_new_author()` function does the following:
 * adds the author to the database - which also checks for uniqueness of initials, otherwise change them
 * creates a folder for them in the data pick up location
 * runs `create_structure_template_excel()` and creates the template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
-* each author also represents a `category` in the database. So `insert_new_category` and `insert_new_category_relationship` are run with the author name as the category,[^ Although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. ]
-
+* each author also represents a `category` in the database. So `insert_new_category` and `insert_new_category_relationship` are run with the author name as the category.^[Although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. ]
 
 
 ## Once per series 
 
-For each new series, the author prepares a row in the metadata Excel file with have 8 or 9 columns. The filename is the input for the  `prep_and_import_structure()`, which does the following:
+For each new series, the author prepares a row in the metadata Excel file with have 8 or 9 columns. The filename is the input for the ` main_structure()` which does the following:
 
-
-The `parse_structure()` function checks the data is reasonable and computes columns (9), 10 and 11. 
-
-The output of parse_structure is a dataframe with 11 columns, which is the input for all the `prep_and_import_structure()`, which writes all the series metadata to the database and then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
-
-All of this is run from the conveniece function `main_structure().`
+* reads the file with the metadata
+* parses it and checks the data is reasonable with `parse_structure()` , which also computes columns (9), 10 and 11.
+* runs `prep_and_import_structure()`, which writes all the series metadata to the database 
+* then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
 
 ## Once per data update
 
@@ -65,7 +62,7 @@ Each time an author wants to update their data, they update the data Excel file 
 
 The `create_structure_template_excel()` creates a template with nine columns, eight of which *must* be filled by the author. An additional two columns are calculated at import. 
 
-* **source**: should probably read "umar" (or UMAR, the code is agnostic). [^ If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source can be something else, but no spaces are allowed an a max of 8 characters]
+* **source**: should probably read "umar" (or UMAR, the code is agnostic). ^[ If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source can be something else, but no spaces are allowed an a max of 8 characters]
 
 * **author**: full name of author, must be the same as the one used in the umar_authors table in the database. 
 
@@ -81,7 +78,7 @@ The `create_structure_template_excel()` creates a template with nine columns, ei
 Then there are two additional columns that get computed during the import process:
 
 * **table_code**: is a combination of the author's initials (fron the umar_authors table in the database) and a three digit incremental number. e.g. "MZ003" etc. These are computed automatically based on what is already in the database
-* **series_code**: is computed as a combination of the source, the table name, the dimension level codes and the interval. e.g. "UMAR--MZ012--LJ--M--Q". [^ If the data source is given as something else, then this is indicated in the series_code. E.g. if the source is "eurostat", the code will end up being e.g. "UMAR-EUROSTAT--MZ013--EU--P1--1--A".
+* **series_code**: is computed as a combination of the source, the table name, the dimension level codes and the interval. e.g. "UMAR--MZ012--LJ--M--Q". ^[ If the data source is given as something else, then this is indicated in the series_code. E.g. if the source is "eurostat", the code will end up being e.g. "UMAR-EUROSTAT--MZ013--EU--P1--1--A".
 
 ## Data specs {#data}
 

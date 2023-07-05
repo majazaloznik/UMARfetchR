@@ -2,6 +2,7 @@
 #'
 #' Prepares an empty excel file with the correct columns for a structure file.
 #'
+#' @param path path to file, default empty
 #' @param author initials of author that becomes part of the filename
 #' @param overwrite - whether or not to overwrite previous file
 #'
