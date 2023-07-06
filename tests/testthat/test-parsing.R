@@ -96,10 +96,37 @@ dittodb::with_mock_db({
     out$series_code[4] == "UMAR-EUROSTAT--MZ005--12--M"
   })
 
+  test_that("data parsing is cool", {
+    counter <- 0
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet1")
+    out <-check_data_df(df, con)
+    expect_true(out)
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet9")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet11")
+    expect_error(check_data_df(df, con))
+    rm(counter)
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet2")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet3")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet4")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet5")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet6")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet7")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet8")
+    expect_error(check_data_df(df, con))
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet10")
+    expect_error(check_data_df(df, con))
 
-
-
+  })
 })
+
+
 
 
 

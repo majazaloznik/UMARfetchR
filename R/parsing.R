@@ -278,3 +278,77 @@ compute_series_names <- function(df) {
 }
 
 
+#' Check data to be parsed
+#'
+#' @param df data with time series data
+#' @param con connection to the database
+#'
+#' @return TRUE if it works
+#' @export
+#'
+check_data_df <- function(df, con){
+  colnames(df) <- trimws(colnames(df))
+  # Check the column names
+  if (!("period" %in% names(df))) {
+    stop("Manjka ti stolpec 'period'!")
+  }
+  if(sum(names(df) == "period") != 1){
+    stop("Samo en period stolpec ima\u0161 lahko na zavihku!")
+  }
+  # check no missing periods
+  if(any(is.na(df$period))){
+    stop("V stolpcu period ne sme biti praznih polj!")
+  }
+
+  # check unique periods
+  if(any(duplicated(df$period))){
+    stop("V stolpcu period se obdobja ne smejo ponavljati")
+  }
+  # check all series are same interval
+  intervals <- substring(colnames(df), nchar(colnames(df)))
+  if(!all(intervals[-1] == intervals[2])){
+       stop("Na zavihku morajo imeti vse serije isti interval.")
+       }
+  # check all series are correct interval
+  interval <- unique(intervals[-1])
+  if (interval == "M" & !all(grepl("^\\d{4}M\\d{2}$", df$period))){
+   stop("Vrednosti obdobij niso v formatu yyyyMmm.")
+  }
+  if (interval == "Q" & !all(grepl("^\\d{4}Q\\d{1}$", df$period))){
+    stop("Vrednosti obdobij niso v formatu yyyyQq.")
+  }
+  if (interval == "A" & !all(grepl("^\\d{4}$", df$period))){
+    stop("Vrednosti obdobij niso v formatu yyyy.")
+  }
+  # check no duplicated series
+  series <- colnames(df)[-1]
+  dups <- series[duplicated(series)]
+  if (length(dups) > 0){
+    stop("Stolpci ne smejo imeti enakih imen: ",
+         paste(dups, collapse = "," ))
+  }
+
+  # check all series are in the database
+
+  temp_table_name <-  if (exists("counter", envir = parent.frame())) {
+    assign("counter", get("counter", envir = parent.frame()) + 1, envir = parent.frame())
+    paste0("temp_table_", get("counter", envir = parent.frame()))
+    } else {
+      "temp_table"
+    }
+
+  DBI::dbWriteTable(con, temp_table_name, data.frame(codes = series), temporary = TRUE, overwrite = TRUE)
+  query <- sprintf("
+  SELECT codes
+  FROM %s
+  WHERE codes NOT IN (
+    SELECT code FROM series)", temp_table_name)
+  chk <- DBI::dbGetQuery(con, query)
+  DBI::dbExecute(con, sprintf("DROP TABLE IF EXISTS %s", temp_table_name))
+  if (nrow(chk) > 0){
+    stop("V bazi \u0161e  ni metapodatkov za naslednje serije: ",
+         paste(chk$code, collapse = "," ))
+
+  }
+  TRUE
+}

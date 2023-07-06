@@ -2,6 +2,7 @@
 
 export(add_author_folder)
 export(add_new_author)
+export(check_data_df)
 export(check_structure_df)
 export(compute_series_codes)
 export(compute_series_names)
