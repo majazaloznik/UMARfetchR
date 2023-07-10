@@ -14,8 +14,8 @@ main_structure(filename, con, schema)
 \item{schema}{schema name}
 }
 \value{
-true if the whole thing goes through without a hitch, otherwise
-an error will be thrown.
+if the whole thing goes through without a hitch, returns a character
+vector of series codes, otherwise an error will be thrown.
 }
 \description{
 This is the top level funciton to process the structre metadata from a

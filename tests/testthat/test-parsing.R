@@ -96,34 +96,49 @@ dittodb::with_mock_db({
     out$series_code[4] == "UMAR-EUROSTAT--MZ005--12--M"
   })
 
-  test_that("data parsing is cool", {
-    counter <- 0
+  test_that("data parsing df is cool", {
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet1")
-    out <-check_data_df(df, con)
-    expect_true(out)
+    out <-check_data_df(df, c("UMAR--MZ002--1--M",	"UMAR--MZ002--12--M"))
+    expect_true(out == "M")
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet9")
-    expect_error(check_data_df(df, con))
-    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet11")
-    expect_error(check_data_df(df, con))
-    rm(counter)
+    expect_error(check_data_df(df)) # duplicated series
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet2")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # missing period column
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet3")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # 2 period columns
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet4")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # same period
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet5")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # different intervals
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet6")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # misformed period m
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet7")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # misformed period q
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet8")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # misformed period a
     df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet10")
-    expect_error(check_data_df(df, con))
+    expect_error(check_data_df(df)) # missing period
+    df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet11")
+    expect_error(check_data_df(df, c("UMAR--MZ002--1--M",	"UMAR--MZ002--12--M"), con)) # wrong series
+  })
+
+    test_that("data parsing wb is cool", {
+
+    filename <- test_path("testdata", "data_tests2.xlsx")
+    out <- check_data_xlsx(filename, c("UMAR--MZ002--1--M", "UMAR--MZ002--12--M",
+                                       "UMAR--MZ002--1--Q",	"UMAR--MZ002--12--Q"))
+    expect_true(out)
+    filename <- test_path("testdata", "data_tests3.xlsx")
+    expect_error(check_data_xlsx(filename)) # wrong interval
+    expect_true(out)
+    filename <- test_path("testdata", "data_tests4.xlsx")
+    expect_error(check_data_xlsx(filename,
+                                 c("UMAR--MZ002--1--M",	"UMAR--MZ002--12--M", "UMAR--MZ007--LKJ--11--A"))) # wrong series
+
+
 
   })
+
 })
 
 

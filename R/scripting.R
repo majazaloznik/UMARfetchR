@@ -65,8 +65,8 @@ prep_and_import_structure <- function(df, con, schema = "platform") {
 #' @param con connection to database
 #' @param schema schema name
 #'
-#' @return true if the whole thing goes through without a hitch, otherwise
-#' an error will be thrown.
+#' @return if the whole thing goes through without a hitch, returns a character
+#' vector of series codes, otherwise an error will be thrown.
 #' @export
 
 main_structure <- function(filename, con, schema) {
@@ -75,7 +75,7 @@ main_structure <- function(filename, con, schema) {
   df <- parse_structure(df, con)
   prep_and_import_structure(df, con, schema)
   update_structure_excel(filename, df)
-  TRUE
+  df$series_code
 }
 
 

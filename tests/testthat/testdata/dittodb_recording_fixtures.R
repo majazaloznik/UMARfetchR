@@ -449,20 +449,64 @@ library(dittodb)
 #                data_location = "O:/Avtomatizacija/umar-data")
 # stop_db_capturing()
 
-start_db_capturing()
-con <- DBI::dbConnect(RPostgres::Postgres(),
-                      dbname = "platform",
-                      host = "localhost",
-                      port = 5432,
-                      user = "mzaloznik",
-                      password = Sys.getenv("PG_local_MAJA_PSW"),
-                      client_encoding = "utf8")
-DBI::dbExecute(con, "set search_path to test_platform")
-on.exit(dbDisconnect)
-counter = 0
-df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet1")
-out <-check_data_df(df, con)
-stop_db_capturing()
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# counter = 0
+# df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet1")
+# out <-check_data_df(df, con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet9")
+# check_data_df(df, con)
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet1")
+# check_data_df(df, con)
+# stop_db_capturing()
+
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# filename <- test_path("testdata", "data_tests2.xlsx")
+# interval <- check_data_xlsx(filename, con)
+# stop_db_capturing()
+
 
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
@@ -474,20 +518,7 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 DBI::dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet9")
-check_data_df(df, con)
+filename <- test_path("testdata", "data_tests3.xlsx")
+interval <- check_data_xlsx(filename, con)
 stop_db_capturing()
 
-start_db_capturing()
-con <- DBI::dbConnect(RPostgres::Postgres(),
-                      dbname = "platform",
-                      host = "localhost",
-                      port = 5432,
-                      user = "mzaloznik",
-                      password = Sys.getenv("PG_local_MAJA_PSW"),
-                      client_encoding = "utf8")
-DBI::dbExecute(con, "set search_path to test_platform")
-on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(test_path("testdata", "data_tests.xlsx"), sheet = "Sheet11")
-check_data_df(df, con)
-stop_db_capturing()

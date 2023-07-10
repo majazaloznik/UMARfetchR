@@ -71,7 +71,7 @@ check_structure_df <- function(df, con) {
   # check dimension level codes are legal
   df |>
     dplyr::mutate(dimension_levels_code = toupper(dimension_levels_code),
-           check = grepl("^([A-Z0-9]{1,4})(--([A-Z0-9]{1,4}))*$", dimension_levels_code)) |>
+                  check = grepl("^([A-Z0-9]{1,4})(--([A-Z0-9]{1,4}))*$", dimension_levels_code)) |>
     dplyr::filter(check ==FALSE) -> check
   if (nrow(check) > 0) {
     stop("Naslednje vrednosti dimension_levels_code polja so nedovoljene, preberi navodila: ",
@@ -151,7 +151,7 @@ check_structure_df <- function(df, con) {
 
 
 
- TRUE
+  TRUE
 }
 
 
@@ -166,20 +166,20 @@ check_structure_df <- function(df, con) {
 #' @export
 #'
 message_structure <- function(df) {
-    df <- df %>%
-      dplyr::mutate(non_na_count = rowSums(!is.na(.)))
+  df <- df %>%
+    dplyr::mutate(non_na_count = rowSums(!is.na(.)))
 
-    # Count the number of rows with 7 and 9 non-NA values
-    new_rows <- sum(df$non_na_count %in% c(8,9))
-    old_rows <- sum(df$non_na_count == 11)
+  # Count the number of rows with 7 and 9 non-NA values
+  new_rows <- sum(df$non_na_count %in% c(8,9))
+  old_rows <- sum(df$non_na_count == 11)
 
-    if (new_rows > 0) {
-      message(paste("V tabeli je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
-    }
-    if (old_rows > 0) {
-      message(paste("V tabeli je \u0161tevilo starih serij, ki bodo ignorirane:", old_rows))
-    }
-    c(new_rows, old_rows)
+  if (new_rows > 0) {
+    message(paste("V tabeli je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
+  }
+  if (old_rows > 0) {
+    message(paste("V tabeli je \u0161tevilo starih serij, ki bodo ignorirane:", old_rows))
+  }
+  c(new_rows, old_rows)
 }
 
 #' Compute the table codes for new series
@@ -278,15 +278,18 @@ compute_series_names <- function(df) {
 }
 
 
-#' Check data to be parsed
+#' Check data frame to be parsed
+#'
+#' Uses the output of \link[UMARfetchR]{main_structure} to get the list
+#' of legal series codes and also checks a bunch of other stuff.
 #'
 #' @param df data with time series data
-#' @param con connection to the database
+#' @param codes character vector of codes
 #'
 #' @return TRUE if it works
 #' @export
 #'
-check_data_df <- function(df, con){
+check_data_df <- function(df, codes){
   colnames(df) <- trimws(colnames(df))
   # Check the column names
   if (!("period" %in% names(df))) {
@@ -307,12 +310,12 @@ check_data_df <- function(df, con){
   # check all series are same interval
   intervals <- substring(colnames(df), nchar(colnames(df)))
   if(!all(intervals[-1] == intervals[2])){
-       stop("Na zavihku morajo imeti vse serije isti interval.")
-       }
+    stop("Na zavihku morajo imeti vse serije isti interval.")
+  }
   # check all series are correct interval
   interval <- unique(intervals[-1])
   if (interval == "M" & !all(grepl("^\\d{4}M\\d{2}$", df$period))){
-   stop("Vrednosti obdobij niso v formatu yyyyMmm.")
+    stop("Vrednosti obdobij niso v formatu yyyyMmm.")
   }
   if (interval == "Q" & !all(grepl("^\\d{4}Q\\d{1}$", df$period))){
     stop("Vrednosti obdobij niso v formatu yyyyQq.")
@@ -329,26 +332,56 @@ check_data_df <- function(df, con){
   }
 
   # check all series are in the database
-
-  temp_table_name <-  if (exists("counter", envir = parent.frame())) {
-    assign("counter", get("counter", envir = parent.frame()) + 1, envir = parent.frame())
-    paste0("temp_table_", get("counter", envir = parent.frame()))
-    } else {
-      "temp_table"
-    }
-
-  DBI::dbWriteTable(con, temp_table_name, data.frame(codes = series), temporary = TRUE, overwrite = TRUE)
-  query <- sprintf("
-  SELECT codes
-  FROM %s
-  WHERE codes NOT IN (
-    SELECT code FROM series)", temp_table_name)
-  chk <- DBI::dbGetQuery(con, query)
-  DBI::dbExecute(con, sprintf("DROP TABLE IF EXISTS %s", temp_table_name))
-  if (nrow(chk) > 0){
-    stop("V bazi \u0161e  ni metapodatkov za naslednje serije: ",
-         paste(chk$code, collapse = "," ))
+  series <- colnames(df)[-1]
+  missing_codes <- which(!series %in% codes)
+  if(length(missing_codes) > 0) {
+    stop("Za naslednje serije manjkajo strukturni metapodatki: ",
+         paste(series[missing_codes], collapse = "," ))
 
   }
+
+  interval
+}
+
+
+
+
+#' Check data file to be parsed
+#'
+#'  checks all the sheets with the data are
+#' ok with \link[UMARfetchR]{check_data_df}
+#'
+#' @param filename Excel file with time series data
+#' @param codes character vector of codes
+#'
+#' @return TRUE if it works
+#' @export
+#'
+check_data_xlsx <- function(filename, codes ) {
+  wb <- openxlsx::loadWorkbook(filename)
+  # check sheet names correspond with intervals of the data
+  sheet_names <- openxlsx::getSheetNames(filename)
+  if("M" %in% sheet_names) {
+    df <- openxlsx::read.xlsx(filename, sheet = "M")
+    interval <- check_data_df(df, codes)
+    if (interval != "M") {
+      stop("Na zavihku M so dovoljene samo serije z mese\u010dno resolucijo.")
+    }
+  }
+  if("A" %in% sheet_names) {
+    df <- openxlsx::read.xlsx(filename, sheet = "A")
+    interval <- check_data_df(df, codes)
+    if (interval != "A") {
+      stop("Na zavihku A so dovoljene samo serije z letno resolucijo.")
+    }
+  }
+  if("Q" %in% sheet_names) {
+    df <- openxlsx::read.xlsx(filename, sheet = "Q")
+    interval <- check_data_df(df, codes)
+    if (interval != "Q") {
+      stop("Na zavihku Q so dovoljene samo serije s \u010detrtletno resolucijo.")
+    }
+  }
   TRUE
+
 }
