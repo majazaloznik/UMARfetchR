@@ -9,6 +9,8 @@ main_data(filename, codes, con, schema)
 \arguments{
 \item{filename}{path to excel file with timeseries structure metadata}
 
+\item{codes}{output of \link[UMARfetchR]{main_structure} i.e. list of series codes}
+
 \item{con}{connection to database}
 
 \item{schema}{schema name}
