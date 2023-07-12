@@ -9,9 +9,7 @@ check_data_xlsx(filename, codes)
 \arguments{
 \item{filename}{Excel file with time series data}
 
-\item{codes}{character vector of codes}
-
-\item{con}{connection to the database}
+\item{codes}{character vector of codes from main_structure}
 }
 \value{
 TRUE if it works

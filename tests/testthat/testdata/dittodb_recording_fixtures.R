@@ -507,6 +507,106 @@ library(dittodb)
 # interval <- check_data_xlsx(filename, con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# vintages <- UMARfetchR:::prepare_vintage_table(df, con)[,2:3]
+# res <- SURSfetchR::sql_function_call(con,
+#                                      "insert_new_vintage",
+#                                      as.list(vintages))
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(test_path("testdata", "data_test6.xlsx"), sheet = "M")
+# insert_new_data(df, con, "test_platform")
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+# x <- prepare_vintage_table(df, con)
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "M")
+# x <- prepare_vintage_table(df, con)
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+# insert_new_vintage(df, con, schema= "test_platform")
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+# insert_new_vintage(df, con, schema= "test_platform")
+# stop_db_capturing()
+
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+# selection <- prepare_vintage_table(df, con)
+# prepare_data_table(df, selection, con)
+# stop_db_capturing()
 
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
@@ -518,7 +618,7 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 DBI::dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-filename <- test_path("testdata", "data_tests3.xlsx")
-interval <- check_data_xlsx(filename, con)
+df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+insert_data_points(df, con, "test_platform")
 stop_db_capturing()
 

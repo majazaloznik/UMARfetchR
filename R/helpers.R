@@ -27,3 +27,18 @@ x <- DBI::dbGetQuery(con, sprintf("SELECT code
 ifelse(nrow(x) == 0, NA, x[1,1])
 
 }
+
+#' Get interval from the period value
+#'
+#' @param period one of the possible period values
+#'
+#' @return "M", "A" or "Q" - or error if none work
+#' @export
+#'
+get_interval_from_period <- function(period){
+ ifelse(grepl("^\\d{4}M\\d{2}$", period), "M",
+        ifelse(grepl("^\\d{4}Q\\d{1}$", period), "Q",
+                     ifelse(grepl("^\\d{4}$", period), "A",
+                            stop("Nekaj je narobe s periodami!"))))
+
+}

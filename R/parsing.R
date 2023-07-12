@@ -148,9 +148,6 @@ check_structure_df <- function(df, con) {
          paste(check$table_name, collapse = ", "))
   }
 
-
-
-
   TRUE
 }
 
@@ -352,12 +349,12 @@ check_data_df <- function(df, codes){
 #' ok with \link[UMARfetchR]{check_data_df}
 #'
 #' @param filename Excel file with time series data
-#' @param codes character vector of codes
+#' @param codes character vector of codes from main_structure
 #'
 #' @return TRUE if it works
 #' @export
 #'
-check_data_xlsx <- function(filename, codes ) {
+check_data_xlsx <- function(filename, codes) {
   wb <- openxlsx::loadWorkbook(filename)
   # check sheet names correspond with intervals of the data
   sheet_names <- openxlsx::getSheetNames(filename)

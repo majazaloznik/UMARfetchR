@@ -1,6 +1,6 @@
 #' Insert new source.
 #'
-#' This is a one off, but is here for completeness. Used to insert the ZRSZ source
+#' This is a one off, but is here for completeness. Used to insert the UMAR source
 #' into the database. Also adds the cover category for the source.
 #'
 #' @param con connection to the database.
@@ -227,4 +227,85 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo series_level: ", sum(x))
   sum(x)
+}
+
+
+#' Insert new vintages
+#'
+#' This function inserts a set of new vintages and their corresponding
+#' data points to the database.
+#'
+#'
+#' @param data dataframes with the data_points output of the parser
+#' @param con connection to database
+#' @param schema database schema
+#' @return list of tables with counts for each inserted row.
+#' @export
+#'
+insert_new_vintage <- function(data, con, schema) {
+  selection <- prepare_vintage_table(data, con)
+  # insert monthly data
+  res <- SURSfetchR::sql_function_call(con,
+                                       "insert_new_vintage",
+                                       as.list(selection[,2:3]),
+                                       schema)
+  message("\u0160tevilo novih vrstic zapisanih v tabelo vintage: ", sum(res))
+  sum(res)
+}
+
+
+
+#' Insert datapoints into data_point table
+#'
+#'
+#' So, the function extracts and preps the data with
+#' and writes it to a temporary table in the database.
+#'
+#' It inserts any new periods into the period table,
+#' adds the data points to the data point table.
+#' @param data dataframes with the data_points
+#' output of the parser
+#' @param con connection to database
+#' @param schema is the database schema
+#' @return nothing, just some printing along the way
+#' @export
+#'
+insert_data_points <- function(data, con, schema="platform"){
+  selection <- UMARfetchR:::prepare_vintage_table(data, con)
+
+  on.exit(DBI::dbExecute(con, sprintf("drop table tmp")))
+
+  df <- prepare_data_table(data, selection, con) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(interval_id = get_interval_from_period(period_id),
+                  period_id = as.character(period_id))
+
+
+  DBI::dbWriteTable(con,
+                    "tmp",
+                    df,
+                    temporary = TRUE,
+                    overwrite = TRUE)
+
+  # insert into period table periods that are not already in there.
+  x <- DBI::dbExecute(con, sprintf("insert into %s.period
+                        SELECT tmp.period_id, tmp.interval_id
+                        FROM tmp
+                        LEFT JOIN %s.period
+                        ON tmp.period_id = period.id
+                        AND tmp.interval_id = period.interval_id
+                        WHERE period.id IS NULL
+                       on conflict do nothing",
+                       DBI::dbQuoteIdentifier(con, schema),
+                       DBI::dbQuoteIdentifier(con, schema)))
+  print(paste(x, "new rows inserted into the period table"))
+
+  # insert data into main data_point table
+  x <- DBI::dbExecute(con, sprintf("insert into %s.data_points
+                       select vintage_id, period_id, value from tmp
+                       on conflict do nothing",
+                       DBI::dbQuoteIdentifier(con, schema)))
+  print(paste(x, "new rows inserted into the data_points table for",
+              nrow(selection), "series."))
+  x
 }

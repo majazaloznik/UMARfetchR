@@ -113,3 +113,12 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
   message(name, " je dodan(a) med avtorje.")
   TRUE
 }
+
+
+
+main_data <- function(filename, con, schema) {
+  check_data_xlsx(filename)
+
+
+
+}

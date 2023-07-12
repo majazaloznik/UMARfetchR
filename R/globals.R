@@ -7,7 +7,10 @@ utils::globalVariables(c(".", "name", "table_name", "interval", "all_same_interv
                          "level_value",  "tab_dim_id", "table_id",
                          "num_unique_pairs", "num_unique_codes",
                          "series_name", "unit", "unit_id", "all_na", "series_id",
-                         " category_id", "code", "category_id"))
+                         " category_id", "code", "category_id",
+                         "id", "period", "period_id", "published", "vintage_id",
+                         "everything", "max_period_db", "max_period_new", "published.x", "published.y",
+                         "vint_id"))
 #' magrittr pipe
 #'
 #' @importFrom magrittr %>%

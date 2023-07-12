@@ -8,7 +8,7 @@ dittodb::with_mock_db({
                         client_encoding = "utf8")
   DBI::dbExecute(con, "set search_path to test_platform")
 
-  test_that("prepare functions work", {
+  test_that("insert structure functions work", {
     x <- insert_new_source(con)
     expect_equal(dim(x), c(1,1))
     x <- insert_new_author("Maja Zalo\u017enik", "MZ", "maja.zaloznik@gov.si",
@@ -37,6 +37,16 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet19")
     x <- insert_new_series_levels(df, con, "test_platform")
     expect_equal(x, 7)
+  })
+
+  test_that("insert data functions work", {
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+    expect_message(x <- insert_new_vintage(df, con, schema= "test_platform"))
+    expect_true(x == 1)
+
+    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+    expect_message(x <- insert_data_points(df, con, "test_platform"))
+    expect_true(x == 6)
   })
 })
 

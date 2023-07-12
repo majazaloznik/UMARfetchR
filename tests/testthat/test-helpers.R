@@ -36,3 +36,16 @@ dittodb::with_mock_db({
 
   })
 })
+
+test_that("get id works if table exists", {
+  x <- get_interval_from_period("2192M12")
+  expect_equal(x, "M")
+  x <- get_interval_from_period("2192Q2")
+  expect_equal(x, "Q")
+  x <- get_interval_from_period("2193")
+  expect_equal(x, "A")
+  expect_error(get_interval_from_period("219"))
+  expect_error(get_interval_from_period("21923mm"))
+  expect_error(get_interval_from_period("21Q1"))
+})
+

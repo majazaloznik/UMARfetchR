@@ -15,6 +15,6 @@ insert_new_source(con, schema = "platform")
 nothing
 }
 \description{
-This is a one off, but is here for completeness. Used to insert the ZRSZ source
+This is a one off, but is here for completeness. Used to insert the UMAR source
 into the database. Also adds the cover category for the source.
 }
