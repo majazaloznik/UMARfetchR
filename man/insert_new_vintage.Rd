@@ -4,7 +4,7 @@
 \alias{insert_new_vintage}
 \title{Insert new vintages}
 \usage{
-insert_new_vintage(data, con, schema)
+insert_new_vintage(data, con, schema = "platform")
 }
 \arguments{
 \item{data}{dataframes with the data_points output of the parser}

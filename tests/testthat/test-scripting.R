@@ -15,7 +15,10 @@ dittodb::with_mock_db({
     output <- main_structure(test_path("testdata", "struct_tests4.xlsx"),
                                          con, "test_platform")
     expect_true(length(output) == 5)
-
+    filename <- testthat::test_path("testdata", "struct_tests6.xlsx")
+    codes <- main_structure(filename, con, "test_platform")
+    filename <- testthat::test_path("testdata", "data_test6.xlsx")
+    expect_message(main_data(filename, codes, con, "test_platform"))
 
   })
 })

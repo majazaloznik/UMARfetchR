@@ -608,6 +608,20 @@ library(dittodb)
 # prepare_data_table(df, selection, con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "mzaloznik",
+#                       password = Sys.getenv("PG_local_MAJA_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
+# insert_data_points(df, con, "test_platform")
+# stop_db_capturing()
+
 start_db_capturing()
 con <- DBI::dbConnect(RPostgres::Postgres(),
                       dbname = "platform",
@@ -618,7 +632,8 @@ con <- DBI::dbConnect(RPostgres::Postgres(),
                       client_encoding = "utf8")
 DBI::dbExecute(con, "set search_path to test_platform")
 on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
-insert_data_points(df, con, "test_platform")
+filename <- testthat::test_path("testdata", "struct_tests6.xlsx")
+codes <- main_structure(filename, con, "test_platform")
+filename <- testthat::test_path("testdata", "data_test6.xlsx")
+main_data(filename, codes, con, "test_platform")
 stop_db_capturing()
-

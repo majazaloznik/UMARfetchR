@@ -46,7 +46,7 @@ prep_and_import_structure <- function(df, con, schema = "platform") {
   x <- c(x, insert_new_dimension_levels(df, con, schema))
   x <- c(x, insert_new_series(df, con, schema))
   x <- c(x, insert_new_series_levels(df, con, schema))
-  message("Zapisovanje metapodatkov v bazo je kon\u0161ano.")
+  message("Zapisovanje metapodatkov v bazo je kon\u010dano.")
   x
 }
 
@@ -116,9 +116,36 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
 
 
 
-main_data <- function(filename, con, schema) {
-  check_data_xlsx(filename)
-
-
-
+#' Main function for processing data
+#'
+#' @param filename path to excel file with timeseries structure metadata
+#' @param codes output of \link[UMARfetchR]{main_structure} i.e. list of series codes
+#' @param con connection to database
+#' @param schema schema name
+#'
+#' @return
+#' @export
+#'
+main_data <- function(filename, codes, con, schema) {
+  check_data_xlsx(filename, codes)
+  sheet_names <- openxlsx::getSheetNames(filename)
+  if("M" %in% sheet_names) {
+    df <- openxlsx::read.xlsx(filename, sheet = "M")
+    message("Zavihek M:\n")
+    insert_new_vintage(df, con, schema)
+    insert_data_points(df, con, schema)
+  }
+  if("A" %in% sheet_names) {
+    df <- openxlsx::read.xlsx(filename, sheet = "A")
+    message("Zavihek A:\n")
+    insert_new_vintage(df, con, schema)
+    insert_data_points(df, con, schema)
+  }
+  if("Q" %in% sheet_names) {
+    df <- openxlsx::read.xlsx(filename, sheet = "Q")
+    message("Zavihek Q:\n")
+    insert_new_vintage(df, con, schema)
+    insert_data_points(df, con, schema)
+  }
+ message("Podatki iz ", basename(filename), " so prene\u0161eni v bazo.")
 }

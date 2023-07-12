@@ -242,7 +242,7 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
 #' @return list of tables with counts for each inserted row.
 #' @export
 #'
-insert_new_vintage <- function(data, con, schema) {
+insert_new_vintage <- function(data, con, schema = "platform") {
   selection <- prepare_vintage_table(data, con)
   # insert monthly data
   res <- SURSfetchR::sql_function_call(con,
@@ -271,7 +271,7 @@ insert_new_vintage <- function(data, con, schema) {
 #' @export
 #'
 insert_data_points <- function(data, con, schema="platform"){
-  selection <- UMARfetchR:::prepare_vintage_table(data, con)
+  selection <- prepare_vintage_table(data, con)
 
   on.exit(DBI::dbExecute(con, sprintf("drop table tmp")))
 

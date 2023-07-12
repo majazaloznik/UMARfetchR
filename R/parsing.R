@@ -380,5 +380,4 @@ check_data_xlsx <- function(filename, codes) {
     }
   }
   TRUE
-
 }
