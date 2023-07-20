@@ -24,13 +24,13 @@ Namen te funkcionalnosti, je, da lahko v bazo vnašaš :
 Po tem, ko te Maja Z doda kot avtorja na bazi (to je treba narediti samo enkrat), boš dobil mapo na mreži z imenom `O:\Avtomatizacija\umar-data\<tvoje začetnice>` v kateri bosta dva (Excel) fajla, ki ju moraš "napolniti" s podatki:
 
 * **strukturni fajl** bo opisoval metapodatke za tvoje časovne serije: za vsako serijo ena vrstica, natančna navodila so v poglavju \@ref(meta).
-* **podatkovni fajl** bo vseboval podatke za tvoje časovje serije: za vsako serijo en stolpec, natančna navodila so v poglavju \@ref(meta). 
+* **podatkovni fajl** bo vseboval podatke za tvoje časovje serije: za vsako serijo en stolpec, natančna navodila so v poglavju \@ref(data). 
 
 Postopek bo zaenkrat izgledal tako: 
 
 1. "Izpolniti" moraš strukturni fajl - to moraš narediti vsaj prvič, da vemo katere serije pripravljaš. Če hočeš kasneje dodati nove serije, jih enostavno dodaš že obstoječim.
 2. Podatkovni fajl pripraviš oz. posodobiš vsakič, ko imaš nove podatke na voljo. 
-2. Vsake pol ure se bo izvedla skripta, ki bo preverila ali so kakšni novi oz. posodobljeni fajli v teh mapah in jih uvozila. ^[Lahko tudi pokličeš Majo Z. in bo sprožila skripto takoj.]. 
+2. Vsake pol ure se bo izvedla skripta, ki bo preverila ali so kakšni novi oz. posodobljeni fajli v teh mapah in jih uvozila.^[Lahko tudi pokličeš Majo Z. in bo sprožila skripto takoj.]
 3. Na mail boš dobil log z outputom te skripte - število vnesenih vrstic oz. javljene napake, če kaj ni bilo vredu pri pripravljenih podatkih. 
 4. Ob vsaki posodobitvi podatkov se bo tudi poročilo Indikatorji posodobilo, tako da boš lahko svoje podatke - če so v kakšnem od tistih grafov - videl takoj. 
 
@@ -39,17 +39,18 @@ Postopek bo zaenkrat izgledal tako:
 
 V mapi  `O:\Avtomatizacija\umar-data\<tvoje začetnice>` boš našel datoteko z imenom `umar_serije_metadata_<tvoje začetnice>.xlsx. V to datoteko moraš vnesti metapodatke za vsako serijo, ki jo želiš uvažati v bazo. To moraš narediti samo enkrat. Datoteka je prazna in ima samo imena stolpcev, katerih pomen je razložen v nadaljevanju. 
 
-Če imaš samo nekaj posameznih (nepovezanbih) serij, potem ti ni treba preveč razmišljati okoli izpolnjevanja metapodatkov in lahko tretiraš vsako serijo kot da je svoja *tabela*. 
+Če imaš samo nekaj posameznih (nepovezanih) serij, potem ti ni treba preveč razmišljati okoli izpolnjevanja metapodatkov in lahko tretiraš vsako serijo kot da je svoja *tabela*. 
 
 Če pa imaš več serij, potem moraš pripraviti strukturo na podoben način kot jo že poznaš iz Si-Stata:
 
 - skupina vsebinsko in metodološko povezanih serij predstavlja eno *tabelo*, 
+- vse serije v isti tabeli morajo imeti enak interval (mesečno, četrtletno..)
 - vsaka tabela ima najmanj eno *dimenzijo*, lahko jih ima tudi več.
 - vsaka dimenzija ima najmanj en *level* oz. stopnjo, lahko jih ima tudi več. 
 
 Recimo primer: Mojca desezonira podatke o prenočitvah iz SURS-a in ima tri serije: prenočitve domačih gostov, tujih gostov in obojih skupaj. Torej gre za **eno tabelo** z **eno dimenzijo**, ki ima **tri stopnje**. Preden se lotiš izpolnjevanja tabele, najprej razčisti kakšno strukturo imajo tvoji podatki: koliko tabel, katere dimenzije imajo te tabele in katere stopnje. Če ne gre, pokliči Majo Z.!
 
-V nadaljevanju so razložena posamezna polja v tabeli. 
+V nadaljevanju so razložena posamezna polja v tabeli. In ne skrbi: če boš narobe izpolnil tabelo (vem, da je veliko pravil), bi načeloma moral dobiti razumljivo opozorilo, kaj je bilo narobe :)
 
 ## `source`
 
@@ -65,17 +66,125 @@ Zakaj je to važno?
 * to polje se bo uporabilo pri avtomatskem določanju kode za tvojo serijo, ki bo izgledala recimo `UMAR–SURS--MZ012-–LJ-–M-–Q` (več v nadaljevanju)
 * to polje se bo tudi uporabilo recimo pri izdelavi grafov, saj bo pod "Vir" avtomatično pisalo "SURS & Preračun UMAR" ali pa samo "Investopedia", odvisno od tega, kaj tukaj napišeš. 
 
+## `author`
+
+V to polje napišeš svoje polno ime. Seveda morajo biti vse vrednosti v tvojem stolpcu enake. Če si kdaj spremeniš ime, bomo zrihtali :)
+
+## `table_name`
+
+Sem vpišeš opisno ampak ne predolgo ime svoje tabele. Npr: "Mesečne prenočitve desezonirane" ali kaj podobnega. Lahko tudi dodaš svoje ime, če misliš, da bo komu drugemu hitreje jasno za kaj gre npr. "Mesečne prenočitve desezonirane (Mojca K.)". 
+
+## `dimensions` 
+
+Sem vpišeš *ime(na) dimenzij* v tej tabeli. 
+
+* Npr. v zgornjem primeru lahko Mojca poimenuje svojo dimenzijo `"Država izvora"`. Ker je samo ena, je to vse kar rabi. *Vsaka tabela mora imeti enake vrednosti v polju `dimensions` za vse serije, ki so v njej*
+
+* *Če imaš več dimenzij, jih loči z dvema pomišljajema: `--`*. Npr. `"Država--Enota"`
+
+Število dimenzij v tem polju se mora skladati z številom stopenj (levels) v naslednjih dveh poljih!
+
+## `dimension_levels_text` in `dimension_levels_code`
+
+Vsaka od zgoraj definiranih dimenzij mora imeti eno ali več stopenj. V teh dveh poljih moraš za te stopnje določiti opis (`text`) in kodo (`code`). 
+
+* Opis naj bo jedrnat, ampak razumljiv.
+* Koda naj bo super kratka, najbolje ena črka ali številka, ampak ni slabo, če je malo smiselna. 
+
+Na primer za zgornji primer bi bilo primerno nekaj takega:
+
+| dimension_levels_text | dimension_levels_code |
+|:------- |:-------|
+| `Domači`       | `D`       |
+| `Tuji`       | `T`       |
+| `Skupaj`       | `SK`       |
 
 
+Če imaš recimo dve dimenziji `"Država--Enota"`, potem bi bilo primerno recimo:
+
+| dimension_levels_text | dimension_levels_code |
+|:------- |:-------|
+| `Hrvaška--Znesek`       | `HRV--1`     |
+| `Hrvaška--Število`       | `HRV--2`         |
+| `Avstrija--Znesek`       | `AUT--1`       |
+| `Avstrija--Število`       | `AUT--2`       |
+| ...      | ...      |
+
+Če ti pri tem delu karkoli ni jasno, pokliči Majo Z. in ti bo pomagala. 
+
+## `unit`
+
+Enota v kateri so izražene vrednosti serije. Dovoljene so naslednje enote, če tvoje enote ni, javi Maji Z. in jo bo dodala v šifrant:
+
+| unit |
+|:------|
+|1000   |                      
+|mio eur |                     
+|%        |                    
+|odstotne točke               |
+|indeks                       |
+|število                      |
+|ravnotežje v odstotnih točkah|
+|eur                          |
+|osebe (1000)                 |
+|opravljene delovne ure (1000)|
+|1000 toe                     |
+|toe/mio eur 2010             |
+|mwh/mio eur 2010             |
+|toe/preb.                    |
+|kwh/preb.                    |
+|t/toe                        |
+|m2                           |
+|m3                           |
+|% od bdp                     |
+
+## `interval`
+
+Časovni interval na katerem so merjeni podatki. Trenutno so možne naslednje opcije, javi Maji Z., če rabiš kaj drugega:
+
+* `M` - mesečni podatki
+* `Q` - četrtletni podatki
+* `A` - letni podatki
+
+## `series_name`
+
+Opisno ime serije. 
+
+Če opisno ime serije  pustiš prazno, se bo zanj uporabljala vrednost iz polja `dimension_levels_text`. Kar je lahko čisto OK, lahko pa napišeš lepše. Z zgornjim primerom:
+
+| dimension_levels_text |series_name |
+|:------- |:-------|
+| `Hrvaška--Znesek`       | Povprečni izdatki na turista iz Hrvaške, desezonirano     |
+| `Hrvaška--Število`       | Povprečno število prenočitev iz Hrvaške, desezonirano       |
+| `Avstrija--Znesek`       | Povprečni izdatki na turista iz Avstrije, desezonirano      |
+| `Avstrija--Število`       | Povprečno število prenočitev iz Avstrije, desezonirano      |
+
+## To je to
+
+Evo, vem, da je malo zakomplicirano, ampak to je treba samo enkrat narediti. Ko bodo ti metapodatku uspešno zajeti v bazo, se bosta v tej datoteki pojavila še dva nova stolpca:
+
+* `table_code` in 
+* `series_code`,
+
+ki sta sestavljena iz vseh teh kod. 
+
+* `table_code` je koda tvojih tabel, in bodo izgledale npr: `MK001`, `MK002` itd. 
+* `series_code` pa je unikatna koda za vsako serijo in bo izgledala recimo: `UMAR-SURS--MK003--HRV--1--M`
+
+Iz slednje lahko razbereš naslednje:
+
+* gre za podatke originalno iz SURS-a, ki jih je preračunal nekdo na Umarju.
+* ta nekdo ima inicialke MK (in to je njihova tretja tabela)
+* ta tabela ima dve dimenziji in ta serija ima zanju vrednosti `HRV` in `1` (kar je lahko bolj ali manj informativno)
+* podatki v tej seriji so na mesečni ravni (kar lahk razbereš iz zadnje vrednosti `"M"`)
+
+## Dodajanje novih serij
+
+V to tabelo lahko vedno dodaš metapodatke za nove serije. Enostavno dodaš nove vrstice, obstoječe pa pustiš pri miru. 
+
+*Potem, ko so metapodatki o serijah enkrat vnešeni, jih ne moreš več popravljati v tej tabeli. Mislim, lahko probaš, ampak se ne bo nič zgodilo, tako da v takem primeru pokliči Majo Z. in bomo to drugače rešili.*
 
 
-
-
-
-
-
-
-
-# Podatki
+# Podatki {#data}
 
 

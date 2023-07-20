@@ -9,7 +9,7 @@
 #' unit, and interval.
 #'
 #' @return TRUE if passes all checks
-#' @param con connection to the database.
+#' @param con connection to the database
 #'
 #' @export
 #' @importFrom stats complete.cases
