@@ -13,8 +13,11 @@
 
 create_structure_template_excel <- function(path = "", author = "name",
                                    overwrite = TRUE){
-
-  outfile <- paste0(path, "umar_serije_metadata_", author, ".xlsx")
+  outfile <- if (path == "") {
+    paste0("umar_serije_metadata_", author, ".xlsx")
+  } else {
+    file.path(path, paste0("umar_serije_metadata_", author, ".xlsx"))
+  }
   nejmz <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
              "dimension_levels_code", "unit", "interval", "series_name")
 

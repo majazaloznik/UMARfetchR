@@ -111,6 +111,7 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
   insert_new_category(name, con, schema)
   insert_new_category_relationship(name, con, schema)
   message(name, " je dodan(a) med avtorje.")
+  message("Zdaj pa ji/mu uredi pravice na mapi!")
   TRUE
 }
 

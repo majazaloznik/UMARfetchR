@@ -29,6 +29,21 @@ check_structure_df <- function(df, con) {
     stop("V tabeli ima\u0161 nepopolne vrstice. Poglej naslednje vrstice: ",
          paste(rows_with_na, collapse = ", "))
   }
+  # check sources
+  check <- grep("^(\\w+)(,\\s?\\w+)*$", df$source, invert = TRUE)
+  if(length(check) > 0) {
+    stop("V tabeli ima\u0161 neveljavne vrednosti v polju source. Poglej naslednje vrstice: ",
+         paste(check, collapse = ", "))
+  }
+
+  # check one source is UMAR
+  check <- grep(".*UMAR.*", toupper(df$source), invert = TRUE)
+  if(length(check) > 0) {
+    stop("V tabeli ti  v polju source manjka UMAR. Poglej naslednje vrstice: ",
+         paste(check, collapse = ", "))
+  }
+
+
   # check single author
   if (length(unique(df$author)) != 1) {
     stop("V tabeli so dovoljene samo serije enega avtorja. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
@@ -147,7 +162,12 @@ check_structure_df <- function(df, con) {
     stop("V tabeli ne sme biti enako poimenovanih serij (series_name). Glej tabele: ",
          paste(check$table_name, collapse = ", "))
   }
-
+  # check UMAR isn't the only source
+  check <- grep("^\\W*UMAR\\W*$", toupper(df$source))
+  if(length(check) > 0) {
+    stop("V tabeli ima\u0161 kot vir samo UMAR, rabi\u0161 \u0161e originalen vir. Poglej naslednje vrstice: ",
+         paste(check, collapse = ", "))
+  }
   TRUE
 }
 
@@ -242,18 +262,12 @@ compute_series_codes <- function(df) {
   }
   df |>
     dplyr::mutate(series_code = ifelse(is.na(series_code),
-                                       ifelse(toupper(source) == "UMAR",
-                                              paste("UMAR", table_code,
+                                       paste(gsub(",\\s+", "-", toupper(source)),
+                                             table_code,
                                                     toupper(dimension_levels_code),
                                                     interval,
                                                     sep = "--"),
-                                              paste(paste("UMAR", toupper(source), sep = "-"),
-                                                    table_code,
-                                                    toupper(dimension_levels_code),
-                                                    interval,
-                                                    sep = "--")),
                                        series_code))
-
 }
 
 #' Compute the series codes for the new series

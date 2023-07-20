@@ -12,30 +12,70 @@ vignette: >
 Ta dokument opisuje navodila za pripravo podatkov in metapodatkov za časovne serije, ki jih hočeš uvoziti v našo bazo. 
 
 
-## Pregled
+# Pregled
 
 Namen te funkcionalnosti, je, da lahko v bazo vnašaš :
 
 * časovne serije, ki jih pripraviš sam, npr. desezonirane podatke.
-* časovne serije iz drugih virov za katere še nimamo urejenega avtomatskega zajema - to je **začasna** rešitev za podatke, ki jih nujno rabiš. 
+* časovne serije iz drugih virov za katere še nimamo urejenega avtomatskega zajema - to je **začasna** rešitev za podatke, ki jih nujno rabiš npr. za interaktivne grafe. 
 
-### Postopek
+## Postopek
 
-Vsak avtor bo dobil mapo na mreži, kamor bo odložil dva (Excel) fajla:
+Po tem, ko te Maja Z doda kot avtorja na bazi (to je treba narediti samo enkrat), boš dobil mapo na mreži z imenom `O:\Avtomatizacija\umar-data\<tvoje začetnice>` v kateri bosta dva (Excel) fajla, ki ju moraš "napolniti" s podatki:
 
 * **strukturni fajl** bo opisoval metapodatke za tvoje časovne serije: za vsako serijo ena vrstica, natančna navodila so v poglavju \@ref(meta).
 * **podatkovni fajl** bo vseboval podatke za tvoje časovje serije: za vsako serijo en stolpec, natančna navodila so v poglavju \@ref(meta). 
 
 Postopek bo zaenkrat izgledal tako: 
-1. Oba fajla boš odložil v omenjeno mapo.
-2. Vsake pol ure se bo izvedla skripta, ki bo preverila ali so kakšni novi oz. posodobljeni fajli v teh mapah in jih uvozila. [^ Lahko tudi pokličeš Majo Z. in bo sprožila skripto takoj.]. 
+
+1. "Izpolniti" moraš strukturni fajl - to moraš narediti vsaj prvič, da vemo katere serije pripravljaš. Če hočeš kasneje dodati nove serije, jih enostavno dodaš že obstoječim.
+2. Podatkovni fajl pripraviš oz. posodobiš vsakič, ko imaš nove podatke na voljo. 
+2. Vsake pol ure se bo izvedla skripta, ki bo preverila ali so kakšni novi oz. posodobljeni fajli v teh mapah in jih uvozila. ^[Lahko tudi pokličeš Majo Z. in bo sprožila skripto takoj.]. 
 3. Na mail boš dobil log z outputom te skripte - število vnesenih vrstic oz. javljene napake, če kaj ni bilo vredu pri pripravljenih podatkih. 
-4. Ob vsaki posodobitvi podatkov se bo tudi poročilo Indikatorji posodobilo, tako da boš lahko svoje podatke - če so v kakšnem od tistih grafov - videl tako. 
+4. Ob vsaki posodobitvi podatkov se bo tudi poročilo Indikatorji posodobilo, tako da boš lahko svoje podatke - če so v kakšnem od tistih grafov - videl takoj. 
 
 
-## Metapodatki {#meta}
+# Metapodatki {#meta}
+
+V mapi  `O:\Avtomatizacija\umar-data\<tvoje začetnice>` boš našel datoteko z imenom `umar_serije_metadata_<tvoje začetnice>.xlsx. V to datoteko moraš vnesti metapodatke za vsako serijo, ki jo želiš uvažati v bazo. To moraš narediti samo enkrat. Datoteka je prazna in ima samo imena stolpcev, katerih pomen je razložen v nadaljevanju. 
+
+Če imaš samo nekaj posameznih (nepovezanbih) serij, potem ti ni treba preveč razmišljati okoli izpolnjevanja metapodatkov in lahko tretiraš vsako serijo kot da je svoja *tabela*. 
+
+Če pa imaš več serij, potem moraš pripraviti strukturo na podoben način kot jo že poznaš iz Si-Stata:
+
+- skupina vsebinsko in metodološko povezanih serij predstavlja eno *tabelo*, 
+- vsaka tabela ima najmanj eno *dimenzijo*, lahko jih ima tudi več.
+- vsaka dimenzija ima najmanj en *level* oz. stopnjo, lahko jih ima tudi več. 
+
+Recimo primer: Mojca desezonira podatke o prenočitvah iz SURS-a in ima tri serije: prenočitve domačih gostov, tujih gostov in obojih skupaj. Torej gre za **eno tabelo** z **eno dimenzijo**, ki ima **tri stopnje**. Preden se lotiš izpolnjevanja tabele, najprej razčisti kakšno strukturo imajo tvoji podatki: koliko tabel, katere dimenzije imajo te tabele in katere stopnje. Če ne gre, pokliči Majo Z.!
+
+V nadaljevanju so razložena posamezna polja v tabeli. 
+
+## `source`
+
+V to polje napišeš vir-e podatkov, kjer imaš načeloma dve možnosti:
+
+* Če gre za podatke, ki si jih pridobil iz zunanjega vira in nekako obdelal (preračunal, desezoniral itd.), potem napišeš najprej `UMAR` in potem originalen vir, npr: `UMAR, SURS`. (Podobno velja, če si pri preračunih uporabil več virov, npr: `UMAR, SURS, EUROSTAT`.)
+* Če pa hočeš samo uvoziti podatke iz nekega vira, ki ga ne zajemamo avtomatično, ampak nisi podatkov nikakor obdelal, potem napišeš obratno: `Investopedia, UMAR`
+
+**Viri morajo biti ena beseda oz. kratica, med seboj jih loči z vejico. In v vsakem primeru mora biti eden od njih "UMAR".**
+
+Zakaj je to važno?
+
+* to polje se bo uporabilo pri avtomatskem določanju kode za tvojo serijo, ki bo izgledala recimo `UMAR–SURS--MZ012-–LJ-–M-–Q` (več v nadaljevanju)
+* to polje se bo tudi uporabilo recimo pri izdelavi grafov, saj bo pod "Vir" avtomatično pisalo "SURS & Preračun UMAR" ali pa samo "Investopedia", odvisno od tega, kaj tukaj napišeš. 
 
 
-## Podatki
+
+
+
+
+
+
+
+
+
+
+# Podatki
 
 

@@ -58,6 +58,10 @@ dittodb::with_mock_db({
     df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests3.xlsx"))
     x <- message_structure(df)
     expect_equal(x, c(4,3))
+    test28 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests7.xlsx"), sheet = "Sheet1")
+    expect_error(check_structure_df(test28, con))
+    test30 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet30")
+    expect_error(check_structure_df(test30, con))
 
   })
 
@@ -94,6 +98,11 @@ dittodb::with_mock_db({
     test25 <- compute_table_codes(test25, con)
     out <-compute_series_codes(test25)
     out$series_code[4] == "UMAR-EUROSTAT--MZ005--12--M"
+    test29 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet29")
+    out <-compute_series_codes(test29)
+    out$series_code[1] == "UMAR-EUROSTAT--MZ001--234--M"
+    out$series_code[2] == "UMAR-IMF--MZ001--1123--M"
+    out$series_code[3] == "INVESTOPEDIA-UMAR--MZ001--12--M"
   })
 
   test_that("data parsing df is cool", {

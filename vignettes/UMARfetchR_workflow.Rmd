@@ -39,9 +39,10 @@ For each new author the `add_new_author()` function does the following:
 
 * adds the author to the database - which also checks for uniqueness of initials, otherwise change them
 * creates a folder for them in the data pick up location
-* runs `create_structure_template_excel()` and creates the template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. And they are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
+* runs `create_structure_template_excel()` which creates a folder for them on `O:\Avtomatizacija\umar-data\` and an Excel template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. They are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
 * each author also represents a `category` in the database. So `insert_new_category` and `insert_new_category_relationship` are run with the author name as the category.^[Although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. ]
 
+Once this is done, the maintainer needs to manually give the author permissions to modify the contents of the files in their folder. 
 
 ## Once per series 
 
@@ -69,7 +70,7 @@ The function `main_data()` is an umbrella function that does the following:
 
 The `create_structure_template_excel()` creates a template with nine columns, eight of which *must* be filled by the author. An additional two columns are calculated at import. 
 
-* **source**: should probably read "umar" (or UMAR, the code is agnostic). ^[ If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source can be something else, but no spaces are allowed an a max of 8 characters]
+* **source**: if we have done any calculations, the first one is UMAR. the second and furhter commma separated ones are the original data sources.  If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source is reversed: first UMAR and then the original, but no spaces are allowed an a max of 8 characters.
 
 * **author**: full name of author, must be the same as the one used in the umar_authors table in the database. 
 
@@ -85,7 +86,7 @@ The `create_structure_template_excel()` creates a template with nine columns, ei
 Then there are two additional columns that get computed during the import process:
 
 * **table_code**: is a combination of the author's initials (fron the umar_authors table in the database) and a three digit incremental number. e.g. "MZ003" etc. These are computed automatically based on what is already in the database
-* **series_code**: is computed as a combination of the source, the table name, the dimension level codes and the interval. e.g. "UMAR--MZ012--LJ--M--Q". ^[ If the data source is given as something else, then this is indicated in the series_code. E.g. if the source is "eurostat", the code will end up being e.g. "UMAR-EUROSTAT--MZ013--EU--P1--1--A".
+* **series_code**: is computed as a combination of the source, the table name, the dimension level codes and the interval. e.g. `"UMAR-SURS--MZ012--LJ--M--Q"`. 
 
 ## Data specs 
 

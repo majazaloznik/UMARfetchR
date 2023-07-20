@@ -293,7 +293,7 @@ library(dittodb)
 # test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
 # test25 <- compute_table_codes(test25, con)
 # stop_db_capturing()
-
+#
 # start_db_capturing()
 # con <- DBI::dbConnect(RPostgres::Postgres(),
 #                       dbname = "platform",
@@ -321,7 +321,7 @@ library(dittodb)
 # df <- openxlsx::read.xlsx(testthat::test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet14")
 # x <- insert_new_category_table(df, con, "test_platform")
 # stop_db_capturing()
-
+#
 # start_db_capturing()
 # con <- DBI::dbConnect(RPostgres::Postgres(),
 #                       dbname = "platform",
@@ -379,7 +379,7 @@ library(dittodb)
 # x <- compute_table_codes(df, con)
 # stop_db_capturing()
 
-
+#
 # start_db_capturing()
 # con <- DBI::dbConnect(RPostgres::Postgres(),
 #                       dbname = "platform",
