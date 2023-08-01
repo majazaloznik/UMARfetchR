@@ -15,11 +15,12 @@
 #' @export
 parse_structure <- function(df, con){
   check_structure_df(df, con)
-  message_structure(df)
-  df <- compute_table_codes(df, con)
-  df <- compute_series_codes(df)
-  df <- compute_series_names(df)
-  df
+  df_split <- split_structure(df)
+  if(nrow(df_split$df_new) > 0){
+  df_split$df_new <- compute_table_codes(df_split$df_new, con)
+  df_split$df_new <- compute_series_codes(df_split$df_new)
+  df_split$df_new <- compute_series_names(df_split$df_new)}
+  df_split
 }
 
 
@@ -72,8 +73,10 @@ prep_and_import_structure <- function(df, con, schema = "platform") {
 main_structure <- function(filename, con, schema) {
 
   df <- openxlsx::read.xlsx(filename, sheet = "timeseries")
-  df <- parse_structure(df, con)
-  prep_and_import_structure(df, con, schema)
+  df_split <- parse_structure(df, con)
+  if(nrow(df_split$df_new) > 0){
+  prep_and_import_structure(df_split$df_new, con, schema)}
+  df <- dplyr::bind_rows(df_split$df_old, df_split$df_new)
   update_structure_excel(filename, df)
   df$series_code
 }

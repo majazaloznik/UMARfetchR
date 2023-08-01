@@ -189,16 +189,18 @@ check_structure_df <- function(df, con) {
 #'
 #' @param df dataframe from structure template
 #'
-#' @return outputs log message
+#' @return a list with both the old and the new df
 #' @export
 #'
-message_structure <- function(df) {
-  df <- df %>%
-    dplyr::mutate(non_na_count = rowSums(!is.na(.)))
+split_structure <- function(df) {
 
-  # Count the number of rows with 7 and 9 non-NA values
-  new_rows <- sum(df$non_na_count %in% c(8,9))
-  old_rows <- sum(df$non_na_count == 11)
+  df_old <- df %>%
+    dplyr::filter(complete.cases(.))
+  df_new <- df %>%
+    dplyr::filter(!complete.cases(.))
+  # Count the number of old and new
+  old_rows <- nrow(df_old)
+  new_rows <- nrow(df_new)
 
   if (new_rows > 0) {
     message(paste("V tabeli je \u0161tevilo novih serij, ki bodo uvou\u017eene:", new_rows))
@@ -206,7 +208,7 @@ message_structure <- function(df) {
   if (old_rows > 0) {
     message(paste("V tabeli je \u0161tevilo starih serij, ki bodo ignorirane:", old_rows))
   }
-  c(new_rows, old_rows)
+  return(list("df_new" = df_new, "df_old" = df_old))
 }
 
 #' Compute the table codes for new series

@@ -10,8 +10,8 @@ dittodb::with_mock_db({
   test_that("series codes are computed correctly", {
     test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
     x <- parse_structure(test25, con)
-    expect_equal(x$series_code[4], "UMAR-EUROSTAT--MZ005--12--M")
-    out <- prep_and_import_structure(x, con, "test_platform")
+    expect_equal(x$df_new$series_code[4], "UMAR-EUROSTAT--MZ005--12--M")
+    out <- prep_and_import_structure(x$df_new, con, "test_platform")
     output <- main_structure(test_path("testdata", "struct_tests4.xlsx"),
                                          con, "test_platform")
     expect_true(length(output) == 5)

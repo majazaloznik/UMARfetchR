@@ -1,2 +1,2 @@
-structure(list(count = c(0L, 0L)), class = "data.frame", row.names = c(NA, 
--2L))
+structure(list(count = integer(0)), class = "data.frame", row.names = c(NA, 
+0L))
