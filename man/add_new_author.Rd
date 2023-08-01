@@ -26,6 +26,9 @@ add_new_author(
 
 \item{data_location}{location where data folders live}
 }
+\value{
+true if completes, otherwise error message
+}
 \description{
 This funciton inserts the author into the database - checking if the initials are
 unique, otherwise you'll need to change them. Then creates the data folder for

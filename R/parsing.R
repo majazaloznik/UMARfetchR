@@ -72,6 +72,18 @@ check_structure_df <- function(df, con) {
          paste(check$table_name, collapse = ", "))
   }
 
+  # check same source per table
+  df |>
+    dplyr::arrange(table_name) |>
+    dplyr::group_by(table_name) |>
+    dplyr::summarize(all_same_source = dplyr::n_distinct(source) == 1, .groups = "drop") |>
+    dplyr::filter(all_same_source == FALSE) -> check
+  if (nrow(check) > 0) {
+    stop("Vse serije v eni tabli morajo imeti enak source To ni res tukaj: ",
+         paste(check$table_name, collapse = ", "))
+  }
+
+
   # check dimensions are the same for each table
   df |>
     dplyr::arrange(table_name) |>
@@ -123,24 +135,22 @@ check_structure_df <- function(df, con) {
          paste(check$table_name, collapse = ", "))
   }
   # check that dimension level codes and text are matching
-  dim_txt <- df |>
-    tidyr::separate_longer_delim(dimension_levels_text, delim ="--") |>
-    dplyr::mutate(dimension_levels_text = trimws(dimension_levels_text)) |>
-    dplyr::pull(dimension_levels_text)
-
-  df |>
-    tidyr::separate_longer_delim(dimension_levels_code, delim ="--") |>
-    dplyr::mutate(dimension_levels_code = trimws(dimension_levels_code),) |>
-    dplyr::mutate(dimension_levels_text = dim_txt) |>
-    dplyr::select(table_name, dimensions, dimension_levels_code, dimension_levels_text) |>
-    dplyr::arrange(table_name) |>
-    dplyr::group_by(table_name) |>
-    dplyr::summarize(num_unique_pairs = dplyr::n_distinct(interaction
-                                                          (dimension_levels_code,
-                                                            dimension_levels_text)),
-                     num_unique_codes = dplyr::n_distinct(dimension_levels_code)) |>
-    dplyr::mutate(check = num_unique_pairs == num_unique_codes) |>
-    dplyr::filter(!check) -> check
+  check <- df %>%
+    dplyr::select(table_name, dimension_levels_code, dimension_levels_text)  %>%
+    dplyr::mutate(row_number = seq_along(dimension_levels_code)) %>%
+    tidyr::separate_rows(dimension_levels_code, dimension_levels_text, sep = "--") %>%
+    dplyr::group_by(row_number) %>%
+    dplyr::mutate(pos_number = seq_along(dimension_levels_code)) |>
+    dplyr::group_by(table_name, row_number, pos_number) %>%
+    dplyr::summarise(dimension_levels_text = dimension_levels_text,
+                     dimension_levels_code = dimension_levels_code) |>
+    dplyr::ungroup() |>
+    dplyr::select(-row_number) |>
+    dplyr::relocate(table_name, pos_number, dimension_levels_code, dimension_levels_text) |>
+    dplyr::group_by(table_name,pos_number, dimension_levels_code) |>
+    dplyr::summarise(distinct_text = dplyr::n_distinct(dimension_levels_text)) |>
+    dplyr::mutate(check = distinct_text == 1) |>
+    dplyr::filter(!check)
 
   if (nrow(check) > 0) {
     stop("Besedila in kode dimension level-ov niso ena:ena v naslednjih tabelah: ",

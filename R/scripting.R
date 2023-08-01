@@ -94,7 +94,7 @@ main_structure <- function(filename, con, schema) {
 #' @param schema schema name
 #' @param data_location location where data folders live
 #'
-#' @return
+#' @return true if completes, otherwise error message
 #' @export
 
 add_new_author <- function(name, initials, email, con, schema = "platform",
@@ -124,7 +124,7 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
 #' @param con connection to database
 #' @param schema schema name
 #'
-#' @return
+#' @return nothing, just message
 #' @export
 #'
 main_data <- function(filename, codes, con, schema) {

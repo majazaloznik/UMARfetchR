@@ -37,7 +37,7 @@ Postopek bo zaenkrat izgledal tako:
 
 # Metapodatki {#meta}
 
-V mapi  `O:\Avtomatizacija\umar-data\<tvoje začetnice>` boš našel datoteko z imenom `umar_serije_metadata_<tvoje začetnice>.xlsx. V to datoteko moraš vnesti metapodatke za vsako serijo, ki jo želiš uvažati v bazo. To moraš narediti samo enkrat. Datoteka je prazna in ima samo imena stolpcev, katerih pomen je razložen v nadaljevanju. 
+V mapi  `O:\Avtomatizacija\umar-data\<tvoje začetnice>` boš našel datoteko z imenom `umar_serije_metadata_<tvoje začetnice>.xlsx`. V to datoteko moraš vnesti metapodatke za vsako serijo, ki jo želiš uvažati v bazo. To moraš narediti samo enkrat. Datoteka je prazna in ima samo imena stolpcev, katerih pomen je razložen v nadaljevanju. 
 
 Če imaš samo nekaj posameznih (nepovezanih) serij, potem ti ni treba preveč razmišljati okoli izpolnjevanja metapodatkov in lahko tretiraš vsako serijo kot da je svoja *tabela*. 
 
@@ -161,7 +161,7 @@ Opisno ime serije.
 
 ## To je to
 
-Evo, vem, da je malo zakomplicirano, ampak to je treba samo enkrat narediti. Ko bodo ti metapodatku uspešno zajeti v bazo, se bosta v tej datoteki pojavila še dva nova stolpca:
+Evo, vem, da je malo zakomplicirano, ampak to je treba samo enkrat narediti. Ko bodo ti metapodatki uspešno zajeti v bazo, se bosta v tej datoteki pojavila še dva nova stolpca:
 
 * `table_code` in 
 * `series_code`,

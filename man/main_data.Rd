@@ -15,6 +15,9 @@ main_data(filename, codes, con, schema)
 
 \item{schema}{schema name}
 }
+\value{
+nothing, just message
+}
 \description{
 Main function for processing data
 }

@@ -10,9 +10,12 @@ utils::globalVariables(c(".", "name", "table_name", "interval", "all_same_interv
                          " category_id", "code", "category_id",
                          "id", "period", "period_id", "published", "vintage_id",
                          "everything", "max_period_db", "max_period_new", "published.x", "published.y",
-                         "vint_id"))
+                         "vint_id", "all_same_source", "distinct_text",  "pos_number", "row_number"
+                         ))
 #' magrittr pipe
 #'
 #' @importFrom magrittr %>%
+#' @name %>%
+#' @rdname magrittr
 NULL
 

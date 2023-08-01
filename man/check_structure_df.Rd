@@ -11,7 +11,7 @@ check_structure_df(df, con)
 source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
 unit, and interval.}
 
-\item{con}{connection to the database.}
+\item{con}{connection to the database}
 }
 \value{
 TRUE if passes all checks
