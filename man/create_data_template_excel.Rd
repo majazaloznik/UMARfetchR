@@ -10,6 +10,8 @@ create_data_template_excel(path = "", author = "name", overwrite = TRUE)
 \item{path}{path to file, default empty}
 
 \item{author}{initials of author that becomes part of the filename}
+
+\item{overwrite}{- whether or not to overwrite previous file}
 }
 \value{
 nothing - side effect is saving to an excel file.
