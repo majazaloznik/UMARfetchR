@@ -144,7 +144,8 @@ dittodb::with_mock_db({
     filename <- test_path("testdata", "data_tests4.xlsx")
     expect_error(check_data_xlsx(filename,
                                  c("UMAR--MZ002--1--M",	"UMAR--MZ002--12--M", "UMAR--MZ007--LKJ--11--A"))) # wrong series
-
+    x <- check_data_xlsx(test_path("testdata", "data_tests4.xlsx"),codes = c("UMAR--MZ007--LKJ--131--A", "UMAR--MZ002--1--M"	,"UMAR--MZ002--12--M"))
+    expect_true(x)
 
 
   })

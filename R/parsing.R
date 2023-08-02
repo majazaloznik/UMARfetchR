@@ -385,24 +385,30 @@ check_data_xlsx <- function(filename, codes) {
   # check sheet names correspond with intervals of the data
   sheet_names <- openxlsx::getSheetNames(filename)
   if("M" %in% sheet_names) {
-    df <- openxlsx::read.xlsx(filename, sheet = "M")
-    interval <- check_data_df(df, codes)
-    if (interval != "M") {
-      stop("Na zavihku M so dovoljene samo serije z mese\u010dno resolucijo.")
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "M"))
+    if (!is.null(df)){
+      interval <- check_data_df(df, codes)
+      if (interval != "M") {
+        stop("Na zavihku M so dovoljene samo serije z mese\u010dno resolucijo.")
+      }
     }
   }
   if("A" %in% sheet_names) {
-    df <- openxlsx::read.xlsx(filename, sheet = "A")
-    interval <- check_data_df(df, codes)
-    if (interval != "A") {
-      stop("Na zavihku A so dovoljene samo serije z letno resolucijo.")
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
+    if (!is.null(df)){
+      interval <- check_data_df(df, codes)
+      if (interval != "A") {
+        stop("Na zavihku A so dovoljene samo serije z letno resolucijo.")
+      }
     }
   }
   if("Q" %in% sheet_names) {
-    df <- openxlsx::read.xlsx(filename, sheet = "Q")
-    interval <- check_data_df(df, codes)
-    if (interval != "Q") {
-      stop("Na zavihku Q so dovoljene samo serije s \u010detrtletno resolucijo.")
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
+    if (!is.null(df)){
+      interval <- check_data_df(df, codes)
+      if (interval != "Q") {
+        stop("Na zavihku Q so dovoljene samo serije s \u010detrtletno resolucijo.")
+      }
     }
   }
   TRUE
