@@ -7,6 +7,7 @@ dittodb::with_mock_db({
                         password = Sys.getenv("PG_local_MAJA_PSW"),
                         client_encoding = "utf8")
   dbExecute(con, "set search_path to test_platform")
+
   test_that("series codes are computed correctly", {
     test25 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet25")
     x <- parse_structure(test25, con)
@@ -21,4 +22,24 @@ dittodb::with_mock_db({
     expect_message(main_data(filename, codes, con, "test_platform"))
 
   })
+  test_that("my test", {
+
+    dir.create(  testthat::test_path("test_dir"))
+    initials = "MH"
+    # Call the function with custom path
+    x <- add_new_author("Matevz Hribernik",
+                        initials = "MH",
+                        email = "maja.zaloznik@gov.si",
+                        con = con,schema = "test_platform",
+                        data_location = testthat::test_path("test_dir") , overwrite = TRUE)
+    path <- file.path(testthat::test_path("test_dir"), initials)
+    expect_true(x)
+    # Check if the file is created in the custom folder
+    expect_true(file.exists(file.path(path, "umar_serije_podakti_MH.xlsx")))
+    expect_true(file.exists(file.path(path, "umar_serije_metadata_MH.xlsx")))
+
+      unlink( testthat::test_path("test_dir"), recursive = TRUE)
+  })
+
 })
+

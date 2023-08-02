@@ -2,7 +2,7 @@
 % Please edit documentation in R/scripting.R
 \name{add_new_author}
 \alias{add_new_author}
-\title{Main function for adding a new athor}
+\title{Main function for adding a new author}
 \usage{
 add_new_author(
   name,
@@ -10,7 +10,8 @@ add_new_author(
   email,
   con,
   schema = "platform",
-  data_location = "O:/Avtomatizacija/umar-data"
+  data_location = "O://Avtomatizacija//umar-data",
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -22,15 +23,17 @@ add_new_author(
 
 \item{con}{connection to the database}
 
-\item{schema}{schema name}
+\item{schema}{schema name. defaults to "platform"}
 
-\item{data_location}{location where data folders live}
+\item{data_location}{location where data folders live. defaults to "O://Avtomatizacija//umar-data"}
+
+\item{overwrite}{logical value whether or not to overwrite existing files. defaults to FALSE}
 }
 \value{
 true if completes, otherwise error message
 }
 \description{
-This funciton inserts the author into the database - checking if the initials are
+This function inserts the author into the database - checking if the initials are
 unique, otherwise you'll need to change them. Then creates the data folder for
 that author and places the template excel file in there. And finally adds the
 category and cat relationship rows for that author.

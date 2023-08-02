@@ -83,9 +83,9 @@ main_structure <- function(filename, con, schema) {
 
 
 
-#' Main function for adding a new athor
+#' Main function for adding a new author
 #'
-#' This funciton inserts the author into the database - checking if the initials are
+#' This function inserts the author into the database - checking if the initials are
 #' unique, otherwise you'll need to change them. Then creates the data folder for
 #' that author and places the template excel file in there. And finally adds the
 #' category and cat relationship rows for that author.
@@ -94,23 +94,28 @@ main_structure <- function(filename, con, schema) {
 #' @param initials initials, make them unique if already exist
 #' @param email email
 #' @param con connection to the database
-#' @param schema schema name
-#' @param data_location location where data folders live
+#' @param schema schema name. defaults to "platform"
+#' @param data_location location where data folders live. defaults to "O://Avtomatizacija//umar-data"
+#' @param overwrite logical value whether or not to overwrite existing files. defaults to FALSE
 #'
 #' @return true if completes, otherwise error message
 #' @export
 
 add_new_author <- function(name, initials, email, con, schema = "platform",
-                             data_location = "O:/Avtomatizacija/umar-data"){
+                             data_location = "O://Avtomatizacija//umar-data",
+                           overwrite = FALSE){
   insert_new_author(name, initials, email, folder = NA, con, schema)
   dir.create(file.path(data_location, initials), showWarnings = FALSE)
   path <- file.path(data_location, initials)
-  tryCatch({create_structure_template_excel(path, initials, FALSE)},
+  tryCatch({create_structure_template_excel(path, initials, overwrite)},
            error=function(cond) {
              message(cond)}
   )
-  folder <- getwd()
-  add_author_folder(initials, folder, con, schema)
+  tryCatch({create_data_template_excel(path, initials, overwrite)},
+           error=function(cond) {
+             message(cond)}
+  )
+  add_author_folder(initials, path, con, schema)
   insert_new_category(name, con, schema)
   insert_new_category_relationship(name, con, schema)
   message(name, " je dodan(a) med avtorje.")

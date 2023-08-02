@@ -61,8 +61,8 @@ add_author_folder <- function(initials, folder, con, schema = "platform") {
   x <- DBI::dbExecute(con, sprintf("update umar_authors
        set folder = '%s'
        WHERE initials = '%s';", folder, initials))
-
   message("Posodobljeno polje folder tabeli umar_author.")
+  x
 }
 
 #' Insert new category

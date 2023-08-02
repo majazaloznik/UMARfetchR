@@ -444,9 +444,15 @@ stop_db_capturing()
 #                       client_encoding = "utf8")
 # DBI::dbExecute(con, "set search_path to test_platform")
 # on.exit(dbDisconnect)
-# add_new_author("Matevž Hribernik", "MH", "matevz.hribernik@gov.si", folder = NA, con,
-#                schema = "test_platform",
-#                data_location = "O:/Avtomatizacija/umar-data")
+# dir.create(  testthat::test_path("test_dir"))
+# initials = "MH"
+# # Call the function with custom path
+# x <- add_new_author("Matevz Hribernik",
+#                     initials = "MH",
+#                     email = "maja.zaloznik@gov.si",
+#                     con = con,schema = "test_platform",
+#                     data_location = testthat::test_path("test_dir") , overwrite = TRUE)
+# unlink("tests/testthat/test_dir", recursive = TRUE)
 # stop_db_capturing()
 
 # start_db_capturing()
@@ -637,18 +643,16 @@ stop_db_capturing()
 # filename <- testthat::test_path("testdata", "data_test6.xlsx")
 # main_data(filename, codes, con, "test_platform")
 # stop_db_capturing()
-
-
-start_db_capturing()
-con <- DBI::dbConnect(RPostgres::Postgres(),
-                      dbname = "platform",
-                      host = "localhost",
-                      port = 5432,
-                      user = "postgres",
-                      password = Sys.getenv("PG_local_PG_PSW"),
-                      client_encoding = "utf8")
-DBI::dbExecute(con, "set search_path to test_platform")
-on.exit(dbDisconnect)
-df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests8.xlsx"), sheet = "timeseries")
-check_structure_df(df, con)
-stop_db_capturing()
+# start_db_capturing()
+# con <- DBI::dbConnect(RPostgres::Postgres(),
+#                       dbname = "platform",
+#                       host = "localhost",
+#                       port = 5432,
+#                       user = "postgres",
+#                       password = Sys.getenv("PG_local_PG_PSW"),
+#                       client_encoding = "utf8")
+# DBI::dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests8.xlsx"), sheet = "timeseries")
+# check_structure_df(df, con)
+# stop_db_capturing()

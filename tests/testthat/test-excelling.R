@@ -28,3 +28,15 @@ testthat::test_that("update_structure_excel updates Excel workbook correctly", {
   testthat::expect_identical(sheet_data, new_df)
   unlink(temp_filename)
 })
+
+test_that("create_data_template_excel: Check if Excel file is created with custom path", {
+  # Define a custom path for the Excel file
+  custom_folder <- file.path(tempdir(), "custom_folder")
+  dir.create(custom_folder)  # Create the custom folder before calling the function
+
+  # Call the function with custom path
+  create_data_template_excel(path = custom_folder)
+
+  # Check if the file is created in the custom folder
+  expect_true(file.exists(file.path(custom_folder, "umar_serije_podakti_name.xlsx")))
+})

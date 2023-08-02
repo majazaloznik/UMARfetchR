@@ -53,3 +53,29 @@ update_structure_excel <- function(filename, df) {
   openxlsx::saveWorkbook(wb, filename, overwrite = TRUE)
   message("Tabela ", basename(filename), " je posodobljena.")
 }
+
+
+#' Prepare excel template for data file
+#'
+#' Prepares an empty excel file for the data. Really only names the three sheets
+#'
+#' @param path path to file, default empty
+#' @param author initials of author that becomes part of the filename
+#' @param overwrite - whether or not to overwrite previous file
+#'
+#' @return nothing - side effect is saving to an excel file.
+#' @export
+
+create_data_template_excel <- function(path = "", author = "name", overwrite = TRUE){
+  outfile <- if (path == "") {
+    paste0("umar_serije_podatki_", author, ".xlsx")
+  } else {
+    file.path(path, paste0("umar_serije_podakti_", author, ".xlsx"))
+  }
+
+  wb <- openxlsx::createWorkbook()
+  openxlsx::addWorksheet(wb, "M")
+  openxlsx::addWorksheet(wb, "Q")
+  openxlsx::addWorksheet(wb, "A")
+  openxlsx::saveWorkbook(wb, file = outfile, overwrite = overwrite)
+}
