@@ -108,7 +108,8 @@ main_structure <- function(filename, con, schema) {
 add_new_author <- function(name, initials, email, con, schema = "platform",
                              data_location = "O://Avtomatizacija//umar-data",
                            overwrite = FALSE){
-  insert_new_author(name, initials, email, folder = NA, con, schema)
+  x <- insert_new_author(name, initials, email, folder = NA, con, schema)
+  if (x == 1) {
   dir.create(file.path(data_location, initials), showWarnings = FALSE)
   path <- file.path(data_location, initials)
   tryCatch({create_structure_template_excel(path, initials, overwrite)},
@@ -124,7 +125,10 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
   insert_new_category_relationship(name, con, schema)
   message(name, " je dodan(a) med avtorje.")
   message("Zdaj pa ji/mu uredi pravice na mapi!")
-  TRUE
+  TRUE} else {
+    message("Avtor ni bil zapisan, preveri inicijalke.")
+    FALSE
+  }
 }
 
 

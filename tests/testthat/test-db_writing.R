@@ -13,7 +13,7 @@ dittodb::with_mock_db({
     expect_equal(dim(x), c(1,1))
     x <- insert_new_author("Maja Zalo\u017enik", "MZ", "maja.zaloznik@gov.si",
                       folder = NA, con, schema = "test_platform")
-    expect_equal(x, 0)
+    expect_equal(x, 1)
     expect_message(add_author_folder("MZ", "O:/Avtomatizacija/umar-data/mz", con, "test_platform"))
     x <- insert_new_category("Maja Zalo\u017enik", con)
     expect_equal(x, 1)
