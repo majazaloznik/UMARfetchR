@@ -243,14 +243,17 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
 #' @export
 #'
 insert_new_vintage <- function(data, con, schema = "platform") {
+  if(nrow(data) == 0) {
+    warning("Na zavihku ni podatkov")} else {
   selection <- prepare_vintage_table(data, con)
   # insert monthly data
+  if(nrow(data) != 0){
   res <- SURSfetchR::sql_function_call(con,
                                        "insert_new_vintage",
                                        as.list(selection[,2:3]),
                                        schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo vintage: ", sum(res))
-  sum(res)
+  sum(res)}}
 }
 
 
@@ -271,16 +274,18 @@ insert_new_vintage <- function(data, con, schema = "platform") {
 #' @export
 #'
 insert_data_points <- function(data, con, schema="platform"){
+  if(nrow(data) != 0){
   selection <- prepare_vintage_table(data, con)
 
-  on.exit(DBI::dbExecute(con, sprintf("drop table tmp")))
+
 
   df <- prepare_data_table(data, selection, con) |>
     dplyr::rowwise() |>
     dplyr::mutate(interval_id = get_interval_from_period(period_id),
                   period_id = as.character(period_id))
 
-
+if(nrow(df) != 0){
+  on.exit(DBI::dbExecute(con, sprintf("drop table tmp")))
   DBI::dbWriteTable(con,
                     "tmp",
                     df,
@@ -307,5 +312,8 @@ insert_data_points <- function(data, con, schema="platform"){
                        DBI::dbQuoteIdentifier(con, schema)))
   print(paste(x, "new rows inserted into the data_points table for",
               nrow(selection), "series."))
-  x
+  x}} else{
+    print(paste("No new rows inserted into the data_points table for",
+                nrow(selection), "series."))
+  }
 }

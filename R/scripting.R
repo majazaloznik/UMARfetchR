@@ -76,9 +76,13 @@ main_structure <- function(filename, con, schema) {
   df_split <- parse_structure(df, con)
   if(nrow(df_split$df_new) > 0){
   prep_and_import_structure(df_split$df_new, con, schema)}
-  df <- dplyr::bind_rows(df_split$df_old, df_split$df_new)
-  update_structure_excel(filename, df)
-  df$series_code
+  if (nrow(df_split$df_old) == 0) {
+    final_df <- df_split$df_new
+  } else {
+    final_df <- dplyr::bind_rows(df_split$df_old, df_split$df_new)
+  }
+  update_structure_excel(filename, final_df)
+  final_df$series_code
 }
 
 
@@ -139,22 +143,28 @@ main_data <- function(filename, codes, con, schema) {
   check_data_xlsx(filename, codes)
   sheet_names <- openxlsx::getSheetNames(filename)
   if("M" %in% sheet_names) {
-    df <- openxlsx::read.xlsx(filename, sheet = "M")
     message("Zavihek M:\n")
-    insert_new_vintage(df, con, schema)
-    insert_data_points(df, con, schema)
+    df <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
+    if (!is.null(df)){
+      insert_new_vintage(df, con, schema)
+      insert_data_points(df, con, schema)} else {
+        message("Na zavihku ni podatkov")}
   }
   if("A" %in% sheet_names) {
-    df <- openxlsx::read.xlsx(filename, sheet = "A")
     message("Zavihek A:\n")
-    insert_new_vintage(df, con, schema)
-    insert_data_points(df, con, schema)
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
+    if (!is.null(df)){
+      insert_new_vintage(df, con, schema)
+      insert_data_points(df, con, schema)} else {
+        message("Na zavihku ni podatkov")}
   }
   if("Q" %in% sheet_names) {
-    df <- openxlsx::read.xlsx(filename, sheet = "Q")
     message("Zavihek Q:\n")
-    insert_new_vintage(df, con, schema)
-    insert_data_points(df, con, schema)
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
+    if (!is.null(df)){
+      insert_new_vintage(df, con, schema)
+      insert_data_points(df, con, schema)} else {
+        message("Na zavihku ni podatkov")}
   }
- message("Podatki iz ", basename(filename), " so prene\u0161eni v bazo.")
+  message("Podatki iz ", basename(filename), " so prene\u0161eni v bazo.")
 }

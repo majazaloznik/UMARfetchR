@@ -11,24 +11,21 @@
 #' @export
 
 prepare_vintage_table <- function(data, con) {
-  selection <- data %>%
-    dplyr::summarize_all(~ data$period[max(which(!is.na(.)))]) |>
-    dplyr::select(-period) |>
-    tidyr::pivot_longer(everything(), names_to = "series_code", values_to = "max_period_new") |>
-    dplyr::rowwise() |>
-    dplyr::mutate(series_id = UMARaccessR::get_series_id_from_series_code(series_code, con),
-                  vint_id = UMARaccessR::get_vintage_from_series(series_id, con)[1,1],
-                  max_period_db = ifelse(is.na(vint_id), NA,
-                                         UMARaccessR::get_last_period_from_vintage(vint_id, con)[1,1])) |>
-    dplyr::ungroup() |>
-    dplyr::filter(is.na(max_period_db) | max_period_new > max_period_db ) |>
-    dplyr::select(series_code, series_id) |>
-    dplyr::mutate(published = Sys.time()) |>
-    dplyr::ungroup()
-  if(nrow(selection) == 0) {
-             stop(paste0("V tabeli ni novih podatkov za nobeno od serij"))
-    } else {
-      selection}
+      selection <- data %>%
+        dplyr::summarize_all(~ data$period[max(which(!is.na(.)))]) |>
+        dplyr::select(-period) |>
+        tidyr::pivot_longer(everything(), names_to = "series_code", values_to = "max_period_new") |>
+        dplyr::rowwise() |>
+        dplyr::mutate(series_id = UMARaccessR::get_series_id_from_series_code(series_code, con),
+                      vint_id = UMARaccessR::get_vintage_from_series(series_id, con)[1,1],
+                      max_period_db = ifelse(is.na(vint_id), NA,
+                                             UMARaccessR::get_last_period_from_vintage(vint_id, con)[1,1])) |>
+        dplyr::ungroup() |>
+        dplyr::filter(is.na(max_period_db) | max_period_new > max_period_db ) |>
+        dplyr::select(series_code, series_id) |>
+        dplyr::mutate(published = Sys.time()) |>
+        dplyr::ungroup()
+        selection
 }
 
 #' Get and prepare data for import

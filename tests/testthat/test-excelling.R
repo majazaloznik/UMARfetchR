@@ -5,7 +5,7 @@ test_that("create_excel_file produces an Excel file with the correct structure",
 
   ws <- openxlsx::read.xlsx(filename, sheet = "timeseries")
   # Check that the file has the right number of rows and columns
-  expect_equal(ncol(ws), 9)
+  expect_equal(ncol(ws), 11)
   expect_equal(names(ws)[1], "source")
 
   # Don't forget to delete the temp file
@@ -38,5 +38,5 @@ test_that("create_data_template_excel: Check if Excel file is created with custo
   create_data_template_excel(path = custom_folder)
 
   # Check if the file is created in the custom folder
-  expect_true(file.exists(file.path(custom_folder, "umar_serije_podakti_name.xlsx")))
+  expect_true(file.exists(file.path(custom_folder, "umar_serije_podatki_name.xlsx")))
 })

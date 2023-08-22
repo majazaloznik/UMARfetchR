@@ -35,7 +35,7 @@ dittodb::with_mock_db({
     path <- file.path(testthat::test_path("test_dir"), initials)
     expect_true(x)
     # Check if the file is created in the custom folder
-    expect_true(file.exists(file.path(path, "umar_serije_podakti_MH.xlsx")))
+    expect_true(file.exists(file.path(path, "umar_serije_podatki_MH.xlsx")))
     expect_true(file.exists(file.path(path, "umar_serije_metadata_MH.xlsx")))
 
       unlink( testthat::test_path("test_dir"), recursive = TRUE)
