@@ -7,7 +7,7 @@
 insert_new_vintage(data, con, schema = "platform")
 }
 \arguments{
-\item{data}{dataframes with the data_points output of the parser}
+\item{data}{dataframes with the data_points after checking}
 
 \item{con}{connection to database}
 

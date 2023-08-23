@@ -236,7 +236,7 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
 #' data points to the database.
 #'
 #'
-#' @param data dataframes with the data_points output of the parser
+#' @param data dataframes with the data_points after checking
 #' @param con connection to database
 #' @param schema database schema
 #' @return list of tables with counts for each inserted row.
