@@ -19,39 +19,41 @@ This is one of a family of data fetching packages, which include `SURSfetchR`, `
 
 Each data series must have:
 
-* metadata or structural data, which the author prepares in a specified format and which gets imported into the database once. The format is one row per series and more details are given in section \@ref(meta). Each author has one structural file and additional series are all added to the same file.
-* the timeseries data, which is formatted columnwise and more details are given in section \@ref(data-specs). This file is updated with new rows when more data becomes available and ingested into the database. 
+* metadata or structural data, which the author prepares in a specified format and which gets imported into the database once. The format is one row per series and more details are given in section \@ref(meta). Each author has one structural file to which they may append new series.
+* the timeseries data, which is formatted column-wise and more details are given in section \@ref(data-specs). This file is updated with new rows when more data becomes available and is ingested into the database on a regular basis. 
 
 
 # Workflow
 
-Individual authors will be assigned a folder on the network drive into which they will deposit two files: a metadata file and a data file. Updating the data or adding new series all happens by updating one or both of these files. 
+Individual authors are assigned a folder on the network drive with two template files: a metadata file and a data file. Following the instructions they enter the metadata for each series in one file (one row per series) and the data in the second (one column per series). Both files can also be updated by adding new series and/or adding new data.  
 
 A **fetching** script will be run regularly via Task Scheduler (for now anyway), to pick up any changes to the files and update the database. 
 
 ## Once per database
 
-The `insert_new_source()` function is run only once as it inserts the source and the highest level category hierarchy. 
+The `insert_new_source()` function is run only once as it inserts the source `UMAR` and the highest level category hierarchy. 
 
 ## Once per author
 
 For each new author the `add_new_author()` function does the following:
 
-* adds the author to the database - which also checks for uniqueness of initials, otherwise change them
-* creates a folder for them in the data pick up location
-* runs `create_structure_template_excel()` which creates a folder for them on `O:\Avtomatizacija\umar-data\` and an Excel template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. They are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html). 
-* each author also represents a `category` in the database. So `insert_new_category` and `insert_new_category_relationship` are run with the author name as the category.^[Although eventually other categories can be added, but there is no expectation right now that this functionality will be needed. ]
+* adds the author to the database - which also checks for uniqueness of initials, otherwise exits with a warning. If author can be added then:
+* `add_author_folder` creates a folder for them on `O:\Avtomatizacija\umar-data\` (or wherever else you want to) and also:
+* runs `create_structure_template_excel()` which creates an Excel template in their folder to populate with their metadata and is named `umar_serije_metadata_<authorinitials>.xlsx`. 
+* Also runs `create_data_template_excel()`, which creates a data template file in the same location. ^[ The authors are given instructions as to how to do this, which are also a vignette in this package [here](Navodila_za_avtorje.html)]. 
+* each author also represents a `category` in the database. So `insert_new_category` and `insert_new_category_relationship` are run with the author name as the category.^[Although eventually other categories can be added, but there is no expectation right now that this functionality will be needed.]
 
-Once this is done, the maintainer needs to manually give the author permissions to modify the contents of the files in their folder. 
+Once this is done, the maintainer needs to manually give the author permissions to modify the contents of the files in their folder. Or rather ask Saša to do it. 
 
 ## Once per series 
 
-For each new series, the author prepares a row in the metadata Excel file with have 8 or 9 columns. The filename is the input for the `main_structure()` which does the following:
+For each new series, the author prepares a row in the metadata Excel file with 8 or 9 columns. The filename is the input for the `main_structure()` function which does the following:
 
 * reads the file with the metadata
 * parses it and checks the data is reasonable with `parse_structure()` , which also computes columns (9), 10 and 11.
-* runs `prep_and_import_structure()`, which writes all the series metadata to the database 
+* runs `prep_and_import_structure()`, which writes all the *new series'* metadata to the database 
 * then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
+* *This is important: you cannot make changes to the metadata of series you have already imported. The expected procedure is to create a new series.* (I mean a maintainer can always go into the database and fix stuff manually.) Anyway, the funciton treat all series with 11 columns as old and they are not imported again.
 
 ## Once per data update
 
@@ -60,7 +62,7 @@ Each time an author wants to update their data, they update the data Excel file 
 The function `main_data()` is an umbrella function that does the following:
 
 * reads the file with the data
-*  parses it and checks the data is reasonable `parse_data()`, which also checks if there is any difference with the data alreay in the database.
+* parses it and checks the data is reasonable `parse_data()`, which also checks if there is any difference with the data already in the database.
 * `prep_and_import_data()` then imports it into the database if needed.
 
 # Specifications {#specs}
@@ -70,7 +72,7 @@ The function `main_data()` is an umbrella function that does the following:
 
 The `create_structure_template_excel()` creates a template with nine columns, eight of which *must* be filled by the author. An additional two columns are calculated at import. 
 
-* **source**: if we have done any calculations, the first one is UMAR. the second and furhter commma separated ones are the original data sources.  If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source is reversed: first UMAR and then the original, but no spaces are allowed an a max of 8 characters.
+* **source**: if we have done any calculations, the first one is UMAR. the second and further comma-separated ones are the original data sources. If the data being imported has not been manipulated in any way and is only imported because the package for importing from that source doesn't exist yet, the source is reversed: first the original and then UMAR. No spaces are allowed an a max of 8 characters (the second condition is just a recommendation though).
 
 * **author**: full name of author, must be the same as the one used in the umar_authors table in the database. 
 
@@ -79,7 +81,7 @@ The `create_structure_template_excel()` creates a template with nine columns, ei
 * **dimensions**: name of dimensions - at least one. If there are more, they have to be separated by "--"
 * **dimension_levels_text**: the level text and codes need to match in number, and also between series. So if you have two dimensions, you need ot have a level_text for each and a level_code for each, again separated by `"--"`
 * **dimension_levels_code**: here is an example: The dimensions might be `"geography--gender"`, and then the dimension levels text could be for one series `"Ljubljana--moški"` or `"Maribor--ženske"`, and then the codes could be `"lj--m"`, `"mb--f`". The choice of codes is up to the author, but they should be short!
-* **unit**: must be one of the units in the database. See appendix for list. 
+* **unit**: must be one of the units in the database. See instructions for authors for current list. 
 * **interval**: "M", "Q" or "A" for now
 * **series_name**: descriptive name for series - if this is left empty, the dimension_levels_text will be used instead, which is not ideal, but better than nothing. 
 
@@ -98,18 +100,19 @@ The data tables must be **tidy**:
 
 The tables must:
 
-* have one column titled **`period`**, which must contain the correctly formatted time e.g. "2020M04" for months or "2023Q4" for quarters and must be incrementally and monotonically increasing i.e. no duplicated period values are allowed.  
+* have one and only one column titled **`period`**, which must contain the correctly formatted time e.g. "2020M04" for months or "2023Q4" for quarters and must be incrementally and monotonically increasing i.e. no duplicated period values are allowed.  
 * have column names that are legit **`series_code`** values (with the correct interval) and no duplicates
-* have their header in the first row ^[Although this is not strictly necessary, because the Excel reading funciton is quite smart here, just don't tell anyone]. 
+* have their header in the first row ^[Although this is not strictly necessary, because the Excel reading funciton is quite smart here, just don't tell anyone :)]. 
 
 The tables can:
 
-* gave series of different lengths - but the period values must exist for the longest series.
+* have series of different lengths - but the period values must exist for the longest series.
+* have additional sheets for the author's notes or whatever. 
 
 The tables don't have to:
 
 * have all the series that were in the structure table. But why would you do that? 
-* have all the worksheets if the series for them don't exist. 
+* have all the worksheets if the series for them don't exist, but the template creates the three empty sheets anyway.  
 
 
 
