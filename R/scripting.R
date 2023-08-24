@@ -106,29 +106,29 @@ main_structure <- function(filename, con, schema) {
 #' @export
 
 add_new_author <- function(name, initials, email, con, schema = "platform",
-                             data_location = "O://Avtomatizacija//umar-data",
+                           data_location = "O:/Avtomatizacija/umar-data",
                            overwrite = FALSE){
   x <- insert_new_author(name, initials, email, folder = NA, con, schema)
   if (x == 1) {
-  dir.create(file.path(data_location, initials), showWarnings = FALSE)
-  path <- file.path(data_location, initials)
-  tryCatch({create_structure_template_excel(path, initials, overwrite)},
-           error=function(cond) {
-             message(cond)}
-  )
-  tryCatch({create_data_template_excel(path, initials, overwrite)},
-           error=function(cond) {
-             message(cond)}
-  )
-  add_author_folder(initials, path, con, schema)
-  insert_new_category(name, con, schema)
-  insert_new_category_relationship(name, con, schema)
-  message(name, " je dodan(a) med avtorje.")
-  message("Zdaj pa ji/mu uredi pravice na mapi!")
-  TRUE} else {
-    message("Avtor ni bil zapisan, preveri inicijalke.")
-    FALSE
-  }
+    path <- file.path(data_location, initials)
+    dir.create(file.path(path), showWarnings = FALSE)
+    tryCatch({create_structure_template_excel(path, initials, overwrite)},
+             error=function(cond) {
+               message(cond)}
+    )
+    tryCatch({create_data_template_excel(path, initials, overwrite)},
+             error=function(cond) {
+               message(cond)}
+    )
+    add_author_folder(initials, path, con, schema)
+    insert_new_category(name, con, schema)
+    insert_new_category_relationship(name, con, schema)
+    message(name, " je dodan(a) med avtorje.")
+    message("Zdaj pa ji/mu uredi pravice na mapi!")
+    TRUE} else {
+      message("Avtor ni bil zapisan, preveri inicijalke.")
+      FALSE
+    }
 }
 
 

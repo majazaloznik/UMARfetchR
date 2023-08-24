@@ -10,7 +10,7 @@ add_new_author(
   email,
   con,
   schema = "platform",
-  data_location = "O://Avtomatizacija//umar-data",
+  data_location = "O:/Avtomatizacija/umar-data",
   overwrite = FALSE
 )
 }
