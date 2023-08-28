@@ -7,7 +7,7 @@
 main_data(filename, codes, con, schema)
 }
 \arguments{
-\item{filename}{path to excel file with timeseries structure metadata}
+\item{filename}{path to excel file with timeseries data}
 
 \item{codes}{output of \link[UMARfetchR]{main_structure} i.e. list of series codes}
 
@@ -19,5 +19,6 @@ main_data(filename, codes, con, schema)
 nothing, just message
 }
 \description{
-Main function for processing data
+inputs the excel file with the timeseries data plus a vector of the allowed codes and
+imports them into the database.
 }

@@ -135,7 +135,10 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
 
 #' Main function for processing data
 #'
-#' @param filename path to excel file with timeseries structure metadata
+#' inputs the excel file with the timeseries data plus a vector of the allowed codes and
+#' imports them into the database.
+#'
+#' @param filename path to excel file with timeseries data
 #' @param codes output of \link[UMARfetchR]{main_structure} i.e. list of series codes
 #' @param con connection to database
 #' @param schema schema name
@@ -147,7 +150,7 @@ main_data <- function(filename, codes, con, schema) {
   check_data_xlsx(filename, codes)
   sheet_names <- openxlsx::getSheetNames(filename)
   if("M" %in% sheet_names) {
-    message("Zavihek M:\n")
+    message("\nZavihek M:")
     df <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
     if (!is.null(df)){
       insert_new_vintage(df, con, schema)
@@ -155,7 +158,7 @@ main_data <- function(filename, codes, con, schema) {
         message("Na zavihku ni podatkov")}
   }
   if("A" %in% sheet_names) {
-    message("Zavihek A:\n")
+    message("\nZavihek A:")
     df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
     if (!is.null(df)){
       insert_new_vintage(df, con, schema)
@@ -163,7 +166,7 @@ main_data <- function(filename, codes, con, schema) {
         message("Na zavihku ni podatkov")}
   }
   if("Q" %in% sheet_names) {
-    message("Zavihek Q:\n")
+    message("\nZavihek Q:")
     df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
     if (!is.null(df)){
       insert_new_vintage(df, con, schema)
@@ -233,7 +236,7 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
   log <- paste0(path, "log_metadata_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
 
   # Create an open connection to the log file
-  con_log <- file(log, open = "wt")
+  con_log <- file(log, open = "wt", encoding = "UTF-8")
 
   # Start capturing messages first, then output
   sink(con_log, type="message")
@@ -241,24 +244,78 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
 
   # Use tryCatch to capture warnings and errors
   result <- tryCatch({
-
+    message("Uvoz metapodatkov:\n----------------------- \n")
     initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
     codes <- main_structure(filename, con, schema)
     message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
             paste(codes, collapse = "\n"))
     codes
-
   }, warning = function(w) {
-
     message("Captured warning: ", conditionMessage(w))
     return(NULL)  # or some other sentinel value
-
   }, error = function(e) {
-
     message("Captured error: ", conditionMessage(e))
     return(NULL)  # or some other sentinel value
+  }, finally = {
+    # Close the sinks
+    sink(type="output")
+    sink(type="message")
+    close(con_log)  # Close the file connection
+  })
 
+  email_log(log, recipient = "maja.zaloznik@gmail.com", meta = TRUE)
+  email_log(log, recipient = email, meta = TRUE)
+  return(result)
+}
+
+
+
+#' Wrapper function for complete data pipeline
+#'
+#' This wrapper function runs the whole pipeline in the \link[UMARfetchR]{main_structure}
+#' (even though it is probably unnecessary) before running \link[UMARfetchR]{main_data}
+#' one which imports any new data, while logging everything to the sink and emailing the
+#' logs to the listed recipients.
+#'
+#' @param meta_filename metadata file
+#' @param data_filename data file
+#' @param con connection to database
+#' @param schema name of database schema
+#' @param path folder to store the log file to
+#'
+#' @return Nothing, just side effects :). Writes to the database and the excel file and emails logs.
+#' @export
+#'
+update_data <- function(meta_filename, data_filename, con, schema, path = "logs/") {
+
+  log <- paste0(path, "log_data_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
+
+  # Create an open connection to the log file
+  con_log <- file(log, open = "wt", encoding = "UTF-8")
+
+  # Start capturing messages first, then output
+  sink(con_log, type="message")
+  sink(con_log, type="output")
+
+  # Use tryCatch to capture warnings and errors
+  result <- tryCatch({
+    message("Uvoz metapodatkov:\n----------------------- \n")
+    initials <- sub(".*_(.*)\\.xlsx", "\\1", meta_filename)
+    email <- UMARaccessR::get_email_from_author_initials(initials, con)
+    codes <- main_structure(meta_filename, con, schema)
+    message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
+            paste(codes, collapse = "\n"), "\n")
+
+    message("Uvoz podatkov:\n-----------------------")
+    main_data(data_filename, codes, con, schema)
+
+  }, warning = function(w) {
+    message("Captured warning: ", conditionMessage(w))
+    return(NULL)
+  }, error = function(e) {
+    message("Captured error: ", conditionMessage(e))
+    return(NULL)
   }, finally = {
 
     # Close the sinks
