@@ -245,6 +245,8 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
     initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
     codes <- main_structure(filename, con, schema)
+    message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
+            paste(codes, collapse = "\n"))
     codes
 
   }, warning = function(w) {
