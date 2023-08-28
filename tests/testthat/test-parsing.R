@@ -66,7 +66,9 @@ dittodb::with_mock_db({
     expect_error(check_structure_df(test30, con))
     test31 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests8.xlsx"), sheet = "timeseries")
     expect_error(check_structure_df(test31, con))
-  })
+    test31 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet31")
+    expect_error(check_structure_df(test31, con))
+    })
 
 
   test_that("table codes are computed correctly", {

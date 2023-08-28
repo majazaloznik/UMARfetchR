@@ -22,6 +22,11 @@ check_structure_df <- function(df, con) {
     stop("Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
          paste(col_names, collapse = ", "))
   }
+  # check empty table
+  if (nrow(df) == 0) {
+    stop("V tabeli ni metapodatkov. Sploh. ")
+  }
+
   #check incomplete rows
   rows_with_na <- which(!complete.cases(df[,1:8]))
 
