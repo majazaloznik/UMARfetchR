@@ -172,3 +172,101 @@ main_data <- function(filename, codes, con, schema) {
   }
   message("Podatki iz ", basename(filename), " so prene\u0161eni v bazo.")
 }
+
+
+#' Send email with log
+#'
+#' Convenience wrapper for sending the log to a (bunch of) recipient(s). This fun is
+#' based on the ddvR::email_log function, just fyi. Cannae be bothered writing tests for this.
+#'
+#' @param log path to log file
+#' @param recipient email (not checked) address to be sent to as BCC.
+#' I think single email is all that's allowed. Haven't tried more.
+#' @param meta logical indicating if the script was the metadata one or the data one (default).
+#' This affects the subject and text of the email.
+#'
+#' @return nothing, side effect is the email being sent.
+#' @export
+#'
+email_log <- function(log, recipient, meta = FALSE) {
+  if (meta) {
+    subject <- "UMAR baza - uvoz metapodatkov"
+    body <- paste0("To je avtomatsko sporo\u010dilo. <br><br>",
+                   "V priponki je log uvoza metapodatkov v bazo <code>platform</code> na ",
+                   "stre\u017eniku <code>umar-bi</code><br><br>",
+                   "Tvoj Umar Data Bot &#129302;")
+  } else {
+    subject <- "UMAR baza - uvoz podatkov"
+    body <- paste0("To je avtomatsko sporo\u010dilo. <br><br>",
+                   "V priponki je log uvoza podatkov v bazo <code>platform</code> na ",
+                   "stre\u017eniku <code>umar-bi</code><br><br>",
+                   "Tvoj Umar Data Bot &#129302;")
+  }
+
+
+  text_msg <- gmailr::gm_mime() %>%
+    gmailr::gm_bcc(recipient) %>%
+    gmailr::gm_subject(subject) %>%
+    gmailr::gm_html_body(body) %>%
+    gmailr::gm_attach_file(log)
+
+  gmailr::gm_send_message(text_msg)
+}
+
+
+
+#' Wrapper function for complete metadata pipeline
+#'
+#' This wrapper function runs the whole pipeline in the \link[UMARfetchR]{main_structure}, while
+#' logging everything to the sink and emailing the logs to the listed recipients
+#'
+#' @param filename location of metadata file
+#' @param con connection to database
+#' @param schema name of database schema
+#' @param path folder to store the log file to
+#'
+#' @return Nothing, just side effects :). Writes to the database and the excel file and emails logs.
+#' @export
+#'
+update_metadata <- function(filename, con, schema, path = "logs/") {
+
+  log <- paste0(path, "log_metadata_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
+
+  # Create an open connection to the log file
+  con_log <- file(log, open = "wt")
+
+  # Start capturing messages first, then output
+  sink(con_log, type="message")
+  sink(con_log, type="output")
+
+  # Use tryCatch to capture warnings and errors
+  result <- tryCatch({
+
+    initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
+    email <- UMARaccessR::get_email_from_author_initials(initials, con)
+    codes <- main_structure(filename, con, schema)
+    codes
+
+  }, warning = function(w) {
+
+    message("Captured warning: ", conditionMessage(w))
+    return(NULL)  # or some other sentinel value
+
+  }, error = function(e) {
+
+    message("Captured error: ", conditionMessage(e))
+    return(NULL)  # or some other sentinel value
+
+  }, finally = {
+
+    # Close the sinks
+    sink(type="output")
+    sink(type="message")
+    close(con_log)  # Close the file connection
+
+  })
+
+  email_log(log, recipient = "maja.zaloznik@gmail.com", meta = TRUE)
+  email_log(log, recipient = email, meta = TRUE)
+  return(result)
+}
