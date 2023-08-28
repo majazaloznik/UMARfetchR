@@ -47,13 +47,16 @@ Once this is done, the maintainer needs to manually give the author permissions 
 
 ## Once per series 
 
-For each new series, the author prepares a row in the metadata Excel file with 8 or 9 columns. The filename is the input for the `main_structure()` function which does the following:
+For each new series, the author prepares a row in the metadata Excel file with 8 or 9 columns. The filename is the input for the `update_metadata()` function which does the following:
 
 * reads the file with the metadata
 * parses it and checks the data is reasonable with `parse_structure()` , which also computes columns (9), 10 and 11.
 * runs `prep_and_import_structure()`, which writes all the *new series'* metadata to the database 
 * then this dataframe also written back to the Excel file with the `update_structure_excel()`. Next time new series are added to the table, the prep&insert function will skip the existing series. 
+* all outputs are logged and the log is emailed to maja.zaloznik@gmail.com and the author's gov.si email. 
 * *This is important: you cannot make changes to the metadata of series you have already imported. The expected procedure is to create a new series.* (I mean a maintainer can always go into the database and fix stuff manually.) Anyway, the funciton treat all series with 11 columns as old and they are not imported again.
+
+The `umar-add_new_series_metadata.R` in the `O:/Avtomatizacija/umar-automation-scripts` repository is the script you want, and you run it manually when an author informs you they have metadata ready for ingestion.
 
 ## Once per data update
 
