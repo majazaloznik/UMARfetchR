@@ -4,10 +4,10 @@
 \alias{update_data}
 \title{Wrapper function for complete data pipeline}
 \usage{
-update_data(meta_filename, data_filename, con, schema, path = "logs/")
+update_data(metadata_filename, data_filename, con, schema, path = "logs/")
 }
 \arguments{
-\item{meta_filename}{metadata file}
+\item{metadata_filename}{metadata file}
 
 \item{data_filename}{data file}
 
@@ -21,8 +21,7 @@ update_data(meta_filename, data_filename, con, schema, path = "logs/")
 Nothing, just side effects :). Writes to the database and the excel file and emails logs.
 }
 \description{
-This wrapper function runs the whole pipeline in the \link[UMARfetchR]{main_structure}
-(even though it is probably unnecessary) before running \link[UMARfetchR]{main_data}
+This wrapper function runs the whole data pipeline by running \link[UMARfetchR]{main_data}
 one which imports any new data, while logging everything to the sink and emailing the
 logs to the listed recipients.
 }

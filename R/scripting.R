@@ -173,7 +173,7 @@ main_data <- function(filename, codes, con, schema) {
       insert_data_points(df, con, schema)} else {
         message("Na zavihku ni podatkov")}
   }
-  message("Podatki iz ", basename(filename), " so prene\u0161eni v bazo.")
+  message("\nPodatki iz ", basename(filename), " so prene\u0161eni v bazo.\n-----------------------")
 }
 
 
@@ -273,12 +273,11 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
 
 #' Wrapper function for complete data pipeline
 #'
-#' This wrapper function runs the whole pipeline in the \link[UMARfetchR]{main_structure}
-#' (even though it is probably unnecessary) before running \link[UMARfetchR]{main_data}
+#' This wrapper function runs the whole data pipeline by running \link[UMARfetchR]{main_data}
 #' one which imports any new data, while logging everything to the sink and emailing the
 #' logs to the listed recipients.
 #'
-#' @param meta_filename metadata file
+#' @param metadata_filename metadata file
 #' @param data_filename data file
 #' @param con connection to database
 #' @param schema name of database schema
@@ -287,7 +286,7 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
 #' @return Nothing, just side effects :). Writes to the database and the excel file and emails logs.
 #' @export
 #'
-update_data <- function(meta_filename, data_filename, con, schema, path = "logs/") {
+update_data <- function(metadata_filename, data_filename, con, schema, path = "logs/") {
 
   log <- paste0(path, "log_data_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
 
@@ -300,14 +299,11 @@ update_data <- function(meta_filename, data_filename, con, schema, path = "logs/
 
   # Use tryCatch to capture warnings and errors
   result <- tryCatch({
-    message("Uvoz metapodatkov:\n----------------------- \n")
     initials <- sub(".*_(.*)\\.xlsx", "\\1", meta_filename)
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
-    codes <- main_structure(meta_filename, con, schema)
-    message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
-            paste(codes, collapse = "\n"), "\n")
-
+    codes <- read_codes_from_metadata_excel(metadata_filename)
     message("Uvoz podatkov:\n-----------------------")
+
     main_data(data_filename, codes, con, schema)
 
   }, warning = function(w) {

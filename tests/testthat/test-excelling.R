@@ -40,3 +40,8 @@ test_that("create_data_template_excel: Check if Excel file is created with custo
   # Check if the file is created in the custom folder
   expect_true(file.exists(file.path(custom_folder, "umar_serije_podatki_name.xlsx")))
 })
+
+test_that("code reading from xlsx works", {
+  x <-read_codes_from_metadata_excel(testthat::test_path("testdata", "struct_tests6.xlsx"))
+  expect_equal(length(x), 4)
+})

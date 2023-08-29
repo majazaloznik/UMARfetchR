@@ -80,3 +80,21 @@ create_data_template_excel <- function(path = "", author = "name", overwrite = T
   openxlsx::addWorksheet(wb, "A")
   openxlsx::saveWorkbook(wb, file = outfile, overwrite = overwrite)
 }
+
+
+
+#' Little helper function to get the codes out of a metadata file
+#'
+#' does what it says on the tin. no error checking of any note.
+#'
+#' @param filename location of excel file of the `umar_serije_metadata_XX.xlsx` variety
+#'
+#' @return vector of code names.
+#' @export
+read_codes_from_metadata_excel <- function(filename){
+  df <- openxlsx::read.xlsx(filename, sheet = "timeseries")
+  x <- df$series_code
+  x <- x[!is.na(x)]
+  if(length(x) == 0) { NA  } else {
+    x  }
+}
