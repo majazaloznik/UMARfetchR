@@ -143,37 +143,42 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
 #' @param con connection to database
 #' @param schema schema name
 #'
-#' @return nothing, just message
+#' @return 0 if all sheets are empty, otherwise just message
 #' @export
 #'
 main_data <- function(filename, codes, con, schema) {
   check_data_xlsx(filename, codes)
   sheet_names <- openxlsx::getSheetNames(filename)
+  imported_rows <- 0
   if("M" %in% sheet_names) {
     message("\nZavihek M:")
-    df <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
-    if (!is.null(df)){
-      insert_new_vintage(df, con, schema)
-      insert_data_points(df, con, schema)} else {
+    df_m <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
+    if (!is.null(df_m)){
+      insert_new_vintage(df_m, con, schema)
+      insert_data_points(df_m, con, schema)} else {
+        imported_rows <- imported_rows + 0
         message("Na zavihku ni podatkov")}
   }
   if("A" %in% sheet_names) {
     message("\nZavihek A:")
-    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
-    if (!is.null(df)){
-      insert_new_vintage(df, con, schema)
-      insert_data_points(df, con, schema)} else {
+    df_a <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
+    if (!is.null(df_a)){
+      insert_new_vintage(df_a, con, schema)
+      insert_data_points(df_a, con, schema)} else {
+        imported_rows <- imported_rows + 0
         message("Na zavihku ni podatkov")}
   }
   if("Q" %in% sheet_names) {
     message("\nZavihek Q:")
-    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
-    if (!is.null(df)){
-      insert_new_vintage(df, con, schema)
-      insert_data_points(df, con, schema)} else {
+    df_q <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
+    if (!is.null(df_q)){
+      insert_new_vintage(df_q, con, schema)
+      insert_data_points(df_q, con, schema)} else {
+        imported_rows <- imported_rows + 0
         message("Na zavihku ni podatkov")}
   }
   message("\nPodatki iz ", basename(filename), " so prene\u0161eni v bazo.\n-----------------------")
+  imported_rows
 }
 
 
@@ -304,7 +309,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     message("Mapa ", initials, ":\n----------------------- \n")
     message("Uvoz podatkov:\n-----------------------")
 
-    main_data(data_filename, codes, con, schema)
+    imported_rows <- main_data(data_filename, codes, con, schema)
 
   }, warning = function(w) {
     message("Captured warning: ", conditionMessage(w))
@@ -318,6 +323,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     sink(type="message")
     close(con_log)
     email_log(log, recipient = "maja.zaloznik@gmail.com")
-    email_log(log, recipient = email)
+    if(imported_rows != 0){
+      email_log(log, recipient = email)}
   })
 }
