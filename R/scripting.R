@@ -325,7 +325,7 @@ update_data <- function(meta_filename, data_filename, con, schema, path = "logs/
 
   })
 
-  email_log(log, recipient = "maja.zaloznik@gmail.com", meta = TRUE)
-  email_log(log, recipient = email, meta = TRUE)
+  email_log(log, recipient = "maja.zaloznik@gmail.com")
+  email_log(log, recipient = email)
   return(result)
 }
