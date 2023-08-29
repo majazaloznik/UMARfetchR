@@ -245,7 +245,7 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
   # Use tryCatch to capture warnings and errors
   result <- tryCatch({
     initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
-    message("Mapa ", initials, ":\n----------------------- \n")
+    message("Mapa ", initials, ":\n-----------------------")
     message("Uvoz metapodatkov:\n----------------------- \n")
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
     codes <- main_structure(filename, con, schema)
@@ -298,7 +298,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
 
   # Use tryCatch to capture warnings and errors
   result <- tryCatch({
-    initials <- sub(".*_(.*)\\.xlsx", "\\1", meta_filename)
+    initials <- sub(".*_(.*)\\.xlsx", "\\1", metadata_filename)
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
     codes <- read_codes_from_metadata_excel(metadata_filename)
     message("Mapa ", initials, ":\n----------------------- \n")
