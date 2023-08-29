@@ -251,7 +251,7 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
     codes <- main_structure(filename, con, schema)
     message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
             paste(codes, collapse = "\n"))
-    codes
+
   }, warning = function(w) {
     message("Captured warning: ", conditionMessage(w))
     return(NULL)  # or some other sentinel value
@@ -259,15 +259,13 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
     message("Captured error: ", conditionMessage(e))
     return(NULL)  # or some other sentinel value
   }, finally = {
-    # Close the sinks
+    # Close the sinks and email them
     sink(type="output")
     sink(type="message")
-    close(con_log)  # Close the file connection
+    close(con_log)
+    email_log(log, recipient = "maja.zaloznik@gmail.com", meta = TRUE)
+    email_log(log, recipient = email, meta = TRUE)
   })
-
-  email_log(log, recipient = "maja.zaloznik@gmail.com", meta = TRUE)
-  email_log(log, recipient = email, meta = TRUE)
-  return(result)
 }
 
 
@@ -315,15 +313,11 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     message("Captured error: ", conditionMessage(e))
     return(NULL)
   }, finally = {
-
-    # Close the sinks
+    # Close the sinks and email them
     sink(type="output")
     sink(type="message")
-    close(con_log)  # Close the file connection
-
+    close(con_log)
+    email_log(log, recipient = "maja.zaloznik@gmail.com")
+    email_log(log, recipient = email)
   })
-
-  email_log(log, recipient = "maja.zaloznik@gmail.com")
-  email_log(log, recipient = email)
-  return(result)
 }
