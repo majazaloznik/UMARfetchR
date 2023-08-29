@@ -244,8 +244,9 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
 
   # Use tryCatch to capture warnings and errors
   result <- tryCatch({
-    message("Uvoz metapodatkov:\n----------------------- \n")
     initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
+    message("Mapa ", initials, ":\n----------------------- \n")
+    message("Uvoz metapodatkov:\n----------------------- \n")
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
     codes <- main_structure(filename, con, schema)
     message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
@@ -302,6 +303,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     initials <- sub(".*_(.*)\\.xlsx", "\\1", meta_filename)
     email <- UMARaccessR::get_email_from_author_initials(initials, con)
     codes <- read_codes_from_metadata_excel(metadata_filename)
+    message("Mapa ", initials, ":\n----------------------- \n")
     message("Uvoz podatkov:\n-----------------------")
 
     main_data(data_filename, codes, con, schema)
