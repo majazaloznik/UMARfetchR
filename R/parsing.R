@@ -14,12 +14,13 @@
 #' @export
 #' @importFrom stats complete.cases
 check_structure_df <- function(df, con) {
-
+ log_check <- TRUE
   # Check the column names
   col_names <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
                  "dimension_levels_code", "unit", "interval")
   if (!all(col_names %in% names(df))) {
-    stop("Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
+    log_check <- FALSE
+    warning("Nekaj je narobe z imeni stolpcev. Pri\u010dakovani so vsaj naslednji: ",
          paste(col_names, collapse = ", "))
   }
   # check empty table
@@ -31,38 +32,44 @@ check_structure_df <- function(df, con) {
   rows_with_na <- which(!complete.cases(df[,1:8]))
 
   if (length(rows_with_na) > 0) {
-    stop("V tabeli ima\u0161 nepopolne vrstice. Poglej naslednje vrstice: ",
+    log_check <- FALSE
+    warning("V tabeli ima\u0161 nepopolne vrstice. Poglej naslednje vrstice: ",
          paste(rows_with_na, collapse = ", "))
   }
   # check sources
   check <- grep("^(\\w+)(,\\s?\\w+)*$", df$source, invert = TRUE)
   if(length(check) > 0) {
-    stop("V tabeli ima\u0161 neveljavne vrednosti v polju source. Poglej naslednje vrstice: ",
+    log_check <- FALSE
+    warning("V tabeli ima\u0161 neveljavne vrednosti v polju source. Poglej naslednje vrstice: ",
          paste(check, collapse = ", "))
   }
 
   # check one source is UMAR
   check <- grep(".*UMAR.*", toupper(df$source), invert = TRUE)
   if(length(check) > 0) {
-    stop("V tabeli ti  v polju source manjka UMAR. Poglej naslednje vrstice: ",
+    log_check <- FALSE
+    warning("V tabeli ti  v polju source manjka UMAR. Poglej naslednje vrstice: ",
          paste(check, collapse = ", "))
   }
 
 
   # check single author
   if (length(unique(df$author)) != 1) {
-    stop("V tabeli so dovoljene samo serije enega avtorja. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
+    log_check <- FALSE
+    warning("V tabeli so dovoljene samo serije enega avtorja. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
          paste(unique(df$author), collapse = ", "))
   }
   # check author is in the database
-  if (is.na(UMARaccessR::get_initials_from_author_name(unique(df$author), con))) {
-    stop("Avtor \u0161e ni v bazi. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
+  if (is.na(UMARaccessR::get_initials_from_author_name(unique(df$author)[1], con))) {
+    log_check <- FALSE
+    warning("Avtor \u0161e ni v bazi. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
          paste(unique(df$author), collapse = ", "))
   }
   # Check intervals are all legal
   intervals <- c("M", "Q", "A")
   if (!all(unique(df$interval) %in% intervals)) {
-    stop("Nekaj je narobe z vrednostimi v polju interval, dovoljene so samo naslednje vrednosti: ",
+    log_check <- FALSE
+    warning("Nekaj je narobe z vrednostimi v polju interval, dovoljene so samo naslednje vrednosti: ",
          paste(intervals, collapse = ", "))
   }
 
@@ -73,7 +80,8 @@ check_structure_df <- function(df, con) {
     dplyr::summarize(all_same_interval = dplyr::n_distinct(interval) == 1, .groups = "drop") |>
     dplyr::filter(all_same_interval == FALSE) -> check
   if (nrow(check) > 0) {
-    stop("Vse serije v eni tabli morajo imeti enak interval. To ni res tukaj: ",
+    log_check <- FALSE
+    warning("Vse serije v eni tabli morajo imeti enak interval. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
 
@@ -84,7 +92,8 @@ check_structure_df <- function(df, con) {
     dplyr::summarize(all_same_source = dplyr::n_distinct(source) == 1, .groups = "drop") |>
     dplyr::filter(all_same_source == FALSE) -> check
   if (nrow(check) > 0) {
-    stop("Vse serije v eni tabli morajo imeti enak source To ni res tukaj: ",
+    log_check <- FALSE
+    warning("Vse serije v eni tabli morajo imeti enak source To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
 
@@ -96,7 +105,8 @@ check_structure_df <- function(df, con) {
     dplyr::summarize(all_same_dimz = dplyr::n_distinct(dimensions) == 1, .groups = "drop") |>
     dplyr::filter(all_same_dimz == FALSE) -> check
   if (nrow(check) > 0) {
-    stop("Vse serije v eni tabli morajo imeti enake dimenzije. To ni res tukaj: ",
+    log_check <- FALSE
+    warning("Vse serije v eni tabli morajo imeti enake dimenzije. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
 
@@ -106,7 +116,8 @@ check_structure_df <- function(df, con) {
                   check = grepl("^([A-Z0-9]{1,4})(--([A-Z0-9]{1,4}))*$", dimension_levels_code)) |>
     dplyr::filter(check ==FALSE) -> check
   if (nrow(check) > 0) {
-    stop("Naslednje vrednosti dimension_levels_code polja so nedovoljene, preberi navodila: ",
+    log_check <- FALSE
+    warning("Naslednje vrednosti dimension_levels_code polja so nedovoljene, preberi navodila: ",
          paste(check$dimension_levels_code, collapse = ", "))
   }
 
@@ -120,7 +131,8 @@ check_structure_df <- function(df, con) {
     dplyr::mutate(duplicate_exists = ifelse(check_unique < group_n, TRUE, FALSE)) |>
     dplyr::filter(duplicate_exists) -> check
   if (nrow(check) > 0) {
-    stop("Vse serije v eni tabli morajo unikaten dimension_levels_code. To ni res tukaj: ",
+    log_check <- FALSE
+    warning("Vse serije v eni tabli morajo unikaten dimension_levels_code. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
   # check same number of dimensions and levels in each table
@@ -136,7 +148,8 @@ check_structure_df <- function(df, con) {
                   same_counts = (count1 == count2 & count2 == count3)) |>
     dplyr::filter(!same_counts) -> check
   if (nrow(check) > 0) {
-    stop("Vse serije v eni tabli morajo imeti enako \u0161tevilo dimenzij in level-ov. To ni res tukaj: ",
+    log_check <- FALSE
+    warning("Vse serije v eni tabli morajo imeti enako \u0161tevilo dimenzij in level-ov. To ni res tukaj: ",
          paste(check$table_name, collapse = ", "))
   }
   # check that dimension level codes and text are matching
@@ -158,7 +171,8 @@ check_structure_df <- function(df, con) {
     dplyr::filter(!check)
 
   if (nrow(check) > 0) {
-    stop("Besedila in kode dimension level-ov niso ena:ena v naslednjih tabelah: ",
+    log_check <- FALSE
+    warning("Besedila in kode dimension level-ov niso ena:ena v naslednjih tabelah: ",
          paste(check$table_name, collapse = ", "))
   }
 
@@ -175,7 +189,8 @@ check_structure_df <- function(df, con) {
 
   illegal_units <- input_units[which(!input_units %in% legal_units)]
   if (length(illegal_units) > 0 ) {
-    stop("Uporablja\u0161 \u0161e nevne\u0161eno enoto. Povej Maji Z., da jo vnese:  ",
+    log_check <- FALSE
+    warning("Uporablja\u0161 \u0161e nevne\u0161eno enoto. Povej Maji Z., da jo vnese:  ",
          paste(illegal_units, collapse = ", "))
   }
 
@@ -191,15 +206,18 @@ check_structure_df <- function(df, con) {
     dplyr::filter(!check) -> check
 
   if (nrow(check) > 0) {
-    stop("V tabeli ne sme biti enako poimenovanih serij (series_name). Glej tabele: ",
+    log_check <- FALSE
+    warning("V tabeli ne sme biti enako poimenovanih serij (series_name). Glej tabele: ",
          paste(check$table_name, collapse = ", "))
   }
   # check UMAR isn't the only source
   check <- grep("^\\W*UMAR\\W*$", toupper(df$source))
   if(length(check) > 0) {
-    stop("V tabeli ima\u0161 kot vir samo UMAR, rabi\u0161 \u0161e originalen vir. Poglej naslednje vrstice: ",
+    log_check <- FALSE
+    warning("V tabeli ima\u0161 kot vir samo UMAR, rabi\u0161 \u0161e originalen vir. Poglej naslednje vrstice: ",
          paste(check, collapse = ", "))
   }
+  if(!log_check) stop("Uvoz metapodatkov je bil prekinjen.")
   TRUE
 }
 
