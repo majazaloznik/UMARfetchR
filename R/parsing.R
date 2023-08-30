@@ -165,7 +165,8 @@ check_structure_df <- function(df, con) {
   # check that all units are legal
   input_units <-  df |>
     dplyr::pull(unit) |>
-    unique()
+    unique() |>
+    tolower()
 
   legal_units <- dplyr::tbl(con, "unit") |>
     dplyr::collect() |>
