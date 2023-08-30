@@ -656,3 +656,22 @@ library(dittodb)
 # df <- openxlsx::read.xlsx(test_path("testdata", "struct_tests8.xlsx"), sheet = "timeseries")
 # check_structure_df(df, con)
 # stop_db_capturing()
+
+start_db_capturing()
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = "platform",
+                      host = "localhost",
+                      port = 5432,
+                      user = "postgres",
+                      password = Sys.getenv("PG_local_PG_PSW"),
+                      client_encoding = "utf8")
+DBI::dbExecute(con, "set search_path to test_platform")
+on.exit(dbDisconnect)
+legal_units <- dplyr::tbl(con, "unit") |>
+  dplyr::collect() |>
+  dplyr::select(name) |>
+  dplyr::pull()
+test32 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet32")
+expect_error(check_structure_df(test32, con))
+stop_db_capturing()
+

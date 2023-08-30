@@ -68,6 +68,8 @@ dittodb::with_mock_db({
     expect_error(check_structure_df(test31, con))
     test31 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet31")
     expect_error(check_structure_df(test31, con))
+    test32 <- openxlsx::read.xlsx(test_path("testdata", "struct_tests.xlsx"), sheet = "Sheet32")
+    expect_error(check_structure_df(test32, con))
     })
 
 

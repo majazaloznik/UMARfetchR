@@ -162,6 +162,22 @@ check_structure_df <- function(df, con) {
          paste(check$table_name, collapse = ", "))
   }
 
+  # check that all units are legal
+  input_units <-  df |>
+    dplyr::pull(unit) |>
+    unique()
+
+  legal_units <- dplyr::tbl(con, "unit") |>
+    dplyr::collect() |>
+    dplyr::select(name) |>
+    dplyr::pull()
+
+  illegal_units <- input_units[which(!input_units %in% legal_units)]
+  if (length(illegal_units) > 0 ) {
+    stop("Uporablja\u0161 \u0161e nevne\u0161eno enoto. Povej Maji Z., da jo vnese:  ",
+         paste(illegal_units, collapse = ", "))
+  }
+
   # check series names are different in table
   df |>
     dplyr::arrange(table_name) |>
