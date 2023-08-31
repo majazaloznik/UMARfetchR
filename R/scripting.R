@@ -323,7 +323,11 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     sink(type="message")
     close(con_log)
     email_log(log, recipient = "maja.zaloznik@gmail.com")
-    if(imported_rows != 0){
-      email_log(log, recipient = email)}
+    if (exists("imported_rows") && nrow(imported_rows) > 0) {
+      email_log(log, recipient = "maja.zaloznik@gmail.com")
+      if (exists("email")) {
+        email_log(log, recipient = email)
+      }
+    }
   })
 }
