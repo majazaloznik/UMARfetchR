@@ -1,11 +1,10 @@
 Package: UMARfetchR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: ETL tools for data processed by UMAR authors & the data platform
 Version: 0.5.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Maja Zalo\u017enik
+Maintainer: <maja.zaloznik@gmail.com>
+Description: A bunch of tools and pipelines to check, prep and import timeseries data processed in house by UMAR authors and import it into the database with metadata and all. 
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -22,6 +21,7 @@ Imports:
     DBI (>= 1.1.3),
     dplyr (>= 1.1.2),
     gmailr (>= 1.0.1),
+    lubridate (>= 1.9.2),
     magrittr (>= 2.0.3),
     openxlsx (>= 4.2.5.2),
     RPostgres (>= 1.4.5),
