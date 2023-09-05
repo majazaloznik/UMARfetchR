@@ -1,3 +1,27 @@
+
+#' Prepare period values from dates
+#'
+#' Leaves years if the data is annual, and swaps dates for month (2023M02) or
+#' quarterly values (2023Q1)
+#'
+#' @param data individual sheet data
+#'
+#' @return with updated period
+#' @export
+prepare_periods <- function(data) {
+  if (!all(grepl("^\\d{4}$", data$period))){ # check not annual
+    data$period <-  excel_date_to_r_date(data$period)
+    if(all(lubridate::month(data$period) %in% c(1, 4, 7, 10))) { # quarterly data
+      data$period <- paste0(lubridate::year(data$period), "Q", lubridate::quarter(data$period))
+    } else {
+      data$period <- paste0(lubridate::year(data$period), "M",
+                            sprintf("%02d", lubridate::month(data$period)))
+    }
+  }
+  data
+}
+
+
 #' Get new vintages ids
 #'
 #' Helper function preparing vintages to be imported. First checks which
@@ -11,6 +35,7 @@
 #' @export
 
 prepare_vintage_table <- function(data, con) {
+  data <- prepare_periods(data)
       selection <- data %>%
         dplyr::summarize_all(~ data$period[max(which(!is.na(.)))]) |>
         dplyr::select(-period) |>

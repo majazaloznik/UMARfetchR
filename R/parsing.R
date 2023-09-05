@@ -375,13 +375,22 @@ check_data_df <- function(df, codes){
   if(!all(intervals[-1] == intervals[2])){
     stop("Na zavihku morajo imeti vse serije isti interval.")
   }
+
+
   # check all series are correct interval
   interval <- unique(intervals[-1])
-  if (interval == "M" & !all(grepl("^\\d{4}M\\d{2}$", df$period))){
-    stop("Vrednosti obdobij niso v formatu yyyyMmm.")
-  }
-  if (interval == "Q" & !all(grepl("^\\d{4}Q\\d{1}$", df$period))){
-    stop("Vrednosti obdobij niso v formatu yyyyQq.")
+  if (interval == "M" | interval == "Q"){
+    # check if periods can be properly converted to dates
+    period_dates <-  excel_date_to_r_date(df$period)
+    if (!all(!is.na(period_dates))){
+      stop("Nekaj je narobe z datumi")}
+    if (interval == "M" & !all(lubridate::day(period_dates) == 1)) {
+      stop("Nekaj je narobe z datumi.")
+    }
+    if (interval == "Q" & !all(lubridate::month(period_dates) %in% c(1, 4, 7, 10))) {
+      stop("Nekaj je narobe z datumi.")
+    }
+
   }
   if (interval == "A" & !all(grepl("^\\d{4}$", df$period))){
     stop("Vrednosti obdobij niso v formatu yyyy.")

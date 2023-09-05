@@ -42,3 +42,20 @@ get_interval_from_period <- function(period){
                             stop("Nekaj je narobe s periodami!"))))
 
 }
+
+#' Function to convert Excel serial date numbers to R Date objects
+#' @param numeric
+#' @keywords internal
+#
+excel_date_to_r_date <- function(excel_date) {
+  # The origin is "1899-12-30" for the Excel system on Windows
+  tryCatch({
+    as.Date(excel_date, origin = "1899-12-30")
+  }, warning = function(war) {
+    return(NA)
+  }, error = function(err) {
+    return(NA)
+  })
+}
+
+

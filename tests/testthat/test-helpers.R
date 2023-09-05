@@ -47,5 +47,7 @@ test_that("get id works if table exists", {
   expect_error(get_interval_from_period("219"))
   expect_error(get_interval_from_period("21923mm"))
   expect_error(get_interval_from_period("21Q1"))
+  expect_equal(excel_date_to_r_date(1234), as.Date("1903-05-18"))
+  expect_true(is.na(excel_date_to_r_date("dd")))
 })
 

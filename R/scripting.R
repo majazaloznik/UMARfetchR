@@ -154,6 +154,7 @@ main_data <- function(filename, codes, con, schema) {
     message("\nZavihek M:")
     df_m <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
     if (!is.null(df_m)){
+      df_m <- prepare_periods(df_m)
       insert_new_vintage(df_m, con, schema)
       insert_data_points(df_m, con, schema)} else {
         imported_rows <- imported_rows + 0
@@ -163,6 +164,7 @@ main_data <- function(filename, codes, con, schema) {
     message("\nZavihek A:")
     df_a <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
     if (!is.null(df_a)){
+      df_a <- prepare_periods(df_a)
       insert_new_vintage(df_a, con, schema)
       insert_data_points(df_a, con, schema)} else {
         imported_rows <- imported_rows + 0
@@ -172,6 +174,7 @@ main_data <- function(filename, codes, con, schema) {
     message("\nZavihek Q:")
     df_q <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
     if (!is.null(df_q)){
+      df_q <- prepare_periods(df_q)
       insert_new_vintage(df_q, con, schema)
       insert_data_points(df_q, con, schema)} else {
         imported_rows <- imported_rows + 0
