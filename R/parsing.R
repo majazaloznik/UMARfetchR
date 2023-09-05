@@ -353,27 +353,33 @@ compute_series_names <- function(df) {
 #' @export
 #'
 check_data_df <- function(df, codes){
+  log_check <- TRUE
   colnames(df) <- trimws(colnames(df))
   # Check the column names
   if (!("period" %in% names(df))) {
-    stop("Manjka ti stolpec 'period'!")
+    log_check <- FALSE
+    warning("Manjka ti stolpec 'period'!")
   }
   if(sum(names(df) == "period") != 1){
-    stop("Samo en period stolpec ima\u0161 lahko na zavihku!")
+    log_check <- FALSE
+    warning("Samo en period stolpec ima\u0161 lahko na zavihku!")
   }
   # check no missing periods
   if(any(is.na(df$period))){
-    stop("V stolpcu period ne sme biti praznih polj!")
+    log_check <- FALSE
+    warning("V stolpcu period ne sme biti praznih polj!")
   }
 
   # check unique periods
   if(any(duplicated(df$period))){
-    stop("V stolpcu period se obdobja ne smejo ponavljati")
+    log_check <- FALSE
+    warning("V stolpcu period se obdobja ne smejo ponavljati")
   }
   # check all series are same interval
   intervals <- substring(colnames(df), nchar(colnames(df)))
   if(!all(intervals[-1] == intervals[2])){
-    stop("Na zavihku morajo imeti vse serije isti interval.")
+    log_check <- FALSE
+    warning("Na zavihku morajo imeti vse serije isti interval.")
   }
 
 
@@ -383,23 +389,28 @@ check_data_df <- function(df, codes){
     # check if periods can be properly converted to dates
     period_dates <-  excel_date_to_r_date(df$period)
     if (!all(!is.na(period_dates))){
-      stop("Nekaj je narobe z datumi")}
+      log_check <- FALSE
+      warning("Nekaj je narobe z datumi")}
     if (interval == "M" & !all(lubridate::day(period_dates) == 1)) {
-      stop("Nekaj je narobe z datumi.")
+      log_check <- FALSE
+      warning("Nekaj je narobe z datumi.")
     }
     if (interval == "Q" & !all(lubridate::month(period_dates) %in% c(1, 4, 7, 10))) {
-      stop("Nekaj je narobe z datumi.")
+      log_check <- FALSE
+      warning("Nekaj je narobe z datumi.")
     }
 
   }
   if (interval == "A" & !all(grepl("^\\d{4}$", df$period))){
-    stop("Vrednosti obdobij niso v formatu yyyy.")
+    log_check <- FALSE
+    warning("Vrednosti obdobij niso v formatu yyyy.")
   }
   # check no duplicated series
   series <- colnames(df)[-1]
   dups <- series[duplicated(series)]
   if (length(dups) > 0){
-    stop("Stolpci ne smejo imeti enakih imen: ",
+    log_check <- FALSE
+    warning("Stolpci ne smejo imeti enakih imen: ",
          paste(dups, collapse = "," ))
   }
 
@@ -407,11 +418,12 @@ check_data_df <- function(df, codes){
   series <- colnames(df)[-1]
   missing_codes <- which(!series %in% codes)
   if(length(missing_codes) > 0) {
-    stop("Za naslednje serije manjkajo strukturni metapodatki: ",
+    log_check <- FALSE
+    warning("Za naslednje serije manjkajo strukturni metapodatki: ",
          paste(series[missing_codes], collapse = "," ))
 
   }
-
+  if(!log_check) stop("Uvoz podatkov je bil prekinjen.")
   interval
 }
 
