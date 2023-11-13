@@ -35,7 +35,7 @@ prepare_periods <- function(data) {
 #' @export
 
 prepare_vintage_table <- function(data, con) {
-  data <- prepare_periods(data)
+  # data <- prepare_periods(data)
       selection <- data %>%
         dplyr::summarize_all(~ data$period[max(which(!is.na(.)))]) |>
         dplyr::select(-period) |>

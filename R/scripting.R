@@ -156,7 +156,8 @@ main_data <- function(filename, codes, con, schema) {
     if (!is.null(df_m)){
       df_m <- prepare_periods(df_m)
       insert_new_vintage(df_m, con, schema)
-      insert_data_points(df_m, con, schema)} else {
+      new_rows <- insert_data_points(df_m, con, schema)
+      imported_rows <- imported_rows + new_rows} else {
         imported_rows <- imported_rows + 0
         message("Na zavihku ni podatkov")}
   }
@@ -166,7 +167,8 @@ main_data <- function(filename, codes, con, schema) {
     if (!is.null(df_a)){
       df_a <- prepare_periods(df_a)
       insert_new_vintage(df_a, con, schema)
-      insert_data_points(df_a, con, schema)} else {
+      new_rows <- insert_data_points(df_a, con, schema)
+      imported_rows <- imported_rows + new_rows} else {
         imported_rows <- imported_rows + 0
         message("Na zavihku ni podatkov")}
   }
@@ -176,7 +178,8 @@ main_data <- function(filename, codes, con, schema) {
     if (!is.null(df_q)){
       df_q <- prepare_periods(df_q)
       insert_new_vintage(df_q, con, schema)
-      insert_data_points(df_q, con, schema)} else {
+      new_rows <- insert_data_points(df_q, con, schema)
+      imported_rows <- imported_rows + new_rows} else {
         imported_rows <- imported_rows + 0
         message("Na zavihku ni podatkov")}
   }
@@ -326,7 +329,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     sink(type="message")
     close(con_log)
     email_log(log, recipient = "maja.zaloznik@gmail.com")
-    if (exists("imported_rows") && nrow(imported_rows) > 0) {
+    if (exists("imported_rows") && imported_rows > 0) {
       email_log(log, recipient = "maja.zaloznik@gmail.com")
       if (exists("email")) {
         email_log(log, recipient = email)

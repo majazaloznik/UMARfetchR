@@ -89,7 +89,7 @@ Sem vpišeš *ime(na) dimenzij* v tej tabeli.
 Vsaka od zgoraj definiranih dimenzij mora imeti eno ali več stopenj. V teh dveh poljih moraš za te stopnje določiti opis (`text`) in kodo (`code`). 
 
 * Opis naj bo jedrnat, ampak razumljiv.
-* Koda naj bo super kratka, najbolje ena črka ali številka, ampak ni slabo, če je malo smiselna. 
+* Koda naj bo super kratka, najbolje ena črka ali številka, ampak ni slabo, če je malo smiselna. Uporabljaj velike črke in se omeji na maksimalno 4 znake za vsako dimenzijo.
 
 Na primer za zgornji primer bi bilo recimo primerno nekaj takega:
 

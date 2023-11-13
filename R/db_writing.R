@@ -312,8 +312,8 @@ if(nrow(df) != 0){
                        DBI::dbQuoteIdentifier(con, schema)))
   print(paste(x, "new rows inserted into the data_points table for",
               nrow(selection), "series."))
-  x}} else{
+  x} else{
     print(paste("No new rows inserted into the data_points table for",
                 nrow(selection), "series."))
-  }
+  0}}
 }

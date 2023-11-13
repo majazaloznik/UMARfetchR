@@ -240,7 +240,7 @@ prepare_series_table <- function(df, con){
   df |>
     dplyr::rowwise() |>
     dplyr::mutate(table_id = UMARaccessR::get_table_id_from_table_code(table_code, con),
-                  unit_id = UMARaccessR::get_unit_id_from_unit_name(unit, con)[1,1]) |>
+                  unit_id = UMARaccessR::get_unit_id_from_unit_name(tolower(unit), con)[1,1]) |>
     dplyr::select(table_id, series_name, unit_id, series_code, interval) |>
     dplyr::rename(interval_id = interval,
                   name_long = series_name,
