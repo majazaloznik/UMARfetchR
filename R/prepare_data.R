@@ -75,7 +75,7 @@ prepare_data_table <- function(data, selection, con){
     dplyr::ungroup()
 
  data |>
-   tidyr::pivot_longer(dplyr::starts_with("UMAR"), names_to = "series_code", values_to = "value") |>
+   tidyr::pivot_longer(cols = -period, names_to = "series_code", values_to = "value") |>
    dplyr::left_join(selection, by = "series_code") |>
    dplyr::left_join(vintage_filtered, by = "series_id") |>
    dplyr::select(-series_code, -published.x, -published.y, series_id, -series_id) |>

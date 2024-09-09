@@ -44,7 +44,7 @@ get_interval_from_period <- function(period){
 }
 
 #' Function to convert Excel serial date numbers to R Date objects
-#' @param numeric
+#' @param numeric excel number
 #' @keywords internal
 #
 excel_date_to_r_date <- function(excel_date) {
