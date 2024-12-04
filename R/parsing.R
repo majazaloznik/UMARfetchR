@@ -442,7 +442,7 @@ check_data_df <- function(df, codes){
 #' @export
 #'
 check_data_xlsx <- function(filename, codes) {
-  wb <- openxlsx::loadWorkbook(filename)
+  wb <- openxlsx2::wb_load(filename)
   # check sheet names correspond with intervals of the data
   sheet_names <- openxlsx::getSheetNames(filename)
   if("M" %in% sheet_names) {
