@@ -58,13 +58,11 @@ insert_new_author <- function(name, initials, email, folder = NA, con, schema = 
 #' @return number of rows inserted
 #' @export
 add_author_folder <- function(initials, folder, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
-                                    "update_author_folder",
-                                    list(initials = initials,
-                                         folder = folder),
-                                    schema)
+  x <- DBI::dbExecute(con, sprintf("update %s.umar_authors
+       set folder = '%s'
+       WHERE initials = '%s';", schema, folder, initials))
   message("Posodobljeno polje folder tabeli umar_author.")
-  x[1,1]
+  x
 }
 
 #' Insert new category
