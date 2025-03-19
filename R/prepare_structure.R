@@ -52,14 +52,15 @@ prepare_new_author_table <- function(name, initials, email, folder = NA){
 #'
 #' @param con connection to the database
 #' @param cat_name character name of the category
+#' @param schema schema name
 #'
 #' @return a dataframe with the `id`, `name`, `source_id` for each category that
 #' the table is a member of.
 #' @export
 #'
-prepare_category_table <- function(cat_name, con) {
-  source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)[1,1]
-  max_cat <- UMARaccessR::get_max_category_id_for_source(source_id, con)[1,1]
+prepare_category_table <- function(cat_name, con, schema) {
+  source_id <- UMARaccessR::sql_get_source_code_from_source_name("UMAR", con, schema)[1,1]
+  max_cat <- UMARaccessR::sql_get_max_category_id_for_source(source_id, con, schema)[1,1]
   data.frame(id = max_cat + 1,
              name = cat_name,
              source_id = source_id)
