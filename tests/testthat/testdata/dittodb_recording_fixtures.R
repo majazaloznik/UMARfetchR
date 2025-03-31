@@ -42,18 +42,18 @@ library(dittodb)
 # UMARaccessR::get_source_code_from_source_name("UMAR", con)
 # stop_db_capturing()
 
-# start_db_capturing()
-# con <- DBI::dbConnect(RPostgres::Postgres(),
-#                       dbname = "platform",
-#                       host = "192.168.38.21",
-#                       port = 5432,
-#                       user = "majaz",
-#                       password = Sys.getenv("PG_MZ_PSW"),
-#                       client_encoding = "utf8")
-# dbExecute(con, "set search_path to platform")
-# on.exit(dbDisconnect)
-# prepare_category_table("Maja Zalo\u017enik", con)
-# stop_db_capturing()
+start_db_capturing()
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = "platform",
+                      host = "192.168.38.21",
+                      port = 5432,
+                      user = "majaz",
+                      password = Sys.getenv("PG_MZ_PSW"),
+                      client_encoding = "utf8")
+DBI::dbExecute(con, "set search_path to platform")
+on.exit(dbDisconnect)
+prepare_category_table("Maja Zalo\u017enik", con)
+stop_db_capturing()
 #
 # start_db_capturing()
 # con <- DBI::dbConnect(RPostgres::Postgres(),
@@ -420,40 +420,38 @@ library(dittodb)
 # stop_db_capturing()
 
 #
-# start_db_capturing()
-# con <- DBI::dbConnect(RPostgres::Postgres(),
-#                       dbname = "platform",
-#                       host = "localhost",
-#                       port = 5432,
-#                       user = "postgres",
-#                       password = Sys.getenv("PG_local_PG_PSW"),
-#                       client_encoding = "utf8")
-# DBI::dbExecute(con, "set search_path to test_platform")
-# on.exit(dbDisconnect)
-# add_author_folder("MZ", "O:/Avtomatizacija/umar-data/mz", con, "test_platform")
-# stop_db_capturing()
+start_db_capturing()
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = "platform",
+                      host = "localhost",
+                      port = 5433,
+                      user = "postgres",
+                      password = Sys.getenv("PG_local_15_PG_PSW"),
+                      client_encoding = "utf8")
+DBI::dbExecute(con, "set search_path to test_platform")
+on.exit(dbDisconnect)
+add_author_folder("MZ", "O:/Avtomatizacija/umar-data/mz", con, "test_platform")
+stop_db_capturing()
 
 
-# start_db_capturing()
-# con <- DBI::dbConnect(RPostgres::Postgres(),
-#                       dbname = "platform",
-#                       host = "localhost",
-#                       port = 5432,
-#                       user = "postgres",
-#                       password = Sys.getenv("PG_local_PG_PSW"),
-#                       client_encoding = "utf8")
-# DBI::dbExecute(con, "set search_path to test_platform")
-# on.exit(dbDisconnect)
-# dir.create(  testthat::test_path("test_dir"))
-# initials = "MH"
-# # Call the function with custom path
-# x <- add_new_author("Matevz Hribernik",
-#                     initials = "MH",
-#                     email = "maja.zaloznik@gov.si",
-#                     con = con,schema = "test_platform",
-#                     data_location = testthat::test_path("test_dir") , overwrite = TRUE)
-# unlink("tests/testthat/test_dir", recursive = TRUE)
-# stop_db_capturing()
+start_db_capturing()
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = "platform",
+                      host = "localhost",
+                      port = 5433,
+                      user = "postgres",
+                      password = Sys.getenv("PG_local_15_PG_PSW"),
+                      client_encoding = "utf8")
+DBI::dbExecute(con, "set search_path to test_platform")
+on.exit(dbDisconnect)
+dir.create(  testthat::test_path("test_dir"))
+# Call the function with custom path
+x <- add_new_author("Matevz Hribernik",
+                    initials = "MH",
+                    email = "maja.zaloznik@gov.si",
+                    con = con,schema = "test_platform",
+                    data_location = testthat::test_path("test_dir") , overwrite = TRUE)
+stop_db_capturing()
 
 # start_db_capturing()
 # con <- DBI::dbConnect(RPostgres::Postgres(),
@@ -524,7 +522,7 @@ library(dittodb)
 # DBI::dbExecute(con, "set search_path to test_platform")
 # on.exit(dbDisconnect)
 # vintages <- UMARfetchR:::prepare_vintage_table(df, con)[,2:3]
-# res <- SURSfetchR::sql_function_call(con,
+# res <- UMARimportR::sql_function_call(con,
 #                                      "insert_new_vintage",
 #                                      as.list(vintages))
 # stop_db_capturing()

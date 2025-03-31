@@ -9,12 +9,12 @@
 #' @return nothing
 #' @export
 insert_new_source <- function(con, schema = "platform") {
-  x1 <- SURSfetchR::sql_function_call(con,
+  x1 <- UMARimportR::sql_function_call(con,
                                 "insert_new_source",
                                 as.list(prepare_source_table(con)),
                                 schema)
   source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)
-  x2 <- SURSfetchR::sql_function_call(con,
+  x2 <- UMARimportR::sql_function_call(con,
                                 "insert_new_category",
                                 list(id = 0,
                                      name = "UMAR",
@@ -38,7 +38,7 @@ insert_new_source <- function(con, schema = "platform") {
 #' @return number of rows inserted
 #' @export
 insert_new_author <- function(name, initials, email, folder = NA, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                      "insert_new_author",
                                      as.list(prepare_new_author_table(name, initials, email, folder)),
                                      schema)
@@ -75,9 +75,9 @@ add_author_folder <- function(initials, folder, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_category <- function(cat_name, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                 "insert_new_category",
-                                as.list(prepare_category_table(cat_name, con)),
+                                as.list(prepare_category_table(cat_name, con, schema)),
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo category: ", sum(x))
   sum(x)
@@ -93,7 +93,7 @@ insert_new_category <- function(cat_name, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_category_relationship <- function(cat_name, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                 "insert_new_category_relationship",
                                 as.list(prepare_category_relationship_table(cat_name, con)),
                                 schema)
@@ -113,7 +113,7 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
 #' @return nothing
 #' @export
 insert_new_table <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                      "insert_new_table",
                                      as.list(prepare_table_table(df, con)),
                                      schema)
@@ -132,7 +132,7 @@ insert_new_table <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_category_table <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                      "insert_new_category_table",
                                      as.list(prepare_category_table_table(df, con)),
                                      schema)
@@ -155,7 +155,7 @@ insert_new_category_table <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_table_dimensions <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                 "insert_new_table_dimensions",
                                 as.list(prepare_table_dimensions_table(df, con)),
                                 schema)
@@ -177,7 +177,7 @@ insert_new_table_dimensions <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_dimension_levels <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                 "insert_new_dimension_levels",
                                 as.list(prepare_dimension_levels_table(df, con)),
                                 schema)
@@ -199,7 +199,7 @@ insert_new_dimension_levels <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_series <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                 "insert_new_series",
                                 as.list(prepare_series_table(df, con)),
                                 schema)
@@ -221,7 +221,7 @@ insert_new_series <- function(df, con, schema = "platform") {
 #' @return nothing
 #' @export
 insert_new_series_levels <- function(df, con, schema = "platform") {
-  x <- SURSfetchR::sql_function_call(con,
+  x <- UMARimportR::sql_function_call(con,
                                 "insert_new_series_levels",
                                 as.list(prepare_series_levels_table(df, con)),
                                 schema)
@@ -248,7 +248,7 @@ insert_new_vintage <- function(data, con, schema = "platform") {
   selection <- prepare_vintage_table(data, con)
   # insert monthly data
   if(nrow(data) != 0){
-  res <- SURSfetchR::sql_function_call(con,
+  res <- UMARimportR::sql_function_call(con,
                                        "insert_new_vintage",
                                        as.list(selection[,2:3]),
                                        schema)

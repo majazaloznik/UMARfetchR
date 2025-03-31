@@ -18,7 +18,7 @@ betweeh categories
 \description{
 Helper function that manually prepares the category_relationship table for first level only!
 Returns table ready to insert into the `category_relationship` table with the db_writing family
-of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}.
+of functions from UMARimportR using \link[UMARimportR]{sql_function_call}.
 }
 \details{
 As there is currently only first level categories in UMAR, this function cannot

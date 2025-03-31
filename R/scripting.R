@@ -297,26 +297,23 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
 #' @export
 #'
 update_data <- function(metadata_filename, data_filename, con, schema, path = "logs/") {
-
   log <- paste0(path, "log_data_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
-
-  # Create an open connection to the log file
   con_log <- file(log, open = "wt", encoding = "UTF-8")
+  sink(con_log, type = "message")
+  sink(con_log, type = "output")
 
-  # Start capturing messages first, then output
-  sink(con_log, type="message")
-  sink(con_log, type="output")
+  # Define wrapper function to suppress warnings
+  get_email_no_warnings <- function(initials, connection) {
+    suppressWarnings(UMARaccessR::get_email_from_author_initials(initials, connection))
+  }
 
-  # Use tryCatch to capture warnings and errors
   result <- tryCatch({
     initials <- sub(".*_(.*)\\.xlsx", "\\1", metadata_filename)
-    email <- UMARaccessR::get_email_from_author_initials(initials, con)
+    email <- get_email_no_warnings(initials, con)
     codes <- read_codes_from_metadata_excel(metadata_filename)
     message("Mapa ", initials, ":\n----------------------- \n")
     message("Uvoz podatkov:\n-----------------------")
-
     imported_rows <- main_data(data_filename, codes, con, schema)
-
   }, warning = function(w) {
     message("Captured warning: ", conditionMessage(w))
     return(NULL)
@@ -324,9 +321,8 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     message("Captured error: ", conditionMessage(e))
     return(NULL)
   }, finally = {
-    # Close the sinks and email them
-    sink(type="output")
-    sink(type="message")
+    sink(type = "output")
+    sink(type = "message")
     close(con_log)
     email_log(log, recipient = "maja.zaloznik@gmail.com")
     if (exists("imported_rows") && imported_rows > 0) {

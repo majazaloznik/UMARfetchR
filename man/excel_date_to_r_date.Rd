@@ -6,6 +6,9 @@
 \usage{
 excel_date_to_r_date(excel_date)
 }
+\arguments{
+\item{numeric}{excel number}
+}
 \description{
 Function to convert Excel serial date numbers to R Date objects
 }

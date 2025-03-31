@@ -44,7 +44,7 @@ prepare_new_author_table <- function(name, initials, email, folder = NA){
 #'
 #' Helper function that manually prepares the category table with field ids and
 #' their names. Returns table ready to insert into the `category` table with the db_writing family
-#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}.
+#' of functions from UMARimportR using \link[UMARimportR]{sql_function_call}.
 #'
 #' In the case of `UMARfetchR` the the primary category of each table is the author's
 #' full name. But other categories could be added in the future, although that has not
@@ -58,9 +58,9 @@ prepare_new_author_table <- function(name, initials, email, folder = NA){
 #' the table is a member of.
 #' @export
 #'
-prepare_category_table <- function(cat_name, con, schema) {
-  source_id <- UMARaccessR::sql_get_source_code_from_source_name("UMAR", con, schema)[1,1]
-  max_cat <- UMARaccessR::sql_get_max_category_id_for_source(source_id, con, schema)[1,1]
+prepare_category_table <- function(cat_name, con, schema = "platform") {
+  source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "UMAR", schema)
+  max_cat <- UMARaccessR::sql_get_max_category_id_for_source(source_id, con, schema)
   data.frame(id = max_cat + 1,
              name = cat_name,
              source_id = source_id)
@@ -70,7 +70,7 @@ prepare_category_table <- function(cat_name, con, schema) {
 #'
 #' Helper function that manually prepares the table table.
 #' Returns table ready to insert into the `table` table with the db_writing family
-#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}. The input
+#' of functions from UMARimportR using \link[UMARimportR]{sql_function_call}. The input
 #' dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
 #' the table_codes and table_names are aligned.
 #'
@@ -96,7 +96,7 @@ prepare_table_table <- function(df, con) {
 #'
 #' Helper function that manually prepares the category_table table.
 #' Returns table ready to insert into the `category_table` table with the db_writing family
-#' of functions from UMARfetchR using \link[SURSfetchR]{sql_function_call}
+#' of functions from UMARfetchR using \link[UMARimportR]{sql_function_call}
 #' A single table can have multiple parents - meaning
 #' it is member of several categories (usually no more than two tho). .
 #'
@@ -131,7 +131,7 @@ prepare_category_table_table <- function(df, con) {
 #'
 #' Helper function that manually prepares the category_relationship table for first level only!
 #' Returns table ready to insert into the `category_relationship` table with the db_writing family
-#' of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}.
+#' of functions from UMARimportR using \link[UMARimportR]{sql_function_call}.
 #'
 #' As there is currently only first level categories in UMAR, this function cannot
 #' do others, but this functionality can be added if the need arises.

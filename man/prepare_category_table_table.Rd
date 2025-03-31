@@ -18,7 +18,7 @@ each table-category relationship.
 \description{
 Helper function that manually prepares the category_table table.
 Returns table ready to insert into the `category_table` table with the db_writing family
-of functions from UMARfetchR using \link[SURSfetchR]{sql_function_call}
+of functions from UMARfetchR using \link[UMARimportR]{sql_function_call}
 A single table can have multiple parents - meaning
 it is member of several categories (usually no more than two tho). .
 }

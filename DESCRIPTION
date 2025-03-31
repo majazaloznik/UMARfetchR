@@ -13,22 +13,24 @@ Suggests:
     dittodb,
     knitr,
     rmarkdown,
+    bookdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
-    bookdown (>= 0.34),
     DBI (>= 1.1.3),
     dplyr (>= 1.1.2),
     gmailr (>= 1.0.1),
     lubridate (>= 1.9.2),
     magrittr (>= 2.0.3),
     openxlsx (>= 4.2.5.2),
-    RPostgres (>= 1.4.5),
-    SURSfetchR (>= 0.0.4),
+    openxlsx2 (>= 1.14),
+    RPostgres (>= 1.4.4),
+    dbplyr (>= 2.2.1),
     tidyr (>= 1.3.0),
-    UMARaccessR (>= 0.1.0)
+    UMARaccessR (>= 0.1.0),
+    UMARimportR (>= 0.1.0)
 Remotes:
-    majazaloznik/SURSfetchR,
-    majazaloznik/UMARaccessR
+    majazaloznik/UMARaccessR,
+    majazaloznik/UMARimportR
 VignetteBuilder: knitr

@@ -1,10 +1,10 @@
 {
   "R": {
-    "Version": "4.1.2",
+    "Version": "4.3.2",
     "Repositories": [
       {
         "Name": "CRAN",
-        "URL": "https://cran.rstudio.com"
+        "URL": "https://cloud.r-project.org"
       }
     ]
   },
@@ -24,21 +24,11 @@
       "Package": "R6",
       "Version": "2.5.1",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
       "Hash": "470851b6d5d0ac559e9d01bb352b4021"
-    },
-    "RJSONIO": {
-      "Package": "RJSONIO",
-      "Version": "1.3-1.8",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "methods"
-      ],
-      "Hash": "cd79d1874fb20217463451f8c310c526"
     },
     "RPostgres": {
       "Package": "RPostgres",
@@ -70,64 +60,45 @@
       ],
       "Hash": "e749cae40fa9ef469b6050959517453c"
     },
-    "SURSfetchR": {
-      "Package": "SURSfetchR",
-      "Version": "0.0.4",
-      "Source": "GitHub",
-      "Remotes": "rOpenGov/pxweb, majazaloznik/UMARaccessR",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "SURSfetchR",
-      "RemoteUsername": "majazaloznik",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "9199cce9691e3e82496113cd37b30df7ce507370",
-      "Requirements": [
-        "DBI",
-        "R",
-        "RPostgres",
-        "bit64",
-        "data.tree",
-        "dbplyr",
-        "dplyr",
-        "envDocument",
-        "gmailr",
-        "here",
-        "httr",
-        "jsonlite",
-        "lubridate",
-        "magrittr",
-        "purrr",
-        "pxR",
-        "pxweb",
-        "rlang",
-        "rvest",
-        "stringi",
-        "tibble",
-        "tidyr"
-      ],
-      "Hash": "c975cca806ed7f14a8ad218270a114e6"
-    },
     "UMARaccessR": {
       "Package": "UMARaccessR",
-      "Version": "0.1.0",
+      "Version": "1.0.0",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "UMARaccessR",
       "RemoteUsername": "majazaloznik",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "9d59c3676ef4d566d0fd52de8114653c68eb2e6b",
+      "RemoteRepo": "UMARaccessR",
+      "RemoteRef": "main",
+      "RemoteSha": "0166634c8477fe342a610a40b98fc9f9fec1ad23",
       "Requirements": [
         "DBI",
-        "RPostgres",
+        "UMARimportR",
         "dplyr",
         "lubridate",
         "magrittr",
         "openxlsx",
-        "rlang",
-        "stringr"
+        "purrr",
+        "rlang"
       ],
-      "Hash": "be6252c87d2f7ec553bf011298775d64"
+      "Hash": "22488b7491194f0d609eb655a2831df2"
+    },
+    "UMARimportR": {
+      "Package": "UMARimportR",
+      "Version": "0.1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "majazaloznik",
+      "RemoteRepo": "UMARimportR",
+      "RemoteRef": "main",
+      "RemoteSha": "f7bab97d78f06b805c0f213f75ee1a13f4ad5660",
+      "Requirements": [
+        "DBI",
+        "RPostgres",
+        "dplyr",
+        "purrr"
+      ],
+      "Hash": "1f4e15ed6f9a1c270cb09199fe5b4ef7"
     },
     "askpass": {
       "Package": "askpass",
@@ -138,16 +109,6 @@
         "sys"
       ],
       "Hash": "e8a22846fff485f0be3770c2da758713"
-    },
-    "backports": {
-      "Package": "backports",
-      "Version": "1.4.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R"
-      ],
-      "Hash": "c39fbec8a30d23e721980b8afb31984c"
     },
     "base64enc": {
       "Package": "base64enc",
@@ -163,7 +124,7 @@
       "Package": "bit",
       "Version": "4.0.5",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -173,7 +134,7 @@
       "Package": "bit64",
       "Version": "4.0.5",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "bit",
@@ -270,18 +231,6 @@
       ],
       "Hash": "9b2191ede20fa29828139b9900922e51"
     },
-    "checkmate": {
-      "Package": "checkmate",
-      "Version": "2.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "backports",
-        "utils"
-      ],
-      "Hash": "ca9c113196136f4a9ca9ce6079c2c99e"
-    },
     "cli": {
       "Package": "cli",
       "Version": "3.6.1",
@@ -309,26 +258,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "d691c61bff84bd63c383874d2d0c3307"
-    },
-    "covr": {
-      "Package": "covr",
-      "Version": "3.6.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "crayon",
-        "digest",
-        "httr",
-        "jsonlite",
-        "methods",
-        "rex",
-        "stats",
-        "utils",
-        "withr",
-        "yaml"
-      ],
-      "Hash": "a0d8f9a55add5311d48227b6f7f38e34"
     },
     "cpp11": {
       "Package": "cpp11",
@@ -372,19 +301,6 @@
         "R"
       ],
       "Hash": "e4f97056611e8e6b8b852d13b7400cf1"
-    },
-    "data.tree": {
-      "Package": "data.tree",
-      "Version": "1.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "R6",
-        "methods",
-        "stringi"
-      ],
-      "Hash": "c0ddced80c3f074cb39a7a781698f68a"
     },
     "dbplyr": {
       "Package": "dbplyr",
@@ -527,7 +443,7 @@
     },
     "dplyr": {
       "Package": "dplyr",
-      "Version": "1.1.2",
+      "Version": "1.1.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -546,7 +462,7 @@
         "utils",
         "vctrs"
       ],
-      "Hash": "dea6970ff715ca541c387de363ff405e"
+      "Hash": "fedd9d00c2944ff00a0e2696ccf048ec"
     },
     "ellipsis": {
       "Package": "ellipsis",
@@ -558,17 +474,6 @@
         "rlang"
       ],
       "Hash": "bb0eec2fe32e88d9e2836c2f73ea2077"
-    },
-    "envDocument": {
-      "Package": "envDocument",
-      "Version": "2.4.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "methods",
-        "utils"
-      ],
-      "Hash": "4232904ae59fe3c416223191401cb5db"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -726,16 +631,6 @@
         "rematch2"
       ],
       "Hash": "185e047cb2392acf320b8bc657a55c92"
-    },
-    "here": {
-      "Package": "here",
-      "Version": "1.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "rprojroot"
-      ],
-      "Hash": "24b224366f9c2e7534d2344d10d59211"
     },
     "highr": {
       "Package": "highr",
@@ -897,16 +792,6 @@
       ],
       "Hash": "40401c9cf2bc2259dfe83311c9384710"
     },
-    "lazyeval": {
-      "Package": "lazyeval",
-      "Version": "0.2.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R"
-      ],
-      "Hash": "d908914ae53b04d4c0c0fd72ecc35370"
-    },
     "lifecycle": {
       "Package": "lifecycle",
       "Version": "1.0.3",
@@ -958,7 +843,7 @@
       "Package": "mime",
       "Version": "0.12",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "tools"
       ],
@@ -990,7 +875,7 @@
       "Package": "openxlsx",
       "Version": "4.2.5.2",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "Rcpp",
@@ -1003,11 +888,28 @@
       ],
       "Hash": "c03b4c18d42da881fb8e15a085c2b9d6"
     },
+    "openxlsx2": {
+      "Package": "openxlsx2",
+      "Version": "1.14",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R6",
+        "Rcpp",
+        "grDevices",
+        "magrittr",
+        "stringi",
+        "utils",
+        "zip"
+      ],
+      "Hash": "e113ae1abeb2bc2a59693cd81af5ce47"
+    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.9.0",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "cli",
         "fansi",
@@ -1106,17 +1008,6 @@
       "Repository": "CRAN",
       "Hash": "09eb987710984fc2905c7129c7d85e65"
     },
-    "plyr": {
-      "Package": "plyr",
-      "Version": "1.8.8",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "Rcpp"
-      ],
-      "Hash": "d744387aef9047b0b48be2933d78e862"
-    },
     "praise": {
       "Package": "praise",
       "Version": "1.0.0",
@@ -1200,37 +1091,6 @@
       ],
       "Hash": "d71c815267c640f17ddbf7f16144b4bb"
     },
-    "pxR": {
-      "Package": "pxR",
-      "Version": "0.42.7",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "RJSONIO",
-        "plyr",
-        "reshape2",
-        "stringr"
-      ],
-      "Hash": "6982f203f03307eb5070542d70b050cf"
-    },
-    "pxweb": {
-      "Package": "pxweb",
-      "Version": "0.16.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "pxweb",
-      "RemoteUsername": "rOpenGov",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "75a4fe43105cc2032595f3d563a3dba75b206ddc",
-      "Requirements": [
-        "R",
-        "checkmate",
-        "httr",
-        "jsonlite"
-      ],
-      "Hash": "a1269d95a895030eb01b3ea0e8ed29b8"
-    },
     "ragg": {
       "Package": "ragg",
       "Version": "1.2.5",
@@ -1300,36 +1160,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.17.3",
+      "Version": "1.0.11",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "4543b8cd233ae25c6aba8548be9e747e"
-    },
-    "reshape2": {
-      "Package": "reshape2",
-      "Version": "1.4.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "Rcpp",
-        "plyr",
-        "stringr"
-      ],
-      "Hash": "bb5996d0bd962d214a11140d77589917"
-    },
-    "rex": {
-      "Package": "rex",
-      "Version": "1.2.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "lazyeval"
-      ],
-      "Hash": "ae34cd56890607370665bee5bd17812f"
+      "Hash": "47623f66b4e80b3b0587bc5d7b309888"
     },
     "rlang": {
       "Package": "rlang",
@@ -1368,7 +1205,7 @@
     },
     "roxygen2": {
       "Package": "roxygen2",
-      "Version": "7.2.3",
+      "Version": "7.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1390,7 +1227,7 @@
         "withr",
         "xml2"
       ],
-      "Hash": "7b153c746193b143c14baa072bae4e27"
+      "Hash": "6ee25f9054a70f44d615300ed531ba8d"
     },
     "rprojroot": {
       "Package": "rprojroot",
@@ -1421,26 +1258,6 @@
       ],
       "Hash": "a9881dfed103e83f9de151dc17002cd1"
     },
-    "rvest": {
-      "Package": "rvest",
-      "Version": "1.0.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cli",
-        "glue",
-        "httr",
-        "lifecycle",
-        "magrittr",
-        "rlang",
-        "selectr",
-        "tibble",
-        "withr",
-        "xml2"
-      ],
-      "Hash": "a4a5ac819a467808c60e36e92ddf195e"
-    },
     "sass": {
       "Package": "sass",
       "Version": "0.4.6",
@@ -1454,19 +1271,6 @@
         "rlang"
       ],
       "Hash": "cc3ec7dd33982ef56570229b62d6388e"
-    },
-    "selectr": {
-      "Package": "selectr",
-      "Version": "0.4-2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "R6",
-        "methods",
-        "stringr"
-      ],
-      "Hash": "3838071b66e0c566d55cc26bd6e27bf4"
     },
     "sessioninfo": {
       "Package": "sessioninfo",
@@ -1751,7 +1555,7 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.6.2",
+      "Version": "0.6.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1761,7 +1565,7 @@
         "lifecycle",
         "rlang"
       ],
-      "Hash": "a745bda7aff4734c17294bb41d4e4607"
+      "Hash": "c03fa420630029418f7e6da3667aac4a"
     },
     "waldo": {
       "Package": "waldo",

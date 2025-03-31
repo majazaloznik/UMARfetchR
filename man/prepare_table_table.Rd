@@ -18,7 +18,7 @@ for the tables.
 \description{
 Helper function that manually prepares the table table.
 Returns table ready to insert into the `table` table with the db_writing family
-of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}. The input
+of functions from UMARimportR using \link[UMARimportR]{sql_function_call}. The input
 dataframe must have passed through \link[UMARfetchR]{compute_table_codes} so that
 the table_codes and table_names are aligned.
 }

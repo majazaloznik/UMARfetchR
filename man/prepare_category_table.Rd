@@ -4,12 +4,14 @@
 \alias{prepare_category_table}
 \title{Prepare table to insert into `category` table}
 \usage{
-prepare_category_table(cat_name, con)
+prepare_category_table(cat_name, con, schema = "platform")
 }
 \arguments{
 \item{cat_name}{character name of the category}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
 }
 \value{
 a dataframe with the `id`, `name`, `source_id` for each category that
@@ -18,7 +20,7 @@ the table is a member of.
 \description{
 Helper function that manually prepares the category table with field ids and
 their names. Returns table ready to insert into the `category` table with the db_writing family
-of functions from SURSfetchR using \link[SURSfetchR]{sql_function_call}.
+of functions from UMARimportR using \link[UMARimportR]{sql_function_call}.
 }
 \details{
 In the case of `UMARfetchR` the the primary category of each table is the author's
