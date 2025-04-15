@@ -13,7 +13,7 @@ dittodb::with_mock_db({
     expect_equal(prepare_periods(dtfrm)[1,1], "2020M01")
     dtfrm <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_tests2.xlsx"), sheet = "Q")
     expect_equal(prepare_periods(dtfrm)[1,1], "2020Q1")
-    df_m <- suppressWarnings( openxlsx::read.xlsx("O://Avtomatizacija/umar-data/MK/umar_serije_podatki_MK.xlsx", sheet = "M"))
+    df_m <- suppressWarnings( openxlsx::read.xlsx(testthat::test_path("testdata", "umar_serije_podatki_MK.xlsx"), sheet = "M"))
     x <- prepare_vintage_table(df_m, con, "test_platform")
     expect_equal(nrow(x), 12)
     expect_equal(ncol(x), 3)
@@ -23,7 +23,7 @@ dittodb::with_mock_db({
 test_that("prepare data functions work", {
   with_mock_db({
     con <- make_test_connection()
-    df_m <- suppressWarnings( openxlsx::read.xlsx("O://Avtomatizacija/umar-data/MK/umar_serije_podatki_MK.xlsx", sheet = "M"))
+    df_m <- suppressWarnings( openxlsx::read.xlsx(testthat::test_path("testdata", "umar_serije_podatki_MK.xlsx"), sheet = "M"))
     selection <- prepare_vintage_table(df_m, con, "test_platform")
     x <- prepare_data_table(df_m, selection, con, "test_platform")
     expect_equal(nrow(x), 2306)
