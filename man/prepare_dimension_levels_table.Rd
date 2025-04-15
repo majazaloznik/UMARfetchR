@@ -4,12 +4,14 @@
 \alias{prepare_dimension_levels_table}
 \title{Prepare table to insert into `dimension_levels` table}
 \usage{
-prepare_dimension_levels_table(df, con)
+prepare_dimension_levels_table(df, con, schema = "platform")
 }
 \arguments{
 \item{df}{dataframe with table_code, dimensions and dimension_levels_code}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
 }
 \value{
 a dataframe with the `dimension_id`, `values` and `valueTexts`

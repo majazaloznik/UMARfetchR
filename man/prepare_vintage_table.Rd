@@ -4,12 +4,14 @@
 \alias{prepare_vintage_table}
 \title{Get new vintages ids}
 \usage{
-prepare_vintage_table(data, con)
+prepare_vintage_table(data, con, schema = "platform")
 }
 \arguments{
 \item{data}{- checked data from Excel sheet.}
 
 \item{con}{connection to the database.}
+
+\item{schema}{schema name}
 }
 \value{
 data frame with `series_code`, `series_id` and `published` columns

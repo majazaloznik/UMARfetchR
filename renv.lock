@@ -66,10 +66,9 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "majazaloznik",
       "RemoteRepo": "UMARaccessR",
-      "RemoteRef": "main",
-      "RemoteSha": "0166634c8477fe342a610a40b98fc9f9fec1ad23",
+      "RemoteUsername": "majazaloznik",
+      "RemoteSha": "e5019201acdccb9b4b32573f695c31b32e6d9b4d",
       "Requirements": [
         "DBI",
         "UMARimportR",
@@ -80,7 +79,7 @@
         "purrr",
         "rlang"
       ],
-      "Hash": "22488b7491194f0d609eb655a2831df2"
+      "Hash": "a10c905b5eca6387e0437cae40981f72"
     },
     "UMARimportR": {
       "Package": "UMARimportR",
@@ -88,17 +87,16 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "majazaloznik",
       "RemoteRepo": "UMARimportR",
-      "RemoteRef": "main",
-      "RemoteSha": "f7bab97d78f06b805c0f213f75ee1a13f4ad5660",
+      "RemoteUsername": "majazaloznik",
+      "RemoteSha": "6ddca11630a0fd0d2228f993c14f5565144491e2",
       "Requirements": [
         "DBI",
         "RPostgres",
         "dplyr",
         "purrr"
       ],
-      "Hash": "1f4e15ed6f9a1c270cb09199fe5b4ef7"
+      "Hash": "ac802dcfeff489f5629cf312ecfc3d76"
     },
     "askpass": {
       "Package": "askpass",

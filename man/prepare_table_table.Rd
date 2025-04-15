@@ -4,15 +4,20 @@
 \alias{prepare_table_table}
 \title{Prepare table to insert into `table` table}
 \usage{
-prepare_table_table(df, con)
+prepare_table_table(df, con, schema = "platform", keep_vintage = FALSE)
 }
 \arguments{
 \item{df}{dataframe with table_code and table_name columns}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
+
+\item{keep_vintage}{boolean - whether or not to keep old vintages}
 }
 \value{
-a dataframe with the `code`, `name`, `source_id`, `url`, and `notes` columns
+a dataframe with the `code`, `name`, `source_id`, `url`, and `notes`
+and `keep_vintage` columns
 for the tables.
 }
 \description{

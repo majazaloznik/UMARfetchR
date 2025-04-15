@@ -4,7 +4,7 @@
 \alias{prepare_data_table}
 \title{Get and prepare data for import}
 \usage{
-prepare_data_table(data, selection, con)
+prepare_data_table(data, selection, con, schema)
 }
 \arguments{
 \item{data}{dataframe with the data_points}
@@ -12,6 +12,8 @@ prepare_data_table(data, selection, con)
 \item{selection}{dataframe with selected series / output from \link[UMARfetchR]{prepare_vintage_table}}
 
 \item{con}{connection to database}
+
+\item{schema}{schema name}
 }
 \value{
 a dataframe with the period_id, value and id values for all the vintages in the table.

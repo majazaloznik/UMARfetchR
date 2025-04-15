@@ -4,7 +4,7 @@
 \alias{main_structure}
 \title{Main function for processing structure data}
 \usage{
-main_structure(filename, con, schema)
+main_structure(filename, con, schema = "platform", keep_vintage = FALSE)
 }
 \arguments{
 \item{filename}{path to excel file with timeseries structure metadata}
@@ -12,6 +12,8 @@ main_structure(filename, con, schema)
 \item{con}{connection to database}
 
 \item{schema}{schema name}
+
+\item{keep_vintage}{logical value whether or not to keep old vintages}
 }
 \value{
 if the whole thing goes through without a hitch, returns a character

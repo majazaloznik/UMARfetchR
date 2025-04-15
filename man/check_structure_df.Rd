@@ -4,7 +4,7 @@
 \alias{check_structure_df}
 \title{Check structure data to be parsed}
 \usage{
-check_structure_df(df, con)
+check_structure_df(df, con, schema = "platform")
 }
 \arguments{
 \item{df}{dataframe with the structure data, which means at a minumum the columns
@@ -12,6 +12,8 @@ source, author, table_name, dimensions, dimension_levels_text, dimension_levels_
 unit, and interval.}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
 }
 \value{
 TRUE if passes all checks

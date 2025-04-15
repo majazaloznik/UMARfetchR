@@ -4,12 +4,14 @@
 \alias{prepare_category_table_table}
 \title{Prepare table to insert into `category_table` table}
 \usage{
-prepare_category_table_table(df, con)
+prepare_category_table_table(df, con, schema)
 }
 \arguments{
 \item{df}{dataframe with author and table code}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
 }
 \value{
 a dataframe with the `category_id` `table_id` and `source_id` columns for

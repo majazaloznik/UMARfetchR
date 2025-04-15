@@ -4,12 +4,14 @@
 \alias{prepare_series_levels_table}
 \title{Prepare table to insert into `series_levels` table}
 \usage{
-prepare_series_levels_table(df, con)
+prepare_series_levels_table(df, con, schema = "platform")
 }
 \arguments{
 \item{df}{dataframe with table_code, dimensions and dimension_levels_code and series_code}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
 }
 \value{
 a dataframe with the `series_id`, `tab_dim_id` and `level_value`

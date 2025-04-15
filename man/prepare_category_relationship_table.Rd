@@ -4,12 +4,14 @@
 \alias{prepare_category_relationship_table}
 \title{Prepare table to insert into `category_relationship` table}
 \usage{
-prepare_category_relationship_table(cat_name, con)
+prepare_category_relationship_table(cat_name, con, schema)
 }
 \arguments{
 \item{cat_name}{character name of category}
 
 \item{con}{connection to the database}
+
+\item{schema}{schema name}
 }
 \value{
 a dataframe with the `id`, `parent_id`, `source_id` for each relationship

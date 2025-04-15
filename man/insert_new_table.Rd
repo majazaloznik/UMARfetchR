@@ -4,7 +4,7 @@
 \alias{insert_new_table}
 \title{Insert new table}
 \usage{
-insert_new_table(df, con, schema = "platform")
+insert_new_table(df, con, schema = "platform", keep_vintage = FALSE)
 }
 \arguments{
 \item{df}{dataframe table_code and table_name columns.}
@@ -12,6 +12,8 @@ insert_new_table(df, con, schema = "platform")
 \item{con}{connection to the database.}
 
 \item{schema}{db schema, defaults to platfrom}
+
+\item{keep_vintage}{boolean to indicate if vintages are kept}
 }
 \value{
 nothing

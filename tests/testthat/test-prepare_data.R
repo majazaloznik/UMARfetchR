@@ -13,19 +13,24 @@ dittodb::with_mock_db({
     expect_equal(prepare_periods(dtfrm)[1,1], "2020M01")
     dtfrm <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_tests2.xlsx"), sheet = "Q")
     expect_equal(prepare_periods(dtfrm)[1,1], "2020Q1")
-    dtfrm <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
-    expect_equal(prepare_periods(dtfrm)[1,1], 1998)
-    x <- prepare_vintage_table(dtfrm, con)
-    expect_equal(dim(x), c(1,3))
-    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "M")
-    x <- prepare_vintage_table(df, con)
-    expect_equal(dim(x), c(3,3))
-    df <- openxlsx::read.xlsx(testthat::test_path("testdata", "data_test6.xlsx"), sheet = "A")
-    selection <- prepare_vintage_table(df, con)
-    # x <- prepare_data_table(df, selection, con)
-    # expect_equal(dim(x), c(6,3))
-    # expect_equal(x[[6,3]], 12)
+    df_m <- suppressWarnings( openxlsx::read.xlsx("O://Avtomatizacija/umar-data/MK/umar_serije_podatki_MK.xlsx", sheet = "M"))
+    x <- prepare_vintage_table(df_m, con, "test_platform")
+    expect_equal(nrow(x), 12)
+    expect_equal(ncol(x), 3)
   })
 })
+
+test_that("prepare data functions work", {
+  with_mock_db({
+    con <- make_test_connection()
+    df_m <- suppressWarnings( openxlsx::read.xlsx("O://Avtomatizacija/umar-data/MK/umar_serije_podatki_MK.xlsx", sheet = "M"))
+    selection <- prepare_vintage_table(df_m, con, "test_platform")
+    x <- prepare_data_table(df_m, selection, con, "test_platform")
+    expect_equal(nrow(x), 2306)
+    expect_equal(ncol(x), 3)
+    expect_true(all(names(x) == c("vintage_id", "period_id", "value")))
+  })
+})
+
 
 

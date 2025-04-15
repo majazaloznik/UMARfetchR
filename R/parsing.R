@@ -10,10 +10,11 @@
 #'
 #' @return TRUE if passes all checks
 #' @param con connection to the database
+#' @param schema schema name
 #'
 #' @export
 #' @importFrom stats complete.cases
-check_structure_df <- function(df, con) {
+check_structure_df <- function(df, con, schema = "platform") {
  log_check <- TRUE
   # Check the column names
   col_names <- c("source", "author", "table_name", "dimensions", "dimension_levels_text",
@@ -60,7 +61,7 @@ check_structure_df <- function(df, con) {
          paste(unique(df$author), collapse = ", "))
   }
   # check author is in the database
-  if (is.na(UMARaccessR::get_initials_from_author_name(unique(df$author)[1], con))) {
+  if (is.na(UMARaccessR::sql_get_initials_from_author_name(unique(df$author)[1], con, schema))) {
     log_check <- FALSE
     warning("Avtor \u0161e ni v bazi. Mogo\u010de si se zatipkal/a? Vne\u0161eno ima\u0161: ",
          paste(unique(df$author), collapse = ", "))
@@ -181,7 +182,7 @@ check_structure_df <- function(df, con) {
     dplyr::pull(unit) |>
     unique() |>
     tolower()
-
+  DBI::dbExecute(con, paste("set search_path to ", schema))
   legal_units <- dplyr::tbl(con, "unit") |>
     dplyr::collect() |>
     dplyr::select(name) |>
@@ -262,12 +263,13 @@ split_structure <- function(df) {
 #'
 #' @param df dataframe from structure template
 #' @param con connection to the database.
+#' @param schema schema name
 #'
 #' @return dataframe with a complete table_code column
 #' @export
 #'
-compute_table_codes <- function(df, con){
-  auth <- UMARaccessR::get_initials_from_author_name(unique(df$author), con)
+compute_table_codes <- function(df, con, schema){
+  auth <- UMARaccessR::sql_get_initials_from_author_name(unique(df$author), con, schema)
   existing_codes <- length(unique(df$table_code)) - 1
   df <- df |>
     dplyr::arrange(table_code, table_name) |>

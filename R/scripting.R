@@ -10,14 +10,15 @@
 #' source, author, table_name, dimensions, dimension_levels_text, dimension_levels_code,
 #' unit, and interval.
 #' @param con connection to the database.
+#' @param schema schema name, defaults to "platform"
 #'
 #' @return data frame with original columns and added table and series code fields.
 #' @export
-parse_structure <- function(df, con){
-  check_structure_df(df, con)
+parse_structure <- function(df, con, schema = "platform") {
+  check_structure_df(df, con, schema)
   df_split <- split_structure(df)
   if(nrow(df_split$df_new) > 0){
-  df_split$df_new <- compute_table_codes(df_split$df_new, con)
+  df_split$df_new <- compute_table_codes(df_split$df_new, con, schema)
   df_split$df_new <- compute_series_codes(df_split$df_new)
   df_split$df_new <- compute_series_names(df_split$df_new)}
   df_split
@@ -37,11 +38,13 @@ parse_structure <- function(df, con){
 #' unit, and interval.
 #' @param con connection to the database.
 #' @param schema schema name, defaults to "platform"
+#' @param keep_vintage boolean - whether or not to keep old vintages
 #'
 #' @return vector of inserted rows
 #' @export
-prep_and_import_structure <- function(df, con, schema = "platform") {
-  x <- insert_new_table(df, con, schema)
+prep_and_import_structure <- function(df, con, schema = "platform",
+                                      keep_vintage = FALSE) {
+  x <- insert_new_table(df, con, schema, keep_vintage)
   x <- c(x, insert_new_category_table(df, con, schema))
   x <- c(x, insert_new_table_dimensions(df, con, schema))
   x <- c(x, insert_new_dimension_levels(df, con, schema))
@@ -65,17 +68,18 @@ prep_and_import_structure <- function(df, con, schema = "platform") {
 #' @param filename path to excel file with timeseries structure metadata
 #' @param con connection to database
 #' @param schema schema name
+#' @param keep_vintage logical value whether or not to keep old vintages
 #'
 #' @return if the whole thing goes through without a hitch, returns a character
 #' vector of series codes, otherwise an error will be thrown.
 #' @export
 
-main_structure <- function(filename, con, schema) {
+main_structure <- function(filename, con, schema = "platform", keep_vintage = FALSE) {
 
   df <- openxlsx::read.xlsx(filename, sheet = "timeseries")
-  df_split <- parse_structure(df, con)
+  df_split <- parse_structure(df, con, schema)
   if(nrow(df_split$df_new) > 0){
-  prep_and_import_structure(df_split$df_new, con, schema)}
+  prep_and_import_structure(df_split$df_new, con, schema, keep_vintage)}
   if (nrow(df_split$df_old) == 0) {
     final_df <- df_split$df_new
   } else {
@@ -238,11 +242,12 @@ email_log <- function(log, recipient, meta = FALSE) {
 #' @param con connection to database
 #' @param schema name of database schema
 #' @param path folder to store the log file to
+#' @param keep_vintage logical value whether or not to keep vintage data
 #'
 #' @return Nothing, just side effects :). Writes to the database and the excel file and emails logs.
 #' @export
 #'
-update_metadata <- function(filename, con, schema, path = "logs/") {
+update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage = FALSE) {
 
   log <- paste0(path, "log_metadata_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
 
@@ -258,8 +263,8 @@ update_metadata <- function(filename, con, schema, path = "logs/") {
     initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
     message("Mapa ", initials, ":\n-----------------------")
     message("Uvoz metapodatkov:\n----------------------- \n")
-    email <- UMARaccessR::get_email_from_author_initials(initials, con)
-    codes <- main_structure(filename, con, schema)
+    email <- UMARaccessR::sql_get_email_from_author_initials(initials, con, schema)
+    codes <- main_structure(filename, con, schema, keep_vintage)
     message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
             paste(codes, collapse = "\n"))
 
@@ -304,7 +309,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
 
   # Define wrapper function to suppress warnings
   get_email_no_warnings <- function(initials, connection) {
-    suppressWarnings(UMARaccessR::get_email_from_author_initials(initials, connection))
+    suppressWarnings(UMARaccessR::sql_get_email_from_author_initials(initials, connection, schema))
   }
 
   result <- tryCatch({

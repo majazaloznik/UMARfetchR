@@ -13,7 +13,7 @@ insert_new_source <- function(con, schema = "platform") {
                                 "insert_new_source",
                                 as.list(prepare_source_table(con)),
                                 schema)
-  source_id <- UMARaccessR::get_source_code_from_source_name("UMAR", con)
+  source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "UMAR", schema)
   x2 <- UMARimportR::sql_function_call(con,
                                 "insert_new_category",
                                 list(id = 0,
@@ -95,7 +95,7 @@ insert_new_category <- function(cat_name, con, schema = "platform") {
 insert_new_category_relationship <- function(cat_name, con, schema = "platform") {
   x <- UMARimportR::sql_function_call(con,
                                 "insert_new_category_relationship",
-                                as.list(prepare_category_relationship_table(cat_name, con)),
+                                as.list(prepare_category_relationship_table(cat_name, con, schema)),
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo category_relationship: ", sum(x))
     sum(x)
@@ -110,12 +110,14 @@ insert_new_category_relationship <- function(cat_name, con, schema = "platform")
 #' @param df dataframe table_code and table_name columns.
 #' @param con connection to the database.
 #' @param schema db schema, defaults to platfrom
+#' @param keep_vintage boolean to indicate if vintages are kept
+#'
 #' @return nothing
 #' @export
-insert_new_table <- function(df, con, schema = "platform") {
+insert_new_table <- function(df, con, schema = "platform", keep_vintage = FALSE) {
   x <- UMARimportR::sql_function_call(con,
                                      "insert_new_table",
-                                     as.list(prepare_table_table(df, con)),
+                                     as.list(prepare_table_table(df, con, schema, keep_vintage)),
                                      schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo table: ", sum(x))
   sum(x)
@@ -134,7 +136,7 @@ insert_new_table <- function(df, con, schema = "platform") {
 insert_new_category_table <- function(df, con, schema = "platform") {
   x <- UMARimportR::sql_function_call(con,
                                      "insert_new_category_table",
-                                     as.list(prepare_category_table_table(df, con)),
+                                     as.list(prepare_category_table_table(df, con, schema)),
                                      schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo category_table: ", sum(x))
   sum(x)
@@ -157,7 +159,7 @@ insert_new_category_table <- function(df, con, schema = "platform") {
 insert_new_table_dimensions <- function(df, con, schema = "platform") {
   x <- UMARimportR::sql_function_call(con,
                                 "insert_new_table_dimensions",
-                                as.list(prepare_table_dimensions_table(df, con)),
+                                as.list(prepare_table_dimensions_table(df, con, schema)),
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo table_dimenisons: ", sum(x))
   sum(x)
@@ -179,7 +181,7 @@ insert_new_table_dimensions <- function(df, con, schema = "platform") {
 insert_new_dimension_levels <- function(df, con, schema = "platform") {
   x <- UMARimportR::sql_function_call(con,
                                 "insert_new_dimension_levels",
-                                as.list(prepare_dimension_levels_table(df, con)),
+                                as.list(prepare_dimension_levels_table(df, con, schema)),
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo dimension_levels: ", sum(x))
 
@@ -201,7 +203,7 @@ insert_new_dimension_levels <- function(df, con, schema = "platform") {
 insert_new_series <- function(df, con, schema = "platform") {
   x <- UMARimportR::sql_function_call(con,
                                 "insert_new_series",
-                                as.list(prepare_series_table(df, con)),
+                                as.list(prepare_series_table(df, con, schema)),
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo series: ", sum(x))
   sum(x)
@@ -223,7 +225,7 @@ insert_new_series <- function(df, con, schema = "platform") {
 insert_new_series_levels <- function(df, con, schema = "platform") {
   x <- UMARimportR::sql_function_call(con,
                                 "insert_new_series_levels",
-                                as.list(prepare_series_levels_table(df, con)),
+                                as.list(prepare_series_levels_table(df, con, schema)),
                                 schema)
   message("\u0160tevilo novih vrstic zapisanih v tabelo series_level: ", sum(x))
   sum(x)
@@ -245,7 +247,7 @@ insert_new_series_levels <- function(df, con, schema = "platform") {
 insert_new_vintage <- function(data, con, schema = "platform") {
   if(nrow(data) == 0) {
     warning("Na zavihku ni podatkov")} else {
-  selection <- prepare_vintage_table(data, con)
+  selection <- prepare_vintage_table(data, con, schema)
   # insert monthly data
   if(nrow(data) != 0){
   res <- UMARimportR::sql_function_call(con,
@@ -275,11 +277,11 @@ insert_new_vintage <- function(data, con, schema = "platform") {
 #'
 insert_data_points <- function(data, con, schema="platform"){
   if(nrow(data) != 0){
-  selection <- prepare_vintage_table(data, con)
+  selection <- prepare_vintage_table(data, con, schema)
 
 
 
-  df <- prepare_data_table(data, selection, con) |>
+  df <- prepare_data_table(data, selection, con, schema) |>
     dplyr::rowwise() |>
     dplyr::mutate(interval_id = get_interval_from_period(period_id),
                   period_id = as.character(period_id))

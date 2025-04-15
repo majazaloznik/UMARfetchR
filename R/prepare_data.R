@@ -30,25 +30,35 @@ prepare_periods <- function(data) {
 #'
 #' @param data - checked data from Excel sheet.
 #' @param con connection to the database.
+#' @param schema schema name
 #'
 #' @return data frame with `series_code`, `series_id` and `published` columns
 #' @export
 
-prepare_vintage_table <- function(data, con) {
-  # data <- prepare_periods(data)
+prepare_vintage_table <- function(data, con, schema = "platform") {
+  if (identical(Sys.getenv("TESTTHAT"), "true")) {
+    published_time <- as.POSIXct("2023-01-01 12:00:00")
+  } else {
+    published_time <- Sys.time()
+  }
       selection <- data %>%
         dplyr::summarize_all(~ data$period[max(which(!is.na(.)))]) |>
         dplyr::select(-period) |>
         tidyr::pivot_longer(everything(), names_to = "series_code", values_to = "max_period_new") |>
         dplyr::rowwise() |>
-        dplyr::mutate(series_id = UMARaccessR::get_series_id_from_series_code(series_code, con),
-                      vint_id = UMARaccessR::get_vintage_from_series(series_id, con)[1,1],
-                      max_period_db = ifelse(is.na(vint_id), NA,
-                                             UMARaccessR::get_last_period_from_vintage(vint_id, con)[1,1])) |>
+        dplyr::mutate(series_id = UMARaccessR::sql_get_series_id_from_series_code(
+          series_code, con, schema)$id) |>
+        dplyr::mutate(vint_id = UMARaccessR::sql_get_vintage_from_series(
+          con, series_id, schema = schema)) |>
+        dplyr::mutate(max_period_db = ifelse(
+          is.na(vint_id), NA,
+          ifelse(is.null(UMARaccessR::sql_get_last_period_from_vintage(
+            con, vint_id, schema)), NA,UMARaccessR::sql_get_last_period_from_vintage(
+              con, vint_id, schema)))) |>
         dplyr::ungroup() |>
         dplyr::filter(is.na(max_period_db) | max_period_new > max_period_db ) |>
         dplyr::select(series_code, series_id) |>
-        dplyr::mutate(published = Sys.time()) |>
+        dplyr::mutate(published = published_time) |>
         dplyr::ungroup()
         selection
 }
@@ -60,15 +70,14 @@ prepare_vintage_table <- function(data, con) {
 #' @param con connection to database
 #' @param data dataframe with the data_points
 #' @param selection dataframe with selected series / output from \link[UMARfetchR]{prepare_vintage_table}
+#' @param schema schema name
+#'
 #' @return a dataframe with the period_id, value and id values for all the vintages in the table.
 #'
 #' @export
-prepare_data_table <- function(data, selection, con){
+prepare_data_table <- function(data, selection, con, schema){
 
-  selection_series_ids <- selection$series_id
-
-  vintage_filtered <- dplyr::tbl(con, "vintage") %>%
-    dplyr::filter(series_id %in% !!selection_series_ids) |>
+  vintage_filtered <- UMARaccessR::sql_get_vintages_from_series(selection$series_id, con, schema) |>
     dplyr::group_by(series_id) |>
     dplyr::slice_max(published) |>
     dplyr::collect() |>

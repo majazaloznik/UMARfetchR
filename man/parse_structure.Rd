@@ -4,7 +4,7 @@
 \alias{parse_structure}
 \title{Umbrella function for parsing metadata structural file}
 \usage{
-parse_structure(df, con)
+parse_structure(df, con, schema = "platform")
 }
 \arguments{
 \item{df}{dataframe with the structure data, which means at a minumum the columns
@@ -12,6 +12,8 @@ source, author, table_name, dimensions, dimension_levels_text, dimension_levels_
 unit, and interval.}
 
 \item{con}{connection to the database.}
+
+\item{schema}{schema name, defaults to "platform"}
 }
 \value{
 data frame with original columns and added table and series code fields.

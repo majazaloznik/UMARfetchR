@@ -4,7 +4,7 @@
 \alias{update_metadata}
 \title{Wrapper function for complete metadata pipeline}
 \usage{
-update_metadata(filename, con, schema, path = "logs/")
+update_metadata(filename, con, schema, path = "logs/", keep_vintage = FALSE)
 }
 \arguments{
 \item{filename}{location of metadata file}
@@ -14,6 +14,8 @@ update_metadata(filename, con, schema, path = "logs/")
 \item{schema}{name of database schema}
 
 \item{path}{folder to store the log file to}
+
+\item{keep_vintage}{logical value whether or not to keep vintage data}
 }
 \value{
 Nothing, just side effects :). Writes to the database and the excel file and emails logs.

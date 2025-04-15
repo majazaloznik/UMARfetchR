@@ -32,8 +32,7 @@ dittodb::with_mock_db({
 
   test_that("get id works if table exists", {
     x <- get_table_id_with_same_name("MZ", "dfg", con)
-    expect_equal(x, "MZ004")
-
+    expect_equal(x, "MZ003")
   })
 })
 

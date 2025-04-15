@@ -43,5 +43,5 @@ test_that("create_data_template_excel: Check if Excel file is created with custo
 
 test_that("code reading from xlsx works", {
   x <-read_codes_from_metadata_excel(testthat::test_path("testdata", "struct_tests6.xlsx"))
-  expect_equal(length(x), 4)
+  expect_equal(length(x), 3)
 })

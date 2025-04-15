@@ -4,7 +4,7 @@
 \alias{prep_and_import_structure}
 \title{Umbrella function to prepare and import structure metadata}
 \usage{
-prep_and_import_structure(df, con, schema = "platform")
+prep_and_import_structure(df, con, schema = "platform", keep_vintage = FALSE)
 }
 \arguments{
 \item{df}{dataframe with the structure data, which means at a minumum the columns
@@ -14,6 +14,8 @@ unit, and interval.}
 \item{con}{connection to the database.}
 
 \item{schema}{schema name, defaults to "platform"}
+
+\item{keep_vintage}{boolean - whether or not to keep old vintages}
 }
 \value{
 vector of inserted rows

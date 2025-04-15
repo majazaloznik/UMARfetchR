@@ -4,12 +4,14 @@
 \alias{compute_table_codes}
 \title{Compute the table codes for new series}
 \usage{
-compute_table_codes(df, con)
+compute_table_codes(df, con, schema)
 }
 \arguments{
 \item{df}{dataframe from structure template}
 
 \item{con}{connection to the database.}
+
+\item{schema}{schema name}
 }
 \value{
 dataframe with a complete table_code column
