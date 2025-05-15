@@ -48,8 +48,9 @@ prepare_vintage_table <- function(data, con, schema = "platform") {
         dplyr::rowwise() |>
         dplyr::mutate(series_id = UMARaccessR::sql_get_series_id_from_series_code(
           series_code, con, schema)$id) |>
-        dplyr::mutate(vint_id = UMARaccessR::sql_get_vintage_from_series(
-          con, series_id, schema = schema)) |>
+        dplyr::mutate(vint_id = if(is.null(UMARaccessR::sql_get_vintage_from_series(
+          con, series_id, schema = schema))) NA else UMARaccessR::sql_get_vintage_from_series(
+            con, series_id, schema = schema))|>
         dplyr::mutate(max_period_db = ifelse(
           is.na(vint_id), NA,
           ifelse(is.null(UMARaccessR::sql_get_last_period_from_vintage(
