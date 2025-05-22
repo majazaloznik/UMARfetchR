@@ -215,7 +215,7 @@ email_log <- function(log, recipient, initials, meta = FALSE) {
                    "stre\u017eniku <code>umar-bi</code><br><br>",
                    "Tvoj Umar Data Bot &#129302;")
   } else {
-    subject <- paste0("UMAR baza - uvoz metapodatkov - ", initials)
+    subject <- paste0("UMAR baza - uvoz podatkov - ", initials)
     body <- paste0("To je avtomatsko sporo\u010dilo. <br><br>",
                    "V priponki je log uvoza podatkov v bazo <code>platform</code> na ",
                    "stre\u017eniku <code>umar-bi</code><br><br>",
