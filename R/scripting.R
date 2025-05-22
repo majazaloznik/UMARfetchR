@@ -200,21 +200,22 @@ main_data <- function(filename, codes, con, schema) {
 #' @param log path to log file
 #' @param recipient email (not checked) address to be sent to as BCC.
 #' I think single email is all that's allowed. Haven't tried more.
+#' @param initials initials of the author
 #' @param meta logical indicating if the script was the metadata one or the data one (default).
 #' This affects the subject and text of the email.
 #'
 #' @return nothing, side effect is the email being sent.
 #' @export
 #'
-email_log <- function(log, recipient, meta = FALSE) {
+email_log <- function(log, recipient, initials, meta = FALSE) {
   if (meta) {
-    subject <- "UMAR baza - uvoz metapodatkov"
+    subject <- paste0("UMAR baza - uvoz metapodatkov - ", initials)
     body <- paste0("To je avtomatsko sporo\u010dilo. <br><br>",
                    "V priponki je log uvoza metapodatkov v bazo <code>platform</code> na ",
                    "stre\u017eniku <code>umar-bi</code><br><br>",
                    "Tvoj Umar Data Bot &#129302;")
   } else {
-    subject <- "UMAR baza - uvoz podatkov"
+    subject <- paste0("UMAR baza - uvoz metapodatkov - ", initials)
     body <- paste0("To je avtomatsko sporo\u010dilo. <br><br>",
                    "V priponki je log uvoza podatkov v bazo <code>platform</code> na ",
                    "stre\u017eniku <code>umar-bi</code><br><br>",
@@ -279,8 +280,8 @@ update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage 
     sink(type="output")
     sink(type="message")
     close(con_log)
-    email_log(log, recipient = "maja.zaloznik@gmail.com", meta = TRUE)
-    email_log(log, recipient = email, meta = TRUE)
+    email_log(log, recipient = "maja.zaloznik@gmail.com", initials, meta = TRUE)
+    email_log(log, recipient = email, initials, meta = TRUE)
   })
 }
 
@@ -329,11 +330,11 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     sink(type = "output")
     sink(type = "message")
     close(con_log)
-    email_log(log, recipient = "maja.zaloznik@gmail.com")
+    email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
     if (exists("imported_rows") && imported_rows > 0) {
-      email_log(log, recipient = "maja.zaloznik@gmail.com")
+      email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
       if (exists("email")) {
-        email_log(log, recipient = email)
+        email_log(log, recipient = email, initials)
       }
     }
   })
