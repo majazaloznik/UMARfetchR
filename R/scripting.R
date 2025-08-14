@@ -333,6 +333,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
     if (exists("imported_rows") && imported_rows > 0) {
       email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
+      email_log(log, recipient = "andrej.kustrin@gov.si", initials)
       if (exists("email")) {
         email_log(log, recipient = email, initials)
       }
