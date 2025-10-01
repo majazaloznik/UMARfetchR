@@ -290,7 +290,7 @@ prepare_series_levels_table <- function(df, con, schema = "platform") {
     dplyr::rowwise() |>
     dplyr::mutate(table_id = UMARaccessR::sql_get_table_id_from_table_code(con, table_code, schema),
                   tab_dim_id = UMARaccessR::sql_get_tab_dim_id_from_table_id_and_dimension(table_id, dimensions, con, schema),
-                  series_id = UMARaccessR::sql_get_series_id_from_series_code(series_code, con, schema)$id) |>
+                  series_id = UMARaccessR::sql_get_series_id_from_series_code(series_code, con, schema)) |>
     dplyr::select(series_id, tab_dim_id, level_value = dimension_levels_code)
 }
 
