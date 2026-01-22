@@ -249,13 +249,6 @@ email_log <- function(log, recipient, initials, meta = FALSE) {
 #' @export
 #'
 update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage = FALSE) {
-  # Disable ANSI codes BEFORE creating sink
-  old_opts <- options(
-    cli.num_colors = 1,
-    crayon.enabled = FALSE,
-    cli.unicode = FALSE,
-    fansi.strip = TRUE)
-  on.exit(options(old_opts), add = TRUE)
   log <- paste0(path, "log_metadata_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
 
   # Create an open connection to the log file
@@ -286,6 +279,13 @@ update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage 
     sink(type="output")
     sink(type="message")
     close(con_log)
+
+    # Strip ISO 2022 escape sequences
+    log_lines <- readLines(log, encoding = "UTF-8", warn = FALSE)
+    log_clean <- gsub("\033[Gg][0-9]*;?", "", log_lines)  # Removes \033G3; and \033g
+    log_clean <- log_clean[nzchar(log_clean) | seq_along(log_clean) == 1]  # Keep empty first line only
+    writeLines(log_clean, log, useBytes = FALSE)
+
     email_log(log, recipient = "maja.zaloznik@gmail.com", initials, meta = TRUE)
     email_log(log, recipient = email, initials, meta = TRUE)
   })
@@ -309,15 +309,6 @@ update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage 
 #' @export
 #'
 update_data <- function(metadata_filename, data_filename, con, schema, path = "logs/") {
-  # Disable ANSI codes BEFORE creating sink
-  old_opts <- options(
-    cli.num_colors = 1,
-    crayon.enabled = FALSE,
-    cli.unicode = FALSE,
-    fansi.strip = TRUE
-  )
-  on.exit(options(old_opts), add = TRUE)
-
   log <- paste0(path, "log_data_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
   con_log <- file(log, open = "wt", encoding = "UTF-8")
   sink(con_log, type = "message")
@@ -345,6 +336,13 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     sink(type = "output")
     sink(type = "message")
     close(con_log)
+
+    # Strip ISO 2022 escape sequences
+    log_lines <- readLines(log, encoding = "UTF-8", warn = FALSE)
+    log_clean <- gsub("\033[Gg][0-9]*;?", "", log_lines)  # Removes \033G3; and \033g
+    log_clean <- log_clean[nzchar(log_clean) | seq_along(log_clean) == 1]  # Keep empty first line only
+    writeLines(log_clean, log, useBytes = FALSE)
+
     email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
     if (exists("imported_rows") && imported_rows > 0) {
       email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
