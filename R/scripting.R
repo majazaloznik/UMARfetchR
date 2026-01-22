@@ -50,7 +50,7 @@ prep_and_import_structure <- function(df, con, schema = "platform",
   x <- c(x, insert_new_dimension_levels(df, con, schema))
   x <- c(x, insert_new_series(df, con, schema))
   x <- c(x, insert_new_series_levels(df, con, schema))
-  message("Zapisovanje metapodatkov v bazo je kon\u010dano.")
+  base::message("Zapisovanje metapodatkov v bazo je kon\u010dano.")
   x
 }
 
@@ -118,19 +118,19 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
     dir.create(file.path(path), showWarnings = FALSE)
     tryCatch({create_structure_template_excel(path, initials, overwrite)},
              error=function(cond) {
-               message(cond)}
+               base::message(cond)}
     )
     tryCatch({create_data_template_excel(path, initials, overwrite)},
              error=function(cond) {
-               message(cond)}
+               base::message(cond)}
     )
     add_author_folder(initials, path, con, schema)
     insert_new_category(name, con, schema)
     insert_new_category_relationship(name, con, schema)
-    message(name, " je dodan(a) med avtorje.")
-    message("Zdaj pa ji/mu uredi pravice na mapi!")
+    base::message(name, " je dodan(a) med avtorje.")
+    base::message("Zdaj pa ji/mu uredi pravice na mapi!")
     TRUE} else {
-      message("Avtor ni bil zapisan, preveri inicijalke.")
+      base::message("Avtor ni bil zapisan, preveri inicijalke.")
       FALSE
     }
 }
@@ -147,7 +147,7 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
 #' @param con connection to database
 #' @param schema schema name
 #'
-#' @return 0 if all sheets are empty, otherwise just message
+#' @return 0 if all sheets are empty, otherwise just base::message
 #' @export
 #'
 main_data <- function(filename, codes, con, schema) {
@@ -155,7 +155,7 @@ main_data <- function(filename, codes, con, schema) {
   sheet_names <- openxlsx::getSheetNames(filename)
   imported_rows <- 0
   if("M" %in% sheet_names) {
-    message("\nZavihek M:")
+    base::message("\nZavihek M:")
     df_m <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
     if (!is.null(df_m)){
       df_m <- prepare_periods(df_m)
@@ -163,10 +163,10 @@ main_data <- function(filename, codes, con, schema) {
       new_rows <- insert_data_points(df_m, con, schema)
       imported_rows <- imported_rows + new_rows} else {
         imported_rows <- imported_rows + 0
-        message("Na zavihku ni podatkov")}
+        base::message("Na zavihku ni podatkov")}
   }
   if("A" %in% sheet_names) {
-    message("\nZavihek A:")
+    base::message("\nZavihek A:")
     df_a <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
     if (!is.null(df_a)){
       df_a <- prepare_periods(df_a)
@@ -174,10 +174,10 @@ main_data <- function(filename, codes, con, schema) {
       new_rows <- insert_data_points(df_a, con, schema)
       imported_rows <- imported_rows + new_rows} else {
         imported_rows <- imported_rows + 0
-        message("Na zavihku ni podatkov")}
+        base::message("Na zavihku ni podatkov")}
   }
   if("Q" %in% sheet_names) {
-    message("\nZavihek Q:")
+    base::message("\nZavihek Q:")
     df_q <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
     if (!is.null(df_q)){
       df_q <- prepare_periods(df_q)
@@ -185,9 +185,9 @@ main_data <- function(filename, codes, con, schema) {
       new_rows <- insert_data_points(df_q, con, schema)
       imported_rows <- imported_rows + new_rows} else {
         imported_rows <- imported_rows + 0
-        message("Na zavihku ni podatkov")}
+        base::message("Na zavihku ni podatkov")}
   }
-  message("\nPodatki iz ", basename(filename), " so prene\u0161eni v bazo.\n-----------------------")
+  base::message("\nPodatki iz ", basename(filename), " so prene\u0161eni v bazo.\n-----------------------")
   imported_rows
 }
 
@@ -262,18 +262,18 @@ update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage 
   # Use tryCatch to capture warnings and errors
   result <- tryCatch({
     initials <- sub(".*_(.*)\\.xlsx", "\\1", filename)
-    message("Mapa ", initials, ":\n-----------------------")
-    message("Uvoz metapodatkov:\n----------------------- \n")
+    base::message("Mapa ", initials, ":\n-----------------------")
+    base::message("Uvoz metapodatkov:\n----------------------- \n")
     email <- UMARaccessR::sql_get_email_from_author_initials(initials, con, schema)
     codes <- main_structure(filename, con, schema, keep_vintage)
-    message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
+    base::message("Kode za tvoje serije so zapisane v Excelu, sicer pa ima\u0161 trenutno v bazi metapodatke za naslednje serije:\n",
             paste(codes, collapse = "\n"))
 
   }, warning = function(w) {
-    message("Captured warning: ", conditionMessage(w))
+    base::message("Captured warning: ", conditionMessage(w))
     return(NULL)  # or some other sentinel value
   }, error = function(e) {
-    message("Captured error: ", conditionMessage(e))
+    base::message("Captured error: ", conditionMessage(e))
     return(NULL)  # or some other sentinel value
   }, finally = {
     # Close the sinks and email them
@@ -317,14 +317,14 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     initials <- sub(".*_(.*)\\.xlsx", "\\1", metadata_filename)
     email <- get_email_no_warnings(initials, con)
     codes <- read_codes_from_metadata_excel(metadata_filename)
-    message("Mapa ", initials, ":\n----------------------- \n")
-    message("Uvoz podatkov:\n-----------------------")
+    base::message("Mapa ", initials, ":\n----------------------- \n")
+    base::message("Uvoz podatkov:\n-----------------------")
     imported_rows <- main_data(data_filename, codes, con, schema)
   }, warning = function(w) {
-    message("Captured warning: ", conditionMessage(w))
+    base::message("Captured warning: ", conditionMessage(w))
     return(NULL)
   }, error = function(e) {
-    message("Captured error: ", conditionMessage(e))
+    base::message("Captured error: ", conditionMessage(e))
     return(NULL)
   }, finally = {
     sink(type = "output")
