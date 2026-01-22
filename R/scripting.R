@@ -249,7 +249,13 @@ email_log <- function(log, recipient, initials, meta = FALSE) {
 #' @export
 #'
 update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage = FALSE) {
-
+  # Disable ANSI codes BEFORE creating sink
+  old_opts <- options(
+    cli.num_colors = 1,
+    crayon.enabled = FALSE,
+    cli.unicode = FALSE,
+    fansi.strip = TRUE)
+  on.exit(options(old_opts), add = TRUE)
   log <- paste0(path, "log_metadata_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
 
   # Create an open connection to the log file
@@ -303,6 +309,15 @@ update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage 
 #' @export
 #'
 update_data <- function(metadata_filename, data_filename, con, schema, path = "logs/") {
+  # Disable ANSI codes BEFORE creating sink
+  old_opts <- options(
+    cli.num_colors = 1,
+    crayon.enabled = FALSE,
+    cli.unicode = FALSE,
+    fansi.strip = TRUE
+  )
+  on.exit(options(old_opts), add = TRUE)
+
   log <- paste0(path, "log_data_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
   con_log <- file(log, open = "wt", encoding = "UTF-8")
   sink(con_log, type = "message")
