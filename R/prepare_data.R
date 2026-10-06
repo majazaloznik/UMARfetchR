@@ -1,23 +1,24 @@
 
 #' Prepare period values from dates
 #'
-#' Leaves years if the data is annual, and swaps dates for month (2023M02) or
-#' quarterly values (2023Q1)
+#' Leaves years if the data is annual, and swaps dates for month (2023M02),
+#' quarterly (2023Q1) or daily (2023-02-14) values. The interval is passed
+#' explicitly (it is the sheet name) rather than guessed from the dates.
 #'
 #' @param data individual sheet data
+#' @param interval one of "M", "Q", "A", "D"
 #'
 #' @return with updated period
 #' @export
-prepare_periods <- function(data) {
-  if (!all(grepl("^\\d{4}$", data$period))){ # check not annual
-    data$period <-  excel_date_to_r_date(data$period)
-    if(all(lubridate::month(data$period) %in% c(1, 4, 7, 10))) { # quarterly data
-      data$period <- paste0(lubridate::year(data$period), "Q", lubridate::quarter(data$period))
-    } else {
-      data$period <- paste0(lubridate::year(data$period), "M",
-                            sprintf("%02d", lubridate::month(data$period)))
-    }
-  }
+prepare_periods <- function(data, interval) {
+  interval <- match.arg(interval, data_intervals())
+  if (interval == "A") return(data)
+  dates <- excel_date_to_r_date(data$period)
+  if (anyNA(dates)) stop("Nekaj je narobe z datumi na zavihku ", interval)
+  data$period <- switch(interval,
+    M = paste0(lubridate::year(dates), "M", sprintf("%02d", lubridate::month(dates))),
+    Q = paste0(lubridate::year(dates), "Q", lubridate::quarter(dates)),
+    D = format(dates, "%Y-%m-%d"))
   data
 }
 

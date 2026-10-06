@@ -145,6 +145,7 @@ Enota, v kateri so izražene vrednosti serije. Dovoljene so naslednje enote - č
 * `M` - mesečni podatki
 * `Q` - četrtletni podatki
 * `A` - letni podatki
+* `D` - dnevni podatki
 
 ## `series_name`
 
@@ -201,12 +202,13 @@ Obstoječi dimenziji lahko dodaš nove stopnje (npr. nove države), obstoječi t
 
 Zdaj ko imaš v tabeli z metapodatki izpolnjen zadnji stolpec `series_code`, lahko vneseš podatke v drugo Excel datoteko v svojem folderju. Za to datoteko veljajo naslednja pravila:
 
-* Podatki morajo biti shranjeni na zavihkih z imeni "M", "Q" ali "A" glede na interval (mesečni, četrtletni, letni)
+* Podatki morajo biti shranjeni na zavihkih z imeni "M", "Q", "A" ali "D" glede na interval (mesečni, četrtletni, letni, dnevni)
 * imena stolpcev morajo biti v prvi vrstici. Na te tri zavihke ne dajaj ničesar drugega kot podatke. Če želiš, lahko narediš drug zavihek za svoje zapiske ali karkoli drugega, dokler so na teh treh zavihkih podatki v spodnji obliki. 
 * vsak zavihek, ki vsebuje podatke, mora imeti točno en stolpec z imenom `period`, ki vsebuje obdobja v naslednji obliki:
   - za mesečne podatke: prvi dan v mesecu (npr. 1.01.2023) 
   - za četrtletne podatke: prvi dan v četrtletju (npr. 1.7.2023)
   - za letne podatke štirimestno: recimo 2023 ali 1999
+  - za dnevne podatke: datum (npr. 14.2.2023)
 * če tvoje serije pokrivajo različna obdobja, še vedno velja, da smeš imeti samo en stolpec z imenom `period` - enostavno pusti prazna polja za tista obdobja, kjer nimaš podatkov
 * vsaka serija - za katero zdaj poznaš `series_code`, ki si ga dobil v Excelu z metapodatki - dobi svoj stolpec. In to je v bistvu to. 
 

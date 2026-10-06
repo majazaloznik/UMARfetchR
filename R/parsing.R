@@ -67,7 +67,7 @@ check_structure_df <- function(df, con, schema = "platform") {
          paste(unique(df$author), collapse = ", "))
   }
   # Check intervals are all legal
-  intervals <- c("M", "Q", "A")
+  intervals <- data_intervals()
   if (!all(unique(df$interval) %in% intervals)) {
     log_check <- FALSE
     warning("Nekaj je narobe z vrednostimi v polju interval, dovoljene so samo naslednje vrednosti: ",
@@ -387,7 +387,7 @@ check_data_df <- function(df, codes){
 
   # check all series are correct interval
   interval <- unique(intervals[-1])
-  if (interval == "M" | interval == "Q"){
+  if (interval %in% c("M", "Q", "D")){
     # check if periods can be properly converted to dates
     period_dates <-  excel_date_to_r_date(df$period)
     if (!all(!is.na(period_dates))){
@@ -446,33 +446,12 @@ check_data_df <- function(df, codes){
 check_data_xlsx <- function(filename, codes) {
   wb <- openxlsx2::wb_load(filename)
   # check sheet names correspond with intervals of the data
-  sheet_names <- openxlsx::getSheetNames(filename)
-  if("M" %in% sheet_names) {
-    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "M"))
-    if (!is.null(df)){
-      interval <- check_data_df(df, codes)
-      if (interval != "M") {
-        stop("Na zavihku M so dovoljene samo serije z mese\u010dno resolucijo.")
-      }
-    }
-  }
-  if("A" %in% sheet_names) {
-    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
-    if (!is.null(df)){
-      interval <- check_data_df(df, codes)
-      if (interval != "A") {
-        stop("Na zavihku A so dovoljene samo serije z letno resolucijo.")
-      }
-    }
-  }
-  if("Q" %in% sheet_names) {
-    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
-    if (!is.null(df)){
-      interval <- check_data_df(df, codes)
-      if (interval != "Q") {
-        stop("Na zavihku Q so dovoljene samo serije s \u010detrtletno resolucijo.")
-      }
-    }
-  }
+  resolution <- c(M = "z mese\u010dno", Q = "s \u010detrtletno", A = "z letno", D = "z dnevno")
+  sheets <- intersect(data_intervals(), openxlsx::getSheetNames(filename))
+  lapply(sheets, \(sheet) {
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = sheet))
+    if (!is.null(df) && check_data_df(df, codes) != sheet)
+      stop("Na zavihku ", sheet, " so dovoljene samo serije ", resolution[[sheet]], " resolucijo.")
+  })
   TRUE
 }

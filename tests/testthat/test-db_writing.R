@@ -12,7 +12,7 @@ test_that("insert data functions work", {
   with_mock_db({
     con <- make_test_connection()
     df_m <- suppressWarnings( openxlsx::read.xlsx(testthat::test_path("testdata", "umar_serije_podatki_MK.xlsx"), sheet = "M"))
-    df_m <- prepare_periods(df_m)
+    df_m <- prepare_periods(df_m, "M")
     x <- insert_data_points(df_m, con, "test_platform")
     expect_equal(x, 11)
   })

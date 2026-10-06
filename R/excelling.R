@@ -58,7 +58,7 @@ update_structure_excel <- function(filename, df) {
 
 #' Prepare excel template for data file
 #'
-#' Prepares an empty excel file for the data. Really only names the three sheets
+#' Prepares an empty excel file for the data. Really only names the four sheets (M, Q, A, D)
 #'
 #' @param path path to file, default empty
 #' @param author initials of author that becomes part of the filename
@@ -78,6 +78,7 @@ create_data_template_excel <- function(path = "", author = "name", overwrite = T
   openxlsx::addWorksheet(wb, "M")
   openxlsx::addWorksheet(wb, "Q")
   openxlsx::addWorksheet(wb, "A")
+  openxlsx::addWorksheet(wb, "D")
   openxlsx::saveWorkbook(wb, file = outfile, overwrite = overwrite)
 }
 

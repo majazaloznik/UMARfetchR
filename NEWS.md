@@ -1,3 +1,11 @@
+# UMARfetchR 0.6.0
+
+* add daily (`D`) interval: structure check, `D` data sheet, ISO-date periods (YYYY-MM-DD)
+* `prepare_periods()` now takes the interval explicitly instead of guessing it from the months
+* `get_interval_from_period()` vectorised; dropped `rowwise()` in `insert_data_points()`
+* new exported `import_data_df()` to import a wide data frame without the Excel round trip
+* sheet loops in `main_data()`/`check_data_xlsx()` deduplicated
+
 # UMARfetchR 0.5.0
 
 * add logging to insert functions

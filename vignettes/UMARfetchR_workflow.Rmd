@@ -85,7 +85,7 @@ The `create_structure_template_excel()` creates a template with nine columns, ei
 * **dimension_levels_text**: the level text and codes need to match in number, and also between series. So if you have two dimensions, you need ot have a level_text for each and a level_code for each, again separated by `"--"`
 * **dimension_levels_code**: here is an example: The dimensions might be `"geography--gender"`, and then the dimension levels text could be for one series `"Ljubljana--moški"` or `"Maribor--ženske"`, and then the codes could be `"lj--m"`, `"mb--f`". The choice of codes is up to the author, but they should be short!
 * **unit**: must be one of the units in the database. See instructions for authors for current list. 
-* **interval**: "M", "Q" or "A" for now
+* **interval**: "M", "Q", "A" or "D"
 * **series_name**: descriptive name for series - if this is left empty, the dimension_levels_text will be used instead, which is not ideal, but better than nothing. 
 
 Then there are two additional columns that get computed during the import process:
@@ -99,7 +99,7 @@ The data tables must be **tidy**:
 
 * each row represents one time interval
 * each column represents a series, using the `series_codes` which result from the `main_structure()` run and can be found in the updated metadata Excel
-* therefore each interval type requires it's own worksheet, which should be named "M", "Q", or "A"
+* therefore each interval type requires it's own worksheet, which should be named "M", "Q", "A" or "D"
 
 The tables must:
 

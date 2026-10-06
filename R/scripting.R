@@ -147,48 +147,48 @@ add_new_author <- function(name, initials, email, con, schema = "platform",
 #' @param con connection to database
 #' @param schema schema name
 #'
-#' @return 0 if all sheets are empty, otherwise just base::message
+#' @return number of imported data points (0 if all sheets are empty)
 #' @export
 #'
 main_data <- function(filename, codes, con, schema) {
   check_data_xlsx(filename, codes)
-  sheet_names <- openxlsx::getSheetNames(filename)
-  imported_rows <- 0
-  if("M" %in% sheet_names) {
-    base::message("\nZavihek M:")
-    df_m <- suppressWarnings( openxlsx::read.xlsx(filename, sheet = "M"))
-    if (!is.null(df_m)){
-      df_m <- prepare_periods(df_m)
-      insert_new_vintage(df_m, con, schema)
-      new_rows <- insert_data_points(df_m, con, schema)
-      imported_rows <- imported_rows + new_rows} else {
-        imported_rows <- imported_rows + 0
-        base::message("Na zavihku ni podatkov")}
-  }
-  if("A" %in% sheet_names) {
-    base::message("\nZavihek A:")
-    df_a <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "A"))
-    if (!is.null(df_a)){
-      df_a <- prepare_periods(df_a)
-      insert_new_vintage(df_a, con, schema)
-      new_rows <- insert_data_points(df_a, con, schema)
-      imported_rows <- imported_rows + new_rows} else {
-        imported_rows <- imported_rows + 0
-        base::message("Na zavihku ni podatkov")}
-  }
-  if("Q" %in% sheet_names) {
-    base::message("\nZavihek Q:")
-    df_q <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = "Q"))
-    if (!is.null(df_q)){
-      df_q <- prepare_periods(df_q)
-      insert_new_vintage(df_q, con, schema)
-      new_rows <- insert_data_points(df_q, con, schema)
-      imported_rows <- imported_rows + new_rows} else {
-        imported_rows <- imported_rows + 0
-        base::message("Na zavihku ni podatkov")}
-  }
+  sheets <- intersect(c("M", "A", "Q", "D"), openxlsx::getSheetNames(filename))
+  imported_rows <- sum(vapply(sheets, \(sheet) {
+    base::message("\nZavihek ", sheet, ":")
+    df <- suppressWarnings(openxlsx::read.xlsx(filename, sheet = sheet))
+    if (is.null(df)) {
+      base::message("Na zavihku ni podatkov")
+      return(0)
+    }
+    import_data_df(df, sheet, codes, con, schema, checked = TRUE)
+  }, numeric(1)))
   base::message("\nPodatki iz ", basename(filename), " so prene\u0161eni v bazo.\n-----------------------")
   imported_rows
+}
+
+
+#' Import a single wide data frame of one interval
+#'
+#' Same format as one data sheet: a `period` column first, then one column per
+#' series code. Lets data that is already in R (e.g. scripted pulls) skip the
+#' Excel round trip.
+#'
+#' @param df data frame with `period` and series-code columns
+#' @param interval one of "M", "Q", "A", "D"
+#' @param codes legal series codes
+#' @param con connection to database
+#' @param schema schema name
+#' @param checked logical, skip \link[UMARfetchR]{check_data_df} if already done
+#'
+#' @return number of inserted data points
+#' @export
+import_data_df <- function(df, interval, codes, con, schema = "platform", checked = FALSE) {
+  if (!checked && check_data_df(df, codes) != interval)
+    stop("Serije v tabeli niso z intervalom ", interval)
+  df <- prepare_periods(df, interval)
+  insert_new_vintage(df, con, schema)
+  n <- insert_data_points(df, con, schema)
+  if (is.null(n)) 0 else as.numeric(n)
 }
 
 

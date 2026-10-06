@@ -32,16 +32,25 @@ ifelse(nrow(x) == 0, NA, x[1,1])
 #'
 #' @param period one of the possible period values
 #'
-#' @return "M", "A" or "Q" - or error if none work
+#' Vectorised. Daily periods are ISO dates (YYYY-MM-DD), as used by ICEfetchR.
+#'
+#' @return character vector of "M", "Q", "A" or "D" - or error if any period
+#' doesn't match
 #' @export
 #'
 get_interval_from_period <- function(period){
- ifelse(grepl("^\\d{4}M\\d{2}$", period), "M",
-        ifelse(grepl("^\\d{4}Q\\d{1}$", period), "Q",
-                     ifelse(grepl("^\\d{4}$", period), "A",
-                            stop("Nekaj je narobe s periodami!"))))
-
+  out <- dplyr::case_when(
+    grepl("^\\d{4}M\\d{2}$", period) ~ "M",
+    grepl("^\\d{4}Q\\d{1}$", period) ~ "Q",
+    grepl("^\\d{4}$", period) ~ "A",
+    grepl("^\\d{4}-\\d{2}-\\d{2}$", period) ~ "D")
+  if (anyNA(out)) stop("Nekaj je narobe s periodami!")
+  out
 }
+
+#' Legal intervals / data sheet names
+#' @keywords internal
+data_intervals <- function() c("M", "Q", "A", "D")
 
 #' Function to convert Excel serial date numbers to R Date objects
 #' @param numeric excel number

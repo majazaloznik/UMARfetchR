@@ -282,7 +282,6 @@ insert_data_points <- function(data, con, schema="platform"){
 
 
   df <- prepare_data_table(data, selection, con, schema) |>
-    dplyr::rowwise() |>
     dplyr::mutate(interval_id = get_interval_from_period(period_id),
                   period_id = as.character(period_id))
 
