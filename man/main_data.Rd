@@ -16,7 +16,7 @@ main_data(filename, codes, con, schema)
 \item{schema}{schema name}
 }
 \value{
-0 if all sheets are empty, otherwise just message
+number of imported data points (0 if all sheets are empty)
 }
 \description{
 inputs the excel file with the timeseries data plus a vector of the allowed codes and

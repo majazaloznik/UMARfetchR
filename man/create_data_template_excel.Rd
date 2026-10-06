@@ -17,5 +17,5 @@ create_data_template_excel(path = "", author = "name", overwrite = TRUE)
 nothing - side effect is saving to an excel file.
 }
 \description{
-Prepares an empty excel file for the data. Really only names the three sheets
+Prepares an empty excel file for the data. Really only names the four sheets (M, Q, A, D)
 }

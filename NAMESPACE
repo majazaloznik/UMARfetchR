@@ -48,6 +48,8 @@ export(update_data)
 export(update_metadata)
 export(update_structure_excel)
 importFrom(magrittr,"%>%")
-importFrom(stats,complete.cases)
-importFrom(stats,na.omit)
-importFrom(stats,setNames)
+importFrom(stats,
+  complete.cases,
+  na.omit,
+  setNames
+)

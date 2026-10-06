@@ -2,14 +2,17 @@
 % Please edit documentation in R/helpers.R
 \name{excel_date_to_r_date}
 \alias{excel_date_to_r_date}
-\title{Function to convert Excel serial date numbers to R Date objects}
+\title{Convert Excel period values to R Date objects}
 \usage{
 excel_date_to_r_date(excel_date)
 }
 \arguments{
-\item{numeric}{excel number}
+\item{excel_date}{vector of period values}
 }
 \description{
-Function to convert Excel serial date numbers to R Date objects
+Accepts Excel serial numbers (1900 date system), Date/POSIXct, or strict
+ISO "YYYY-MM-DD" strings. Anything else becomes NA - no lenient parsing,
+because `as.Date()` on character silently misreads e.g. "02/10/2026" as
+0002-10-20 via its "%Y/%m/%d" fallback.
 }
 \keyword{internal}

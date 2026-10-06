@@ -4,13 +4,15 @@
 \alias{email_log}
 \title{Send email with log}
 \usage{
-email_log(log, recipient, meta = FALSE)
+email_log(log, recipient, initials, meta = FALSE)
 }
 \arguments{
 \item{log}{path to log file}
 
 \item{recipient}{email (not checked) address to be sent to as BCC.
 I think single email is all that's allowed. Haven't tried more.}
+
+\item{initials}{initials of the author}
 
 \item{meta}{logical indicating if the script was the metadata one or the data one (default).
 This affects the subject and text of the email.}

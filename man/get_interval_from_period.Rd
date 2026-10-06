@@ -7,10 +7,13 @@
 get_interval_from_period(period)
 }
 \arguments{
-\item{period}{one of the possible period values}
+\item{period}{one of the possible period values
+
+Vectorised. Daily periods are ISO dates (YYYY-MM-DD), as used by ICEfetchR.}
 }
 \value{
-"M", "A" or "Q" - or error if none work
+character vector of "M", "Q", "A" or "D" - or error if any period
+doesn't match
 }
 \description{
 Get interval from the period value

@@ -4,15 +4,18 @@
 \alias{prepare_periods}
 \title{Prepare period values from dates}
 \usage{
-prepare_periods(data)
+prepare_periods(data, interval)
 }
 \arguments{
 \item{data}{individual sheet data}
+
+\item{interval}{one of "M", "Q", "A", "D"}
 }
 \value{
 with updated period
 }
 \description{
-Leaves years if the data is annual, and swaps dates for month (2023M02) or
-quarterly values (2023Q1)
+Leaves years if the data is annual, and swaps dates for month (2023M02),
+quarterly (2023Q1) or daily (2023-02-14) values. The interval is passed
+explicitly (it is the sheet name) rather than guessed from the dates.
 }
