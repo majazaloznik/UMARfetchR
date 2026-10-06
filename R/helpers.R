@@ -52,19 +52,23 @@ get_interval_from_period <- function(period){
 #' @keywords internal
 data_intervals <- function() c("M", "Q", "A", "D")
 
-#' Function to convert Excel serial date numbers to R Date objects
-#' @param numeric excel number
+#' Convert Excel period values to R Date objects
+#'
+#' Accepts Excel serial numbers (1900 date system), Date/POSIXct, or strict
+#' ISO "YYYY-MM-DD" strings. Anything else becomes NA - no lenient parsing,
+#' because `as.Date()` on character silently misreads e.g. "02/10/2026" as
+#' 0002-10-20 via its "%Y/%m/%d" fallback.
+#' @param excel_date vector of period values
 #' @keywords internal
-#
 excel_date_to_r_date <- function(excel_date) {
-  # The origin is "1899-12-30" for the Excel system on Windows
-  tryCatch({
-    as.Date(excel_date, origin = "1899-12-30")
-  }, warning = function(war) {
-    return(NA)
-  }, error = function(err) {
-    return(NA)
-  })
+  if (inherits(excel_date, c("Date", "POSIXt"))) return(as.Date(excel_date))
+  if (is.numeric(excel_date)) return(as.Date(excel_date, origin = "1899-12-30"))
+  if (is.character(excel_date)) {
+    iso <- grepl("^\\d{4}-\\d{2}-\\d{2}$", excel_date)
+    out <- as.Date(ifelse(iso, excel_date, NA_character_), format = "%Y-%m-%d")
+    return(out)
+  }
+  as.Date(rep(NA_real_, length(excel_date)))
 }
 
 

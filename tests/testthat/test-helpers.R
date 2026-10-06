@@ -53,3 +53,12 @@ test_that("get id works if table exists", {
   expect_true(is.na(excel_date_to_r_date("dd")))
 })
 
+
+test_that("excel_date_to_r_date is strict", {
+  expect_equal(excel_date_to_r_date(43831), as.Date("2020-01-01"))
+  expect_equal(excel_date_to_r_date("2020-01-01"), as.Date("2020-01-01"))
+  expect_equal(excel_date_to_r_date(as.Date("2020-01-01")), as.Date("2020-01-01"))
+  expect_true(is.na(excel_date_to_r_date("02/10/2026")))
+  expect_true(is.na(excel_date_to_r_date("2020-01-01xyz")))
+  expect_true(is.na(excel_date_to_r_date("2020-13-01")))
+})
