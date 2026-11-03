@@ -114,7 +114,7 @@ check_structure_df <- function(df, con, schema = "platform") {
   # check dimension level codes are legal
   df |>
     dplyr::mutate(dimension_levels_code = toupper(dimension_levels_code),
-                  check = grepl("^([A-Z\u0160\u010C\u017D0-9]{1,4})(--([A-Z\u0160\u010C\u017D0-9]{1,4}))*$", dimension_levels_code)) |>
+                  check = grepl("^([A-Z\u0160\u010C\u017D0-9]{1,5})(--([A-Z\u0160\u010C\u017D0-9]{1,5}))*$", dimension_levels_code)) |>
     dplyr::filter(check ==FALSE) -> check
   if (nrow(check) > 0) {
     log_check <- FALSE
