@@ -292,64 +292,61 @@ update_metadata <- function(filename, con, schema, path = "logs/", keep_vintage 
 }
 
 
-
-#' Wrapper function for complete data pipeline
+#' Import one author's data file into the database
 #'
-#' This wrapper function runs the whole data pipeline by running \link[UMARfetchR]{main_data}
-#' one which imports any new data, while logging everything to the sink and emailing the
-#' logs to the listed recipients.
+#' Reads the series codes from the metadata file and imports any new data from
+#' the data file with \link[UMARfetchR]{main_data}. Everything is written to a
+#' per-file log (in Slovenian, meant for the author) and also passes through
+#' as normal messages, warnings and errors, so the calling runner logs them too.
+#' Warnings do not stop the import. Errors are logged and re-raised.
 #'
-#' @param metadata_filename metadata file
-#' @param data_filename data file
+#' No emails are sent: the return value has what the caller needs to route
+#' the log to the author.
+#'
+#' @param metadata_filename path to the `umar_serije_metadata_XY.xlsx` file
+#' @param data_filename path to the matching `umar_serije_podatki_XY.xlsx` file
 #' @param con connection to database
-#' @param schema name of database schema
-#' @param path folder to store the log file to
+#' @param schema schema name
+#' @param path folder for the log file
 #'
-#' @return Nothing, just side effects :). Writes to the database and the excel file and emails logs.
+#' @return list with `initials`, `rows` (number of imported data points),
+#'   `log_file`, `email` (author's email, NA if unknown) and `codes`.
 #' @export
-#'
-update_data <- function(metadata_filename, data_filename, con, schema, path = "logs/") {
-  log <- paste0(path, "log_data_", format(Sys.time(), "%d-%b-%Y %H.%M.%S"), ".txt")
-  con_log <- file(log, open = "wt", encoding = "UTF-8")
-  sink(con_log, type = "message")
-  sink(con_log, type = "output")
+update_data <- function(metadata_filename, data_filename, con, schema, path = "logs") {
+  initials <- sub(".*_(.*)\\.xlsx$", "\\1", basename(metadata_filename))
+  data_initials <- sub(".*_(.*)\\.xlsx$", "\\1", basename(data_filename))
+  if (data_initials != initials)
+    stop("Metadata and data files are for different initials: ",
+         initials, " vs ", data_initials, call. = FALSE)
 
-  # Define wrapper function to suppress warnings
-  get_email_no_warnings <- function(initials, connection) {
-    suppressWarnings(UMARaccessR::sql_get_email_from_author_initials(initials, connection, schema))
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+  log_file <- file.path(path, sprintf("log_data_%s_%s.txt", initials,
+                                      format(Sys.time(), "%Y-%m-%d_%H.%M.%S")))
+  log_con <- file(log_file, open = "wt", encoding = "UTF-8")
+  on.exit(close(log_con))
+  sink(log_con, split = TRUE)                      # printed output: file + console
+  on.exit(sink(), add = TRUE, after = FALSE)       # unsink before closing
+
+  write_log <- function(...) {
+    writeLines(gsub("\033[Gg][0-9]*;?", "", paste0(...)), log_con)
+    flush(log_con)
   }
 
-  result <- tryCatch({
-    initials <- sub(".*_(.*)\\.xlsx", "\\1", metadata_filename)
-    email <- get_email_no_warnings(initials, con)
+  email <- tryCatch(
+    suppressWarnings(UMARaccessR::sql_get_email_from_author_initials(initials, con, schema)),
+    error = function(e) NA_character_)
+
+  codes <- NULL
+  rows <- withCallingHandlers({
+    message("Mapa ", initials, ":\n-----------------------")
+    message("Uvoz podatkov:\n-----------------------")
     codes <- read_codes_from_metadata_excel(metadata_filename)
-    base::message("Mapa ", initials, ":\n----------------------- \n")
-    base::message("Uvoz podatkov:\n-----------------------")
-    imported_rows <- main_data(data_filename, codes, con, schema)
-  }, warning = function(w) {
-    base::message("Captured warning: ", conditionMessage(w))
-    return(NULL)
-  }, error = function(e) {
-    base::message("Captured error: ", conditionMessage(e))
-    return(NULL)
-  }, finally = {
-    sink(type = "output")
-    sink(type = "message")
-    close(con_log)
+    main_data(data_filename, codes, con, schema)
+  },
+  message = function(m) write_log(sub("\n$", "", conditionMessage(m))),
+  warning = function(w) write_log("Opozorilo: ", conditionMessage(w)),
+  error   = function(e) write_log("Napaka: ", conditionMessage(e)))
 
-    # Strip ISO 2022 escape sequences
-    log_lines <- readLines(log, encoding = "UTF-8", warn = FALSE)
-    log_clean <- gsub("\033[Gg][0-9]*;?", "", log_lines)  # Removes \033G3; and \033g
-    log_clean <- log_clean[nzchar(log_clean) | seq_along(log_clean) == 1]  # Keep empty first line only
-    writeLines(log_clean, log, useBytes = FALSE)
-
-    email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
-    if (exists("imported_rows") && imported_rows > 0) {
-      email_log(log, recipient = "maja.zaloznik@gmail.com", initials)
-      email_log(log, recipient = "andrej.kustrin@gov.si", initials)
-      if (exists("email")) {
-        email_log(log, recipient = email, initials)
-      }
-    }
-  })
+  list(initials = initials, rows = rows, log_file = log_file,
+       email = email, codes = codes)
 }

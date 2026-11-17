@@ -24,3 +24,46 @@ dittodb::with_mock_db({
   })
 })
 
+local_update_data_mocks <- function(main_data_fun, env = parent.frame()) {
+  local_mocked_bindings(
+    read_codes_from_metadata_excel = function(...) c("A", "B"),
+    main_data = main_data_fun, .env = env)
+  local_mocked_bindings(
+    sql_get_email_from_author_initials = function(...) "x@y.si",
+    .package = "UMARaccessR", .env = env)
+}
+
+test_that("update_data returns counts and logs messages and warnings", {
+  dir <- tempfile(); dir.create(dir)
+  local_update_data_mocks(function(...) { message("uvoz ok"); warning("pazi"); 5 })
+  suppressMessages(expect_warning(
+    res <- update_data("p/umar_serije_metadata_XY.xlsx", "p/umar_serije_podatki_XY.xlsx",
+                       con = NULL, schema = "platform", path = dir),
+    "pazi"))
+  expect_equal(res$rows, 5)
+  expect_equal(res$initials, "XY")
+  expect_equal(res$email, "x@y.si")
+  expect_equal(res$codes, c("A", "B"))
+  log <- readLines(res$log_file)
+  expect_true(any(grepl("uvoz ok", log)))
+  expect_true(any(grepl("Opozorilo: pazi", log)))
+  expect_equal(sink.number(), 0)
+})
+
+test_that("update_data logs and re-raises errors, releasing the sink", {
+  dir <- tempfile(); dir.create(dir)
+  local_update_data_mocks(function(...) stop("napacna koda"))
+  suppressMessages(expect_error(
+    update_data("p/umar_serije_metadata_XY.xlsx", "p/umar_serije_podatki_XY.xlsx",
+                con = NULL, schema = "platform", path = dir),
+    "napacna koda"))
+  log <- readLines(list.files(dir, full.names = TRUE))
+  expect_true(any(grepl("Napaka: napacna koda", log)))
+  expect_equal(sink.number(), 0)
+})
+
+test_that("update_data refuses mismatched files", {
+  expect_error(update_data("umar_serije_metadata_XY.xlsx", "umar_serije_podatki_AB.xlsx",
+                           con = NULL, schema = "platform", path = tempdir()),
+               "different initials")
+})

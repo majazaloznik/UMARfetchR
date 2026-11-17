@@ -1,3 +1,14 @@
+# UMARfetchR 0.7.0
+
+changes in update_data()
+
+* Warnings no longer stop an import. They go into the author’s log and carry on to with_run, which records them.
+* Errors are written to the author’s log and then raised again, so run_step() reports them as an issue for that file.
+* Messages reach both places. The old version used sink(type = "message"), so everything went only to the author’s log file. Now each message goes to that file and to stderr, which the .bat captures. The output sink uses split = TRUE for the same reason.
+* It sends no emails. It returns what the runner needs to send them instead.
+* Clearer log names. Log files now include the initials, log_data_<XY>_<timestamp>.txt, and file.path() builds the path, so a missing trailing slash no longer breaks it.
+* Mismatched files are caught. If the metadata and data files belong to different initials, it raises an error. 
+
 # UMARfetchR 0.6.0
 
 * add daily (`D`) interval: structure check, `D` data sheet, ISO-date periods (YYYY-MM-DD)

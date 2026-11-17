@@ -1,7 +1,7 @@
 Package: UMARfetchR
 Type: Package
 Title: ETL tools for data processed by UMAR authors & the data platform
-Version: 0.6.0
+Version: 0.7.0
 Author: Maja Zalo\u017enik
 Maintainer: <maja.zaloznik@gmail.com>
 Description: A bunch of tools and pipelines to check, prep and import timeseries data processed in house by UMAR authors and import it into the database with metadata and all. 
@@ -14,7 +14,7 @@ Suggests:
     knitr,
     rmarkdown,
     bookdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.2.0)
 Config/testthat/edition: 3
 Imports: 
     DBI (>= 1.1.3),
