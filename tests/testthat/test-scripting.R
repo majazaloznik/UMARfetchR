@@ -36,7 +36,7 @@ local_update_data_mocks <- function(main_data_fun, env = parent.frame()) {
 test_that("update_data returns counts and logs messages and warnings", {
   dir <- tempfile(); dir.create(dir)
   local_update_data_mocks(function(...) { message("uvoz ok"); warning("pazi"); 5 })
-  suppressMessages(expect_warning(
+  expect_no_message(expect_warning(
     res <- update_data("p/umar_serije_metadata_XY.xlsx", "p/umar_serije_podatki_XY.xlsx",
                        con = NULL, schema = "platform", path = dir),
     "pazi"))
@@ -47,19 +47,17 @@ test_that("update_data returns counts and logs messages and warnings", {
   log <- readLines(res$log_file)
   expect_true(any(grepl("uvoz ok", log)))
   expect_true(any(grepl("Opozorilo: pazi", log)))
-  expect_equal(sink.number(), 0)
 })
 
 test_that("update_data logs and re-raises errors, releasing the sink", {
   dir <- tempfile(); dir.create(dir)
   local_update_data_mocks(function(...) stop("napacna koda"))
-  suppressMessages(expect_error(
+  expect_error(
     update_data("p/umar_serije_metadata_XY.xlsx", "p/umar_serije_podatki_XY.xlsx",
                 con = NULL, schema = "platform", path = dir),
-    "napacna koda"))
+    "napacna koda")
   log <- readLines(list.files(dir, full.names = TRUE))
   expect_true(any(grepl("Napaka: napacna koda", log)))
-  expect_equal(sink.number(), 0)
 })
 
 test_that("update_data refuses mismatched files", {

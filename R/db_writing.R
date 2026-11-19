@@ -304,17 +304,17 @@ if(nrow(df) != 0){
                        on conflict do nothing",
                        DBI::dbQuoteIdentifier(con, schema),
                        DBI::dbQuoteIdentifier(con, schema)))
-  print(paste(x, "new rows inserted into the period table"))
+  message(paste(x, "new rows inserted into the period table"))
 
   # insert data into main data_point table
   x <- DBI::dbExecute(con, sprintf("insert into %s.data_points
                        select vintage_id, period_id, value from tmp
                        on conflict do nothing",
                        DBI::dbQuoteIdentifier(con, schema)))
-  print(paste(x, "new rows inserted into the data_points table for",
+  message(paste(x, "new rows inserted into the data_points table for",
               nrow(selection), "series."))
   x} else{
-    print(paste("No new rows inserted into the data_points table for",
+    message(paste("No new rows inserted into the data_points table for",
                 nrow(selection), "series."))
   0}}
 }

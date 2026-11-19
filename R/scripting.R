@@ -324,8 +324,7 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
                                       format(Sys.time(), "%Y-%m-%d_%H.%M.%S")))
   log_con <- file(log_file, open = "wt", encoding = "UTF-8")
   on.exit(close(log_con))
-  sink(log_con, split = TRUE)                      # printed output: file + console
-  on.exit(sink(), add = TRUE, after = FALSE)       # unsink before closing
+
 
   write_log <- function(...) {
     writeLines(gsub("\033[Gg][0-9]*;?", "", paste0(...)), log_con)
@@ -343,7 +342,10 @@ update_data <- function(metadata_filename, data_filename, con, schema, path = "l
     codes <- read_codes_from_metadata_excel(metadata_filename)
     main_data(data_filename, codes, con, schema)
   },
-  message = function(m) write_log(sub("\n$", "", conditionMessage(m))),
+  message = function(m) {
+    write_log(sub("\n$", "", conditionMessage(m)))
+    invokeRestart("muffleMessage")          # author log only, not the run log
+  },
   warning = function(w) write_log("Opozorilo: ", conditionMessage(w)),
   error   = function(e) write_log("Napaka: ", conditionMessage(e)))
 
